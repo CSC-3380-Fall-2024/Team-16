@@ -1,10 +1,31 @@
 # Team-16
 
-Group Members: Nicholas Thai, Nathan Soto, Devan Dao, Menseo Lee, Peter Nguyen
+Group Members:
+- Nicholas Thai (Gitmaster)
+- Nathan Soto (Project Manager)
+- Devan Dao (Communications Lead)
+- Menseo Lee (Quality Assurance Tester)
+- Peter Nguyen (Design Lead)
 
 ## Universal Fitness
 
-This is a Kotlin Multiplatform project targeting Android, iOS, Server.
+This is a Kotlin Multiplatform project for Android and IOS.
+
+## For group members
+
+### Developer guidelines
+
+DO NOT commit to the main branch, this will be handled by the Gitmaster only. Instead, create development/feature branches.
+
+Use meaningful commit and branch names.
+
+### Set up devlopment environment
+
+1. Download [Android Studio](https://developer.android.com/studio).
+2. Clone this repo.
+3. Open it in Android Studio.
+
+### Useful directories
 
 * `/composeApp` is for code that will be shared across your Compose Multiplatform applications.
   It contains several subfolders:
