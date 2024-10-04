@@ -19,11 +19,22 @@ DO NOT commit to the main branch, this will be handled by the Gitmaster only. In
 
 Use meaningful commit and branch names.
 
+Format your code before committing.
+
+Follow the [code conventions](CODE_STYLE.md).
+
 ### Set up devlopment environment
 
-1. Download [Android Studio](https://developer.android.com/studio).
-2. Clone this repo.
-3. Open it in Android Studio.
+1. Install [Android Studio](https://developer.android.com/studio).
+2. Install [Kotlin Multiplatform plugin](https://plugins.jetbrains.com/plugin/14936-kotlin-multiplatform).
+3. Install a [JDK](https://adoptium.net/temurin/releases/?package=jdk) if you don't already have one.
+4. Clone this repo.
+5. Open it in Android Studio.
+
+## Enable useful settings
+
+1. Navigate to **File > Settings > Tools > Actions on Save**.
+2. Enable **Reformat code** and **Optimize imports**. 
 
 ### Useful directories
 
