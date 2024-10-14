@@ -13,7 +13,7 @@ This is a Kotlin Multiplatform project for Android and IOS.
 
 ## For group members
 
-### Developer guidelines
+### Coding guidelines
 
 DO NOT commit to the main branch, this will be handled by the Gitmaster only. Instead, create development/feature branches.
 
@@ -31,10 +31,19 @@ Follow the [code conventions](CODE_STYLE.md).
 4. Clone this repo.
 5. Open it in Android Studio.
 
-## Enable useful settings
+### Enable useful settings
 
 1. Navigate to **File > Settings > Tools > Actions on Save**.
 2. Enable **Reformat code** and **Optimize imports**. 
+
+### Learning resources
+
+Kotlin:
+1. Navigate to https://kotlinlang.org/docs/.
+2. Read the "Basics" and "Concepts" section.
+
+Compose:
+1. Read through https://developer.android.com/courses/jetpack-compose/course.
 
 ### Useful directories
 
