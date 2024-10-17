@@ -1,4 +1,3 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -37,7 +36,7 @@ kotlin {
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
-            implementation(compose.material)
+            implementation(compose.material3)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
@@ -51,11 +50,11 @@ kotlin {
 android {
     namespace = "com.github.csc3380fall2024.team16"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
-
+    
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     sourceSets["main"].res.srcDirs("src/androidMain/res")
     sourceSets["main"].resources.srcDirs("src/commonMain/resources")
-
+    
     defaultConfig {
         applicationId = "com.github.csc3380fall2024.team16"
         minSdk = libs.versions.android.minSdk.get().toInt()
@@ -84,4 +83,3 @@ android {
         debugImplementation(compose.uiTooling)
     }
 }
-
