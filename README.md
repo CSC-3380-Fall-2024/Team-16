@@ -39,11 +39,16 @@ Follow the [code conventions](CODE_STYLE.md).
 ### Learning resources
 
 Kotlin:
-1. Navigate to https://kotlinlang.org/docs/.
+1. Docs https://kotlinlang.org/docs/.
 2. Read the "Basics" and "Concepts" section.
 
 Compose:
-1. Read through https://developer.android.com/courses/jetpack-compose/course.
+1. Course: https://developer.android.com/courses/jetpack-compose/course
+2. Docs: https://developer.android.com/develop/ui/compose/documentation
+3. List of composables: https://composables.com/
+
+Ktor:
+1. Docs: https://ktor.io/docs/welcome.html
 
 ### Useful directories
 
