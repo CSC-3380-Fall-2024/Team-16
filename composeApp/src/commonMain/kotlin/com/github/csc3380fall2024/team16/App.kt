@@ -1,5 +1,6 @@
 package com.github.csc3380fall2024.team16
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,64 +29,75 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 @Preview
 fun App() {
+    var showLogin by remember { mutableStateOf(false) }
+    
     AppTheme(dark = true) {
         Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-            Column(
-                Modifier.fillMaxWidth().padding(horizontal = 20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(40.dp, Alignment.CenterVertically),
-            ) {
-                Text("Welcome Onboard!", fontSize = 30.sp, fontWeight = FontWeight.Bold)
-                Text("Take the first step with Universal Fitness.")
-                
+            if (showLogin) {
+                Login()
+            } else {
                 Column(
-                    Modifier.padding(horizontal = 20.dp),
-                    verticalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterVertically)
+                    Modifier.fillMaxWidth().padding(horizontal = 20.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(40.dp, Alignment.CenterVertically),
                 ) {
-                    var username by remember { mutableStateOf("") }
-                    TextField(
-                        username,
-                        { username = it },
-                        Modifier.fillMaxWidth(),
-                        placeholder = { Text("Username") },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                        singleLine = true
-                    )
+                    Text("Welcome Onboard!", fontSize = 30.sp, fontWeight = FontWeight.Bold)
+                    Text("Take the first step with Universal Fitness.")
                     
-                    var email by remember { mutableStateOf("") }
-                    TextField(
-                        email,
-                        { email = it },
-                        Modifier.fillMaxWidth(),
-                        placeholder = { Text("Email") },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                        singleLine = true
-                    )
+                    Column(
+                        Modifier.padding(horizontal = 20.dp),
+                        verticalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterVertically)
+                    ) {
+                        var username by remember { mutableStateOf("") }
+                        TextField(
+                            username,
+                            { username = it },
+                            Modifier.fillMaxWidth(),
+                            placeholder = { Text("Username") },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                            singleLine = true
+                        )
+                        
+                        var email by remember { mutableStateOf("") }
+                        TextField(
+                            email,
+                            { email = it },
+                            Modifier.fillMaxWidth(),
+                            placeholder = { Text("Email") },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                            singleLine = true
+                        )
+                        
+                        var password by remember { mutableStateOf("") }
+                        TextField(
+                            password,
+                            { password = it },
+                            Modifier.fillMaxWidth(),
+                            placeholder = { Text("Password") },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                            singleLine = true
+                        )
+                        
+                        var confirmPassword by remember { mutableStateOf("") }
+                        TextField(
+                            confirmPassword,
+                            { confirmPassword = it },
+                            Modifier.fillMaxWidth(),
+                            //                        shape = RoundedCornerShape(400.dp),
+                            placeholder = { Text("Confirm Password") },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                            singleLine = true
+                        )
+                    }
                     
-                    var password by remember { mutableStateOf("") }
-                    TextField(
-                        password,
-                        { password = it },
-                        Modifier.fillMaxWidth(),
-                        placeholder = { Text("Password") },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                        singleLine = true
+                    Button({}, Modifier.fillMaxWidth().padding(20.dp)) {
+                        Text("Register", fontSize = 20.sp, lineHeight = 5.sp)
+                    }
+                    Text(
+                        text = "Log In",
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.clickable { showLogin = true }
                     )
-                    
-                    var confirmPassword by remember { mutableStateOf("") }
-                    TextField(
-                        confirmPassword,
-                        { confirmPassword = it },
-                        Modifier.fillMaxWidth(),
-                        //                        shape = RoundedCornerShape(400.dp),
-                        placeholder = { Text("Confirm Password") },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                        singleLine = true
-                    )
-                }
-                
-                Button({}, Modifier.fillMaxWidth().padding(20.dp)) {
-                    Text("Register", fontSize = 20.sp, lineHeight = 5.sp)
                 }
             }
         }
