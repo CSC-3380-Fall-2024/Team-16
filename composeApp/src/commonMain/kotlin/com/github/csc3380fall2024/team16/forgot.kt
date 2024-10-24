@@ -24,26 +24,22 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 @Preview
-fun Login() {
-    var showApp by remember { mutableStateOf(false) }
-    var showRemember by remember { mutableStateOf(false) }
-
-
+fun Remember() {
+    var showLogin by remember { mutableStateOf(false) }
+    
+    
     AppTheme(dark = true) {
         Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-            if (showApp) {
+            if (showLogin) {
                 App()
-            } else if (showRemember) {
-                    Remember()
             } else {
                 Column(
                     Modifier.fillMaxWidth().padding(horizontal = 20.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(40.dp, Alignment.CenterVertically),
                 ) {
-                    Text("Login", fontSize = 30.sp, fontWeight = FontWeight.Bold)
-                    Text("Welcome back to Universal Fitness.")
-
+                    Text("Forgot Password", fontSize = 30.sp, fontWeight = FontWeight.Bold)
+                    
                     Column(
                         Modifier.padding(horizontal = 20.dp),
                         verticalArrangement = Arrangement.spacedBy(
@@ -56,38 +52,22 @@ fun Login() {
                             username,
                             { username = it },
                             Modifier.fillMaxWidth(),
-                            placeholder = { Text("Email/Username") },
+                            placeholder = { Text("Enter Email") },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                             singleLine = true
                         )
-
-                        var password by remember { mutableStateOf("") }
-                        TextField(
-                            password,
-                            { password = it },
-                            Modifier.fillMaxWidth(),
-                            placeholder = { Text("Password") },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                            singleLine = true
-                        )
                     }
-
+                    
                     Button({}, Modifier.fillMaxWidth().padding(20.dp)) {
-                        Text("Login", fontSize = 20.sp, lineHeight = 5.sp)
+                        Text("Submit", fontSize = 20.sp, lineHeight = 5.sp)
                     }
-
+                    
                     Text(
-                        text = "Register",
+                        text = "Back to Login",
                         style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier.clickable { showApp = true }
+                        modifier = Modifier.clickable { showLogin = true }
                     )
-
-                    Text(
-                        text = "Forgot Password?",
-                        style = MaterialTheme.typography.titleSmall,
-                        modifier = Modifier
-                            .clickable { showRemember = true }
-                    )
+                    
                 }
             }
         }
