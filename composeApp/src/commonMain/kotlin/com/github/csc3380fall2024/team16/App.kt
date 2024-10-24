@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.csc3380fall2024.team16.ui.theme.AppTheme
@@ -69,7 +70,8 @@ fun App() {
                         Modifier.fillMaxWidth(),
                         placeholder = { Text("Password") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                        singleLine = true
+                        singleLine = true,
+                        visualTransformation = PasswordVisualTransformation()
                     )
                     
                     var confirmPassword by remember { mutableStateOf("") }
@@ -80,7 +82,8 @@ fun App() {
                         //                        shape = RoundedCornerShape(400.dp),
                         placeholder = { Text("Confirm Password") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                        singleLine = true
+                        singleLine = true,
+                        visualTransformation = PasswordVisualTransformation()
                     )
                 }
                 
