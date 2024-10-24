@@ -14,6 +14,8 @@ fun main() {
 }
 
 fun Application.module() {
+    configureDatabase()
+    
     routing {
         get("/") {
             call.respondText("Ktor: ${Greeting().greet()}")
