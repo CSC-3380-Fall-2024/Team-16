@@ -3,8 +3,8 @@
 Group Members:
 - Nicholas Thai (Gitmaster)
 - Nathan Soto (Project Manager)
-- Devan Dao (Communications Lead)
-- Menseo Lee (Quality Assurance Tester)
+- Devin Dao (Communications Lead)
+- Minseo Lee (Quality Assurance Tester)
 - Peter Nguyen (Design Lead)
 
 ## Universal Fitness
