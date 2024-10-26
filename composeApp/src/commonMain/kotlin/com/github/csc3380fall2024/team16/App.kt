@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.github.csc3380fall2024.team16.ui.pages.WelcomePage
 import com.github.csc3380fall2024.team16.ui.pages.AthleticsPage
 import com.github.csc3380fall2024.team16.ui.pages.BodybuildingPage
 import com.github.csc3380fall2024.team16.ui.pages.HomeScreen
