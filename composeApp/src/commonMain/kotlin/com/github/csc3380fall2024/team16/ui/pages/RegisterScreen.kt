@@ -1,5 +1,6 @@
 package com.github.csc3380fall2024.team16.ui.pages
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -89,6 +90,14 @@ fun RegisterScreen(navController: NavController) {
             ) {
                 Text("Register", fontSize = 20.sp, lineHeight = 5.sp)
             }
+            
+            Text(
+                text = "Log In",
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.clickable {
+                    navController.navigate("login")
+                }
+            )
         }
     }
 }

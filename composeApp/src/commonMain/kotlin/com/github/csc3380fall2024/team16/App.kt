@@ -24,6 +24,8 @@ fun App() {
         Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
             NavHost(navController = navController, startDestination = "register") {
                 composable("register") { RegisterScreen(navController) }
+                composable("forgotpassword") { ForgotPassword(navController) }
+                composable("login") { Login(navController) }
                 composable("home") { HomeScreen(navController) }
                 composable("bodybuilding") { BodybuildingPage(navController) }
                 composable("powerlifting") { PowerliftingPage(navController) }
