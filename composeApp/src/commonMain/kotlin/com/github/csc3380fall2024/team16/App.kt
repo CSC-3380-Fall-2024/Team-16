@@ -14,6 +14,8 @@ import com.github.csc3380fall2024.team16.ui.pages.HomeScreen
 import com.github.csc3380fall2024.team16.ui.pages.PowerliftingPage
 import com.github.csc3380fall2024.team16.ui.pages.RegisterScreen
 import com.github.csc3380fall2024.team16.ui.pages.WeightLossPage
+import com.github.csc3380fall2024.team16.ui.pages.Login
+import com.github.csc3380fall2024.team16.ui.pages.ForgotPassword
 import com.github.csc3380fall2024.team16.ui.theme.AppTheme
 
 @Composable

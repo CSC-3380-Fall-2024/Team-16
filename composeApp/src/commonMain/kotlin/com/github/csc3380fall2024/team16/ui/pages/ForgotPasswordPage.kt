@@ -1,4 +1,4 @@
-package com.github.csc3380fall2024.team16
+package com.github.csc3380fall2024.team16.ui.pages
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement

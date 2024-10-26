@@ -1,4 +1,4 @@
-package com.github.csc3380fall2024.team16
+package com.github.csc3380fall2024.team16.ui.pages
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -82,7 +82,7 @@ fun Login(navController: NavController) {
                     text = "Forgot Password",
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.clickable {
-                        navController.navigate("forgotPassword")
+                        navController.navigate("forgotpassword")
                     }
                 )
             }
