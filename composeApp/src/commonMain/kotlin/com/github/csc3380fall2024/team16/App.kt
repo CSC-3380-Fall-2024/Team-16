@@ -15,6 +15,8 @@ import com.github.csc3380fall2024.team16.ui.pages.HomeScreen
 import com.github.csc3380fall2024.team16.ui.pages.PowerliftingPage
 import com.github.csc3380fall2024.team16.ui.pages.RegisterScreen
 import com.github.csc3380fall2024.team16.ui.pages.WeightLossPage
+import com.github.csc3380fall2024.team16.ui.pages.Login
+import com.github.csc3380fall2024.team16.ui.pages.ForgotPassword
 import com.github.csc3380fall2024.team16.ui.theme.AppTheme
 
 @Composable
@@ -26,6 +28,8 @@ fun App() {
             NavHost(navController = navController, startDestination = "welcome") {
                 composable("welcome") { WelcomePage(navController) }
                 composable("register") { RegisterScreen(navController) }
+                composable("forgotpassword") { ForgotPassword(navController) }
+                composable("login") { Login(navController) }
                 composable("home") { HomeScreen(navController) }
                 composable("bodybuilding") { BodybuildingPage(navController) }
                 composable("powerlifting") { PowerliftingPage(navController) }
