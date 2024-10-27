@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.github.csc3380fall2024.team16.ui.pages.WelcomePage
 import com.github.csc3380fall2024.team16.ui.pages.AthleticsPage
 import com.github.csc3380fall2024.team16.ui.pages.BodybuildingPage
 import com.github.csc3380fall2024.team16.ui.pages.HomeScreen
@@ -22,7 +23,8 @@ fun App() {
     
     AppTheme(dark = true) {
         Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-            NavHost(navController = navController, startDestination = "register") {
+            NavHost(navController = navController, startDestination = "welcome") {
+                composable("welcome") { WelcomePage(navController) }
                 composable("register") { RegisterScreen(navController) }
                 composable("home") { HomeScreen(navController) }
                 composable("bodybuilding") { BodybuildingPage(navController) }
@@ -33,8 +35,3 @@ fun App() {
         }
     }
 }
-
-
-
-
-
