@@ -15,15 +15,12 @@ This is a Kotlin Multiplatform project for Android and IOS.
 
 ### Coding guidelines
 
-DO NOT commit to the main branch, this will be handled by the Gitmaster only. Instead, create development/feature branches.
+- Don't commit to the main branch. Instead, create feature branches off of dev branch.
+- Use meaningful commit and branch names.
+- Format your code before committing.
+- Follow the [code conventions](CODE_STYLE.md).
 
-Use meaningful commit and branch names.
-
-Format your code before committing.
-
-Follow the [code conventions](CODE_STYLE.md).
-
-### Set up devlopment environment
+### Set up development environment
 
 1. Install [Android Studio](https://developer.android.com/studio).
 2. Install [Kotlin Multiplatform plugin](https://plugins.jetbrains.com/plugin/14936-kotlin-multiplatform).
@@ -36,19 +33,14 @@ Follow the [code conventions](CODE_STYLE.md).
 1. Navigate to **File > Settings > Tools > Actions on Save**.
 2. Enable **Reformat code** and **Optimize imports**. 
 
-### Learning resources
+### Docs
 
-Kotlin:
-1. Docs https://kotlinlang.org/docs/.
-2. Read the "Basics" and "Concepts" section.
-
-Compose:
-1. Course: https://developer.android.com/courses/jetpack-compose/course
-2. Docs: https://developer.android.com/develop/ui/compose/documentation
-3. List of composables: https://composables.com/
-
-Ktor:
-1. Docs: https://ktor.io/docs/welcome.html
+- Kotlin: https://kotlinlang.org/docs/
+- Kotlin Multiplatform: https://www.jetbrains.com/help/kotlin-multiplatform-dev/
+- Jetpack Compose: https://developer.android.com/develop/ui/compose/documentation
+- List of Composables: https://composables.com/
+- Material 3 Components: https://m3.material.io/components
+- Ktor: https://ktor.io/docs/welcome.html
 
 ### Useful directories
 
