@@ -1,4 +1,4 @@
-package com.github.csc3380fall2024.team16.ui.pages
+package com.github.csc3380fall2024.team16.ui.pages.home
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,9 +20,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import kotlinx.serialization.Serializable
+
+@Serializable
+object Choose
 
 @Composable
-fun HomeScreen(navController: NavController) {
+fun ChoosePage(navController: NavController) {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
@@ -63,14 +67,14 @@ fun HomeScreen(navController: NavController) {
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Button(
-                            onClick = { navController.navigate("bodybuilding") },
+                            onClick = { navController.navigate(Bodybuilding) },
                             modifier = Modifier.size(125.dp)
                         ) { }
                         Text("Bodybuilding", fontSize = 18.sp, modifier = Modifier.padding(top = 8.dp))
                     }
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Button(
-                            onClick = { navController.navigate("powerlifting") },
+                            onClick = { navController.navigate(Powerlifting) },
                             modifier = Modifier.size(125.dp)
                         ) { }
                         Text("Powerlifting", fontSize = 18.sp, modifier = Modifier.padding(top = 8.dp))
@@ -83,14 +87,14 @@ fun HomeScreen(navController: NavController) {
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Button(
-                            onClick = { navController.navigate("athletics") },
+                            onClick = { navController.navigate(Athletics) },
                             modifier = Modifier.size(125.dp)
                         ) { }
                         Text("Athletics", fontSize = 18.sp, modifier = Modifier.padding(top = 8.dp))
                     }
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Button(
-                            onClick = { navController.navigate("weightloss") },
+                            onClick = { navController.navigate(WeightLoss) },
                             modifier = Modifier.size(125.dp)
                         ) { }
                         Text("Weight Loss", fontSize = 18.sp, modifier = Modifier.padding(top = 8.dp))

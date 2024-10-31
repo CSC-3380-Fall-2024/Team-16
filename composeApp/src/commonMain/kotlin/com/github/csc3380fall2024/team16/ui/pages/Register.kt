@@ -25,9 +25,13 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import kotlinx.serialization.Serializable
+
+@Serializable
+object Register
 
 @Composable
-fun RegisterScreen(navController: NavController) {
+fun RegisterPage(navController: NavController) {
     Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         Column(
             Modifier.fillMaxWidth().padding(horizontal = 20.dp),
@@ -85,7 +89,7 @@ fun RegisterScreen(navController: NavController) {
             }
             
             Button(
-                onClick = { navController.navigate("home") },
+                onClick = { navController.navigate(Home) },
                 Modifier.fillMaxWidth().padding(20.dp)
             ) {
                 Text("Register", fontSize = 20.sp, lineHeight = 5.sp)
@@ -95,7 +99,7 @@ fun RegisterScreen(navController: NavController) {
                 text = "Log In",
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.clickable {
-                    navController.navigate("login")
+                    navController.navigate(Login)
                 }
             )
         }

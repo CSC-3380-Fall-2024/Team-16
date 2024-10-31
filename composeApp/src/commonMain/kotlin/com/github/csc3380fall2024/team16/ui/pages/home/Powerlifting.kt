@@ -1,4 +1,4 @@
-package com.github.csc3380fall2024.team16.ui.pages
+package com.github.csc3380fall2024.team16.ui.pages.home
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -12,9 +12,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import kotlinx.serialization.Serializable
+
+@Serializable
+object Powerlifting
 
 @Composable
-fun BodybuildingPage(navController: NavController) {
+fun PowerliftingPage(navController: NavController) {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
@@ -22,6 +26,6 @@ fun BodybuildingPage(navController: NavController) {
         Button(onClick = { navController.popBackStack() }, modifier = Modifier.size(50.dp)) {
             Text("Back")
         }
-        Text("Welcome to the Bodybuilding page", fontSize = 24.sp, modifier = Modifier.padding(16.dp))
+        Text("Welcome to the Powerlifting page", fontSize = 24.sp, modifier = Modifier.padding(16.dp))
     }
 }
