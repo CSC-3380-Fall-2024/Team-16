@@ -31,16 +31,19 @@ This is a Kotlin Multiplatform project for Android and IOS.
 ### Enable useful settings
 
 1. Navigate to **File > Settings > Tools > Actions on Save**.
-2. Enable **Reformat code** and **Optimize imports**. 
+2. Enable **Reformat code** and **Optimize imports**.
+3. Navigate to **Version Control > Git**.
+4. Enable staging area.
 
-### Docs
+### Links
 
-- Kotlin: https://kotlinlang.org/docs/
-- Kotlin Multiplatform: https://www.jetbrains.com/help/kotlin-multiplatform-dev/
-- Jetpack Compose: https://developer.android.com/develop/ui/compose/documentation
-- List of Composables: https://composables.com/
-- Material 3 Components: https://m3.material.io/components
-- Ktor: https://ktor.io/docs/welcome.html
+- [Kotlin](https://kotlinlang.org/docs/)
+- [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/)
+- [Jetpack Compose](https://developer.android.com/develop/ui/compose/documentation)
+- [List of Composables](https://composables.com/)
+- [Material 3 Components](https://m3.material.io/components)
+- [Material Icons](https://fonts.google.com/icons?icon.set=Material+Icons&icon.style=Filled)
+- [Ktor](https://ktor.io/docs/welcome.html)
 
 ### Useful directories
 
