@@ -23,7 +23,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.github.csc3380fall2024.team16.ui.theme.AppTheme
+import kotlinx.serialization.Serializable
 import org.jetbrains.compose.ui.tooling.preview.Preview
+
+@Serializable
+object Welcome
 
 @Composable
 @Preview
@@ -64,7 +68,7 @@ fun WelcomePage(navController: NavController) {
                     )
                     
                     Button(
-                        onClick = { navController.navigate("register") },
+                        onClick = { navController.navigate(Register) },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 20.dp),

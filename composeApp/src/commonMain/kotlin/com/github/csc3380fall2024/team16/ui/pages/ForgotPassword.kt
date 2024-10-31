@@ -25,64 +25,52 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.github.csc3380fall2024.team16.ui.theme.AppTheme
+import kotlinx.serialization.Serializable
 import org.jetbrains.compose.ui.tooling.preview.Preview
+
+@Serializable
+object ForgotPassword
 
 @Composable
 @Preview
-fun Login(navController: NavController) {
+fun ForgotPasswordPage(navController: NavController) {
     AppTheme(dark = true) {
         Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-
+            
             Column(
                 Modifier.fillMaxWidth().padding(horizontal = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(40.dp, Alignment.CenterVertically),
             ) {
-                Text("Login", fontSize = 30.sp, fontWeight = FontWeight.Bold)
-                Text("Welcome back to Universal Fitness.")
+                Text("Forgot Password", fontSize = 30.sp, fontWeight = FontWeight.Bold)
                 
                 Column(
                     Modifier.padding(horizontal = 20.dp),
-                    verticalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterVertically)
+                    verticalArrangement = Arrangement.spacedBy(
+                        20.dp,
+                        Alignment.CenterVertically
+                    )
                 ) {
                     var username by remember { mutableStateOf("") }
                     TextField(
                         username,
                         { username = it },
                         Modifier.fillMaxWidth(),
-                        placeholder = { Text("Username") },
+                        placeholder = { Text("Enter Email") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                         singleLine = true
                     )
-                    
-                    var password by remember { mutableStateOf("") }
-                    TextField(
-                        password,
-                        { password = it },
-                        Modifier.fillMaxWidth(),
-                        placeholder = { Text("Password") },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                        singleLine = true
-                    )
                 }
                 
-                Button({}, Modifier.fillMaxWidth().padding(20.dp)) {
-                    Text("Login", fontSize = 20.sp, lineHeight = 5.sp)
+                Button(onClick = {}, Modifier.fillMaxWidth().padding(20.dp)) {
+                    Text("Submit", fontSize = 20.sp, lineHeight = 5.sp)
                 }
                 
                 Text(
-                    text = "Register",
+                    text = "Back to Login",
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.clickable {
-                        navController.navigate("register")
-                    }
-                )
-                
-                Text(
-                    text = "Forgot Password",
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.clickable {
-                        navController.navigate("forgotpassword")
+                        navController.navigate(Login)
                     }
                 )
             }
