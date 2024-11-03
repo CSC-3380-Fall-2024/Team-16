@@ -7,7 +7,8 @@ import io.ktor.server.plugins.requestvalidation.RequestValidationException
 import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.response.respond
 
-class ConflictException(override val message: String) : Exception(message)
+class ConflictException(message: String) : Exception(message)
+class InvalidCredentialsException : Exception("invalid credentials")
 
 fun Application.configureExceptions() {
     install(StatusPages) {
@@ -16,7 +17,11 @@ fun Application.configureExceptions() {
         }
         
         exception<ConflictException> { call, cause ->
-            call.respond(HttpStatusCode.Conflict, cause.message)
+            call.respond(HttpStatusCode.Conflict, cause.message!!)
+        }
+        
+        exception<InvalidCredentialsException> { call, cause ->
+            call.respond(HttpStatusCode.Unauthorized, cause.message!!)
         }
     }
 }

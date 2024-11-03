@@ -9,7 +9,6 @@ import io.ktor.server.application.Application
 import io.ktor.server.application.call
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
-import io.ktor.server.response.respondText
 import io.ktor.server.routing.post
 import io.ktor.server.routing.routing
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
@@ -53,17 +52,14 @@ fun Application.configureRouting() {
             }
             call.response.status(HttpStatusCode.Created)
         }
-        post("login") {
+        post("/login") {
             val body = call.receive<LoginDto>()
             val row = transaction {
                 Users.selectAll()
                     .where { (Users.username eq body.usernameOrEmail) or (Users.email eq body.usernameOrEmail) }
                     .limit(1)
-                    .firstOrNull()
-            } ?: return@post call.respondText(
-                "Could not find user with those credentials",
-                status = HttpStatusCode.Unauthorized
-            )
+                    .firstOrNull() ?: throw InvalidCredentialsException()
+            }
             
             val username = row[Users.username]
             val email = row[Users.email]
@@ -71,10 +67,7 @@ fun Application.configureRouting() {
             val passwordHash = row[Users.passwordHash]
             
             if (!createHash(body.password, passwordSalt).contentEquals(passwordHash)) {
-                return@post call.respondText(
-                    "Could not find user with those credentials",
-                    status = HttpStatusCode.Unauthorized
-                )
+                throw InvalidCredentialsException()
             }
             
             val token = JWT.create()
