@@ -10,7 +10,6 @@ import io.ktor.server.response.respond
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.post
 import io.ktor.server.routing.routing
-import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.selectAll
@@ -24,7 +23,7 @@ import javax.crypto.spec.PBEKeySpec
 fun Application.configureRouting() {
     routing {
         post("/register") {
-            val body = call.receive<RegisterBody>()
+            val body = call.receive<RegisterDto>()
             val salt = createRandomSalt()
             val hash = createHash(body.password, salt)
             transaction {
@@ -38,7 +37,7 @@ fun Application.configureRouting() {
             call.response.status(HttpStatusCode.Created)
         }
         post("login") {
-            val body = call.receive<LoginBody>()
+            val body = call.receive<LoginDto>()
             val row = transaction {
                 Users.selectAll()
                     .where { (Users.username eq body.usernameOrEmail) or (Users.email eq body.usernameOrEmail) }
@@ -74,12 +73,6 @@ fun Application.configureRouting() {
         }
     }
 }
-
-@Serializable
-data class RegisterBody(val username: String, val email: String, val password: String)
-
-@Serializable
-data class LoginBody(val usernameOrEmail: String, val password: String)
 
 // returns 16 byte salt
 fun createRandomSalt(): ByteArray {
