@@ -1,7 +1,9 @@
-package com.github.csc3380fall2024.team16
+package com.github.csc3380fall2024.team16.plugins
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import com.github.csc3380fall2024.team16.LoginDto
+import com.github.csc3380fall2024.team16.RegisterDto
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.application.call

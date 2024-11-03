@@ -1,4 +1,4 @@
-package com.github.csc3380fall2024.team16
+package com.github.csc3380fall2024.team16.plugins
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
