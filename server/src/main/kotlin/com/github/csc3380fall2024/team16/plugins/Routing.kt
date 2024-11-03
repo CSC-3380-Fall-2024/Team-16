@@ -1,16 +1,19 @@
-package com.github.csc3380fall2024.team16
+package com.github.csc3380fall2024.team16.plugins
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import com.github.csc3380fall2024.team16.LoginDto
+import com.github.csc3380fall2024.team16.RegisterDto
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.application.call
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
-import io.ktor.server.response.respondText
 import io.ktor.server.routing.post
 import io.ktor.server.routing.routing
-import kotlinx.serialization.Serializable
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.exists
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.selectAll
@@ -24,10 +27,22 @@ import javax.crypto.spec.PBEKeySpec
 fun Application.configureRouting() {
     routing {
         post("/register") {
-            val body = call.receive<RegisterBody>()
+            val body = call.receive<RegisterDto>()
             val salt = createRandomSalt()
             val hash = createHash(body.password, salt)
             transaction {
+                val usernameExists = run {
+                    val existsOp = exists(Users.selectAll().where(Users.username eq body.username))
+                    Table.Dual.select(existsOp).first()[existsOp]
+                }
+                if (usernameExists) throw ConflictException("user with that username already exists")
+                
+                val emailExists = run {
+                    val existsOp = exists(Users.selectAll().where(Users.email eq body.email))
+                    Table.Dual.select(existsOp).first()[existsOp]
+                }
+                if (emailExists) throw ConflictException("user with that email already exists")
+                
                 Users.insert {
                     it[username] = body.username
                     it[email] = body.email
@@ -37,17 +52,14 @@ fun Application.configureRouting() {
             }
             call.response.status(HttpStatusCode.Created)
         }
-        post("login") {
-            val body = call.receive<LoginBody>()
+        post("/login") {
+            val body = call.receive<LoginDto>()
             val row = transaction {
                 Users.selectAll()
                     .where { (Users.username eq body.usernameOrEmail) or (Users.email eq body.usernameOrEmail) }
                     .limit(1)
-                    .firstOrNull()
-            } ?: return@post call.respondText(
-                "Could not find user with those credentials",
-                status = HttpStatusCode.Unauthorized
-            )
+                    .firstOrNull() ?: throw InvalidCredentialsException()
+            }
             
             val username = row[Users.username]
             val email = row[Users.email]
@@ -55,10 +67,7 @@ fun Application.configureRouting() {
             val passwordHash = row[Users.passwordHash]
             
             if (!createHash(body.password, passwordSalt).contentEquals(passwordHash)) {
-                return@post call.respondText(
-                    "Could not find user with those credentials",
-                    status = HttpStatusCode.Unauthorized
-                )
+                throw InvalidCredentialsException()
             }
             
             val token = JWT.create()
@@ -74,12 +83,6 @@ fun Application.configureRouting() {
         }
     }
 }
-
-@Serializable
-data class RegisterBody(val username: String, val email: String, val password: String)
-
-@Serializable
-data class LoginBody(val usernameOrEmail: String, val password: String)
 
 // returns 16 byte salt
 fun createRandomSalt(): ByteArray {

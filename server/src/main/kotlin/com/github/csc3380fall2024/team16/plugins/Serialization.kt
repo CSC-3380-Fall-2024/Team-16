@@ -1,4 +1,4 @@
-package com.github.csc3380fall2024.team16
+package com.github.csc3380fall2024.team16.plugins
 
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application

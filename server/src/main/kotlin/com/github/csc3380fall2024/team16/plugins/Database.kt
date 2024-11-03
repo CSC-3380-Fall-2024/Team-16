@@ -1,4 +1,4 @@
-package com.github.csc3380fall2024.team16
+package com.github.csc3380fall2024.team16.plugins
 
 import io.ktor.server.application.Application
 import org.jetbrains.exposed.dao.id.UUIDTable
@@ -24,8 +24,8 @@ fun Application.configureDatabase() {
 }
 
 object Users : UUIDTable("users") {
-    val username = varchar("username", 24)
-    val email = varchar("email", 255)
+    val username = varchar("username", 24).uniqueIndex()
+    val email = varchar("email", 255).uniqueIndex()
     val passwordSalt = binary("password_salt", 16)
     val passwordHash = binary("password_hash", 128)
 }
