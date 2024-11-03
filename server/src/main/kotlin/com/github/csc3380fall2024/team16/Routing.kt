@@ -10,6 +10,9 @@ import io.ktor.server.response.respond
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.post
 import io.ktor.server.routing.routing
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.exists
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.selectAll
@@ -27,6 +30,18 @@ fun Application.configureRouting() {
             val salt = createRandomSalt()
             val hash = createHash(body.password, salt)
             transaction {
+                val usernameExists = run {
+                    val existsOp = exists(Users.selectAll().where(Users.username eq body.username))
+                    Table.Dual.select(existsOp).first()[existsOp]
+                }
+                if (usernameExists) throw ConflictException("user with that username already exists")
+                
+                val emailExists = run {
+                    val existsOp = exists(Users.selectAll().where(Users.email eq body.email))
+                    Table.Dual.select(existsOp).first()[existsOp]
+                }
+                if (emailExists) throw ConflictException("user with that email already exists")
+                
                 Users.insert {
                     it[username] = body.username
                     it[email] = body.email
