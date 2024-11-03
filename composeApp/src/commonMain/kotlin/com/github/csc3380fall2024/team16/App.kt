@@ -32,6 +32,8 @@ import com.github.csc3380fall2024.team16.ui.pages.Social
 import com.github.csc3380fall2024.team16.ui.pages.SocialPage
 import com.github.csc3380fall2024.team16.ui.pages.Tracker
 import com.github.csc3380fall2024.team16.ui.pages.TrackerPage
+import com.github.csc3380fall2024.team16.ui.pages.FoodSearch
+import com.github.csc3380fall2024.team16.ui.pages.FoodSearchPage
 import com.github.csc3380fall2024.team16.ui.pages.Welcome
 import com.github.csc3380fall2024.team16.ui.pages.WelcomePage
 import com.github.csc3380fall2024.team16.ui.pages.home.Athletics
@@ -80,6 +82,7 @@ fun App() {
                         composable<WeightLoss> { WeightLossPage(navController) }
                     }
                     composable<Tracker> { TrackerPage(navController) }
+                    composable<FoodSearch> { FoodSearchPage(navController) }
                     composable<News> { NewsPage(navController) }
                     composable<Social> { SocialPage(navController) }
                 }
