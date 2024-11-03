@@ -11,7 +11,6 @@ import io.ktor.server.response.respondText
 import io.ktor.server.routing.post
 import io.ktor.server.routing.routing
 import kotlinx.serialization.Serializable
-import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.selectAll
@@ -42,21 +41,25 @@ fun Application.configureRouting() {
             val body = call.receive<LoginBody>()
             val row = transaction {
                 Users.selectAll()
-                    .where { ((Users.username eq body.usernameOrEmail) or (Users.email eq body.usernameOrEmail)) and (Users.passwordHash eq body.password) }
+                    .where { (Users.username eq body.usernameOrEmail) or (Users.email eq body.usernameOrEmail) }
                     .limit(1)
                     .firstOrNull()
-            }
-            
-            if (row == null) {
-                return@post call.respondText(
-                    "Could not find user with those credentials",
-                    status = HttpStatusCode.BadRequest
-                )
-            }
+            } ?: return@post call.respondText(
+                "Could not find user with those credentials",
+                status = HttpStatusCode.Unauthorized
+            )
             
             val username = row[Users.username]
             val email = row[Users.email]
+            val passwordSalt = row[Users.passwordSalt]
             val passwordHash = row[Users.passwordHash]
+            
+            if (!createHash(body.password, passwordSalt).contentEquals(passwordHash)) {
+                return@post call.respondText(
+                    "Could not find user with those credentials",
+                    status = HttpStatusCode.Unauthorized
+                )
+            }
             
             val token = JWT.create()
                 .withAudience("temp")
