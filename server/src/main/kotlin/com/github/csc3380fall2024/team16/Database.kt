@@ -26,7 +26,8 @@ fun Application.configureDatabase() {
 object Users : UUIDTable("users") {
     val username = varchar("username", 24)
     val email = varchar("email", 255)
-    val passwordHash = varchar("password_hash", 255)
+    val passwordSalt = binary("password_salt", 16)
+    val passwordHash = binary("password_hash", 128)
 }
 
 object Friends : Table("friends") {

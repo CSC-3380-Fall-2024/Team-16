@@ -16,17 +16,24 @@ import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
+import java.security.SecureRandom
 import java.util.Date
+import javax.crypto.SecretKeyFactory
+import javax.crypto.spec.PBEKeySpec
 
+@OptIn(ExperimentalStdlibApi::class)
 fun Application.configureRouting() {
     routing {
         post("/register") {
             val body = call.receive<RegisterBody>()
+            val salt = createRandomSalt()
+            val hash = createHash(body.password, salt)
             transaction {
                 Users.insert {
                     it[username] = body.username
                     it[email] = body.email
-                    it[passwordHash] = body.password
+                    it[passwordSalt] = salt
+                    it[passwordHash] = hash
                 }
             }
             call.response.status(HttpStatusCode.Created)
@@ -56,7 +63,7 @@ fun Application.configureRouting() {
                 .withIssuer("temp")
                 .withClaim("username", username)
                 .withClaim("email", email)
-                .withClaim("passwordHash", passwordHash)
+                .withClaim("passwordHash", passwordHash.toHexString())
                 .withExpiresAt(Date(System.currentTimeMillis() + 60000))
                 .sign(Algorithm.HMAC256("temp"))
             
@@ -70,3 +77,18 @@ data class RegisterBody(val username: String, val email: String, val password: S
 
 @Serializable
 data class LoginBody(val usernameOrEmail: String, val password: String)
+
+// returns 16 byte salt
+fun createRandomSalt(): ByteArray {
+    val random = SecureRandom()
+    val salt = ByteArray(16)
+    random.nextBytes(salt)
+    return salt
+}
+
+// returns 128 byte hash
+fun createHash(password: String, salt: ByteArray): ByteArray {
+    val spec = PBEKeySpec(password.toCharArray(), salt, 65536, 128)
+    val factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1")
+    return factory.generateSecret(spec).encoded
+}
