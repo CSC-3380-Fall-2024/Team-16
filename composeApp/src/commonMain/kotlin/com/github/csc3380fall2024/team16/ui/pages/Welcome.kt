@@ -2,6 +2,7 @@ package com.github.csc3380fall2024.team16.ui.pages
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -84,6 +85,13 @@ fun WelcomePage(navController: NavController) {
                             lineHeight = 5.sp
                         )
                     }
+                    Text(
+                        text = "Log In",
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.clickable {
+                            navController.navigate(Login)
+                        }
+                    )
                 }
             }
         }
