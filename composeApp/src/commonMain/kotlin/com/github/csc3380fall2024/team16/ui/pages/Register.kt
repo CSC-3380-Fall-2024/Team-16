@@ -213,14 +213,6 @@ fun RegisterPage(navController: NavController) {
             ) {
                 Text("Register", fontSize = 20.sp, lineHeight = 5.sp)
             }
-            
-            Text(
-                text = "Log In",
-                style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.clickable {
-                    navController.navigate(Login)
-                }
-            )
         }
     }
 }
