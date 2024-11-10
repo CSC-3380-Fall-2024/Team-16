@@ -19,6 +19,8 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.github.csc3380fall2024.team16.ui.components.BottomBar
 import com.github.csc3380fall2024.team16.ui.components.Tab
+import com.github.csc3380fall2024.team16.ui.pages.Add
+import com.github.csc3380fall2024.team16.ui.pages.AddFood
 import com.github.csc3380fall2024.team16.ui.pages.ForgotPassword
 import com.github.csc3380fall2024.team16.ui.pages.ForgotPasswordPage
 import com.github.csc3380fall2024.team16.ui.pages.Home
@@ -82,6 +84,7 @@ fun App() {
                     composable<Tracker> { TrackerPage(navController, currentCalories = 1200f, calorieGoal = 2000f) }
                     composable<News> { NewsPage(navController) }
                     composable<Social> { SocialPage(navController) }
+                    composable<Add> { AddFood(navController) }
                 }
             }
         }
