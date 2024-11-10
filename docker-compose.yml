@@ -20,6 +20,15 @@ services:
       MINIO_ROOT_PASSWORD: universalfitness
     volumes:
       - s3data:/data
+  pgweb:
+    image: sosedoff/pgweb:0.16.2
+    ports:
+      - "127.0.0.1:8081:8081"
+    environment:
+      PGWEB_DATABASE_URL: postgres://universalfitness:universalfitness@postgres:5432/universalfitness?sslmode=disable
+      PGWEB_LOCK_SESSION: true
+    depends_on:
+      - postgres
 
 volumes:
   pgdata:
