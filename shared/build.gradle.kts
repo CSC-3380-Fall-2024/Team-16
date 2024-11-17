@@ -4,6 +4,8 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.rpc)
+    alias(libs.plugins.serialization)
 }
 
 kotlin {
@@ -23,6 +25,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(libs.kotlinx.rpc.core)
+            implementation(libs.kotlinx.rpc.krpc.serialization.json)
         }
     }
 }

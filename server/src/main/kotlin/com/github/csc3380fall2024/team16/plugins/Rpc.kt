@@ -1,10 +1,9 @@
 package com.github.csc3380fall2024.team16.plugins
 
-import com.auth0.jwt.JWT
-import com.auth0.jwt.algorithms.Algorithm
 import com.github.csc3380fall2024.team16.RpcService
 import com.github.csc3380fall2024.team16.createHash
 import com.github.csc3380fall2024.team16.createRandomSalt
+import com.github.csc3380fall2024.team16.createToken
 import com.github.csc3380fall2024.team16.emailRegex
 import com.github.csc3380fall2024.team16.usernameRegex
 import io.ktor.server.application.Application
@@ -16,11 +15,10 @@ import kotlinx.rpc.krpc.serialization.json.json
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.exists
-import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.util.Date
 import kotlin.coroutines.CoroutineContext
 
 fun Application.configureRpc() {
@@ -40,7 +38,7 @@ fun Application.configureRpc() {
 }
 
 class RpcServiceImpl(override val coroutineContext: CoroutineContext) : RpcService {
-    override suspend fun register(username: String, email: String, password: String) {
+    override suspend fun register(username: String, email: String, password: String): String {
         when {
             username.length !in 3..24        -> throw Exception("username must be between 3 and 24 characters")
             !username.matches(usernameRegex) -> throw Exception("username must only contain letters, numbers, periods, and underscores")
@@ -50,7 +48,7 @@ class RpcServiceImpl(override val coroutineContext: CoroutineContext) : RpcServi
         
         val salt = createRandomSalt()
         val hash = createHash(password, salt)
-        transaction {
+        val id = transaction {
             val usernameExists = run {
                 val existsOp = exists(Users.selectAll().where(Users.username eq username))
                 Table.Dual.select(existsOp).first()[existsOp]
@@ -63,16 +61,17 @@ class RpcServiceImpl(override val coroutineContext: CoroutineContext) : RpcServi
             }
             if (emailExists) throw Exception("user with that email already exists")
             
-            Users.insert {
+            Users.insertAndGetId {
                 it[Users.username] = username
                 it[Users.email] = email
                 it[passwordSalt] = salt
                 it[passwordHash] = hash
             }
         }
+        
+        return createToken(id.value, hash)
     }
     
-    @OptIn(ExperimentalStdlibApi::class)
     override suspend fun login(usernameOrEmail: String, password: String): String {
         when {
             usernameOrEmail.isEmpty() -> throw Exception("username or email must not be empty")
@@ -90,12 +89,6 @@ class RpcServiceImpl(override val coroutineContext: CoroutineContext) : RpcServi
             throw Exception("invalid credentials")
         }
         
-        return JWT.create()
-            .withAudience("temp")
-            .withIssuer("temp")
-            .withClaim("user_id", row[Users.id].toString())
-            .withClaim("password_hash", row[Users.passwordHash].toHexString())
-            .withExpiresAt(Date(System.currentTimeMillis() + 60000))
-            .sign(Algorithm.HMAC256("temp"))
+        return createToken(row[Users.id].value, row[Users.passwordHash])
     }
 }

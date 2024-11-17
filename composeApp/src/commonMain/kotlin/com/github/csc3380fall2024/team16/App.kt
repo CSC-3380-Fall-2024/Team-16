@@ -12,6 +12,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -48,11 +53,13 @@ import com.github.csc3380fall2024.team16.ui.pages.home.WeightLoss
 import com.github.csc3380fall2024.team16.ui.pages.home.WeightLossPage
 import com.github.csc3380fall2024.team16.ui.theme.AppTheme
 
-
 @Composable
 fun App() {
-    val navController = rememberNavController()
+    var serviceOrNull: RpcService? by remember { mutableStateOf(null) }
+    LaunchedEffect(Unit) { serviceOrNull = createRpcClient() }
+    val client = serviceOrNull ?: return
     
+    val navController = rememberNavController()
     val tabs = listOf(
         Tab("Home", Icons.Filled.Home, Home),
         Tab("Tracker", Icons.Filled.InsertChart, Tracker),
@@ -70,8 +77,8 @@ fun App() {
                     exitTransition = { ExitTransition.None },
                 ) {
                     composable<Welcome> { WelcomePage(navController) }
-                    composable<Register> { RegisterPage(navController) }
-                    composable<Login> { LoginPage(navController) }
+                    composable<Register> { RegisterPage(navController, client) }
+                    composable<Login> { LoginPage(navController, client) }
                     composable<ForgotPassword> { ForgotPasswordPage(navController) }
                     
                     navigation<Home>(Choose) {
