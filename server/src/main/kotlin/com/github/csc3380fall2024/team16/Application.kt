@@ -1,11 +1,7 @@
 package com.github.csc3380fall2024.team16
 
 import com.github.csc3380fall2024.team16.plugins.configureDatabase
-import com.github.csc3380fall2024.team16.plugins.configureExceptions
-import com.github.csc3380fall2024.team16.plugins.configureRouting
-import com.github.csc3380fall2024.team16.plugins.configureSecurity
-import com.github.csc3380fall2024.team16.plugins.configureSerialization
-import com.github.csc3380fall2024.team16.plugins.configureValidation
+import com.github.csc3380fall2024.team16.plugins.configureRpc
 import io.ktor.server.application.Application
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
@@ -17,9 +13,5 @@ fun main() {
 
 fun Application.module() {
     configureDatabase()
-    configureSecurity()
-    configureSerialization()
-    configureValidation()
-    configureExceptions()
-    configureRouting()
+    configureRpc()
 }
