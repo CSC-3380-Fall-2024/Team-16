@@ -1,40 +1,48 @@
 package com.github.csc3380fall2024.team16.ui.pages
 
-import androidx.compose.foundation.layout.Column
-import kotlinx.serialization.Serializable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.Button
+import kotlinx.coroutines.launch
+import kotlinx.serialization.Serializable
 
 @Serializable
 object Tracker
 
 @Composable
 fun TrackerPage(navController: NavController, currentCalories: Float, calorieGoal: Float) {
+    val scrollState = rememberScrollState()
+    val coroutineScope = rememberCoroutineScope()
+    
     Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         Column(
             Modifier
-                .fillMaxWidth(),
+                .fillMaxSize()
+                .verticalScroll(scrollState), // Enable vertical scrolling
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
+            // Header
             Box(
                 Modifier
                     .fillMaxWidth()
@@ -48,10 +56,13 @@ fun TrackerPage(navController: NavController, currentCalories: Float, calorieGoa
                     modifier = Modifier.align(Alignment.Center)
                 )
             }
+            
+            // Calorie Progress Section
             CalorieProgress(currentCalories = currentCalories, calorieGoal = calorieGoal)
             
+            // Add Food Button
             Button(
-                onClick = { /*navigate to food search page */ },
+                onClick = { /* Navigate to food search page */ },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 20.dp)
@@ -59,33 +70,40 @@ fun TrackerPage(navController: NavController, currentCalories: Float, calorieGoa
                 Text(text = "Add Food")
             }
             
+            // Food List Placeholder Section
             Column(
                 Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 20.dp, vertical = 20.dp),
                 verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
-                
-                Row(
-                    Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                
-                }
                 Box(
                     Modifier
                         .fillMaxWidth()
-                        .fillMaxHeight()
+                        .fillMaxHeight(0.5f) // Simulating a large content area
                         .background(color = MaterialTheme.colorScheme.surfaceBright),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "food goes here",
+                        text = "Food list goes here",
                         style = MaterialTheme.typography.titleLarge
                     )
                 }
+            }
+            
+            // Back to Top Button
+            Button(
+                onClick = {
+                    // Scroll to the top when button is clicked
+                    coroutineScope.launch {
+                        scrollState.animateScrollTo(0)
+                    }
+                },
+                modifier = Modifier
+                    .padding(20.dp)
+                    .align(Alignment.CenterHorizontally)
+            ) {
+                Text(text = "Back to Top")
             }
         }
     }
@@ -109,7 +127,7 @@ fun CalorieProgress(currentCalories: Float, calorieGoal: Float) {
             color = MaterialTheme.colorScheme.onBackground
         )
         LinearProgressIndicator(
-            progress = { progress },
+            progress = { progress }, // Wrap progress in a lambda
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 4.dp),

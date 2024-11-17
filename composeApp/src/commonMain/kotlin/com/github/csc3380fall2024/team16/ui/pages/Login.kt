@@ -38,39 +38,53 @@ fun LoginPage(navController: NavController) {
         Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
             
             Column(
-                Modifier.fillMaxWidth().padding(horizontal = 20.dp),
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(40.dp, Alignment.CenterVertically),
             ) {
                 Text("Login", fontSize = 30.sp, fontWeight = FontWeight.Bold)
                 Text("Welcome back to Universal Fitness.")
                 
+                // Declare state variables for username and password
+                var username by remember { mutableStateOf("") }
+                var password by remember { mutableStateOf("") }
+                
                 Column(
                     Modifier.padding(horizontal = 20.dp),
                     verticalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterVertically)
                 ) {
-                    var username by remember { mutableStateOf("") }
                     TextField(
-                        username,
-                        { username = it },
-                        Modifier.fillMaxWidth(),
+                        value = username,
+                        onValueChange = { username = it },
+                        modifier = Modifier.fillMaxWidth(),
                         placeholder = { Text("Username") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                         singleLine = true
                     )
                     
-                    var password by remember { mutableStateOf("") }
                     TextField(
-                        password,
-                        { password = it },
-                        Modifier.fillMaxWidth(),
+                        value = password,
+                        onValueChange = { password = it },
+                        modifier = Modifier.fillMaxWidth(),
                         placeholder = { Text("Password") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                         singleLine = true
                     )
                 }
                 
-                Button({}, Modifier.fillMaxWidth().padding(20.dp)) {
+                Button(
+                    onClick = {
+                        if (username == "p" && password == "p") {
+                            // admin login to Navigate to home page (development purpose)
+                            navController.navigate(Home)
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp)
+                ) {
                     Text("Login", fontSize = 20.sp, lineHeight = 5.sp)
                 }
                 
@@ -78,7 +92,7 @@ fun LoginPage(navController: NavController) {
                     text = "Register",
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.clickable {
-                        navController.navigate(Register)
+                        navController.navigate("register")
                     }
                 )
                 
@@ -86,11 +100,10 @@ fun LoginPage(navController: NavController) {
                     text = "Forgot Password",
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.clickable {
-                        navController.navigate(ForgotPassword)
+                        navController.navigate("forgot_password")
                     }
                 )
             }
         }
     }
 }
-

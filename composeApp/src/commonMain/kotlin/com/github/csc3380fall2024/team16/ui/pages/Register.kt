@@ -21,8 +21,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -45,22 +43,18 @@ fun RegisterPage(navController: NavController) {
     // State variables for showing password
     var isPasswordVisible by remember { mutableStateOf(false) }
     
-    // State variables to track empty fields
-    var isUsernameEmpty by remember { mutableStateOf(false) }
-    var isEmailEmpty by remember { mutableStateOf(false) }
-    var isPasswordEmpty by remember { mutableStateOf(false) }
-    var isConfirmPasswordEmpty by remember { mutableStateOf(false) }
-    
     // Regex pattern for email validation
     val emailPattern = Regex("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}")
     
     Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         Column(
-            Modifier.fillMaxWidth().padding(horizontal = 20.dp),
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(40.dp, Alignment.CenterVertically),
         ) {
-            Text("Welcome Onboard!", fontSize = 30.sp, fontWeight = FontWeight.Bold)
+            Text("Welcome Onboard!", fontSize = 30.sp)
             Text("Take the first step with Universal Fitness.")
             
             Column(
@@ -70,53 +64,28 @@ fun RegisterPage(navController: NavController) {
                 // Username TextField
                 TextField(
                     value = username,
-                    onValueChange = {
-                        username = it
-                        isUsernameEmpty = false // Reset error when user starts typing
-                    },
-                    Modifier.fillMaxWidth(),
+                    onValueChange = { username = it },
+                    modifier = Modifier.fillMaxWidth(),
                     placeholder = { Text("Username") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                     singleLine = true
                 )
-                if (isUsernameEmpty) {
-                    Text(
-                        "*Required",
-                        color = Color.Red,
-                        fontSize = 12.sp,
-                        modifier = Modifier.padding(start = 4.dp)
-                    )
-                }
                 
                 // Email TextField
                 TextField(
                     value = email,
-                    onValueChange = {
-                        email = it
-                        isEmailEmpty = false // Reset error when user starts typing
-                    },
-                    Modifier.fillMaxWidth(),
+                    onValueChange = { email = it },
+                    modifier = Modifier.fillMaxWidth(),
                     placeholder = { Text("Email") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                     singleLine = true
                 )
-                if (isEmailEmpty) {
-                    Text(
-                        "*Required",
-                        color = Color.Red,
-                        fontSize = 12.sp,
-                        modifier = Modifier.padding(start = 4.dp)
-                    )
-                }
                 
                 // Password TextField
                 TextField(
                     value = password,
-                    onValueChange = {
-                        password = it
-                        isPasswordEmpty = false // Reset error when user starts typing
-                    },
-                    Modifier.fillMaxWidth(),
+                    onValueChange = { password = it },
+                    modifier = Modifier.fillMaxWidth(),
                     placeholder = { Text("Password") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     singleLine = true,
@@ -125,23 +94,12 @@ fun RegisterPage(navController: NavController) {
                     else
                         PasswordVisualTransformation()
                 )
-                if (isPasswordEmpty) {
-                    Text(
-                        "*Required",
-                        color = Color.Red,
-                        fontSize = 12.sp,
-                        modifier = Modifier.padding(start = 4.dp)
-                    )
-                }
                 
                 // Confirm Password TextField
                 TextField(
                     value = confirmPassword,
-                    onValueChange = {
-                        confirmPassword = it
-                        isConfirmPasswordEmpty = false // Reset error when user starts typing
-                    },
-                    Modifier.fillMaxWidth(),
+                    onValueChange = { confirmPassword = it },
+                    modifier = Modifier.fillMaxWidth(),
                     placeholder = { Text("Confirm Password") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     singleLine = true,
@@ -150,24 +108,6 @@ fun RegisterPage(navController: NavController) {
                     else
                         PasswordVisualTransformation()
                 )
-                if (isConfirmPasswordEmpty) {
-                    Text(
-                        "*Required",
-                        color = Color.Red,
-                        fontSize = 12.sp,
-                        modifier = Modifier.padding(start = 4.dp)
-                    )
-                }
-                
-                // Add error message display here
-                if (errorMessage.isNotEmpty()) {
-                    Text(
-                        text = errorMessage,
-                        color = MaterialTheme.colorScheme.error,
-                        fontSize = 14.sp,
-                        modifier = Modifier.padding(top = 8.dp)
-                    )
-                }
                 
                 // Add a Row for the checkbox
                 Row(
@@ -185,34 +125,51 @@ fun RegisterPage(navController: NavController) {
                 }
             }
             
+            if (errorMessage.isNotEmpty()) {
+                Text(
+                    text = errorMessage,
+                    color = MaterialTheme.colorScheme.error,
+                    fontSize = 14.sp,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
+            }
+            
             Button(
                 onClick = {
-                    // Reset empty field indicators
-                    isUsernameEmpty = username.isEmpty()
-                    isEmailEmpty = email.isEmpty()
-                    isPasswordEmpty = password.isEmpty()
-                    isConfirmPasswordEmpty = confirmPassword.isEmpty()
-                    
-                    // Check if any field is empty
-                    if (isUsernameEmpty || isEmailEmpty || isPasswordEmpty || isConfirmPasswordEmpty) {
-                        errorMessage = "Please fill in all required fields."
-                    }
-                    // Check for valid email format
-                    else if (!emailPattern.matches(email)) {
-                        errorMessage = "Please enter a valid email address."
-                    }
-                    // Check for matching passwords
-                    else if (password != confirmPassword) {
-                        errorMessage = "Passwords do not match."
-                    } else {
-                        errorMessage = ""  // Clear error message if all validations pass
-                        navController.navigate(Home)
+                    errorMessage = when {
+                        username.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() -> {
+                            "Please fill in all required fields."
+                        }
+                        !emailPattern.matches(email)                                                             -> {
+                            "Please enter a valid email address."
+                        }
+                        password != confirmPassword                                                              -> {
+                            "Passwords do not match."
+                        }
+                        !isStrongPassword(password)                                                              -> {
+                            "Password is too weak. Must be at least 1 uppercase letter and 8 characters long."
+                        }
+                        else                                                                                     -> {
+                            navController.navigate(Home)
+                            "" // Clear error message if all validations pass
+                        }
                     }
                 },
-                Modifier.fillMaxWidth().padding(20.dp)
+                Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp)
             ) {
                 Text("Register", fontSize = 20.sp, lineHeight = 5.sp)
             }
         }
     }
+}
+
+// Helper function to check password strength
+private fun isStrongPassword(password: String): Boolean {
+    val minLength = 8
+    val hasUppercase = password.any { it.isUpperCase() }
+    val hasLowercase = password.any { it.isLowerCase() }
+    
+    return password.length >= minLength && hasUppercase && hasLowercase
 }
