@@ -5,6 +5,6 @@ import kotlinx.rpc.annotations.Rpc
 
 @Rpc
 interface RpcService : RemoteService {
-    suspend fun register(username: String, email: String, password: String)
+    suspend fun register(username: String, email: String, password: String): String
     suspend fun login(usernameOrEmail: String, password: String): String
 }

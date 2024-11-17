@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,7 +25,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.github.csc3380fall2024.team16.RpcService
 import com.github.csc3380fall2024.team16.ui.theme.AppTheme
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -33,7 +36,12 @@ object Login
 
 @Composable
 @Preview
-fun LoginPage(navController: NavController) {
+fun LoginPage(navController: NavController, client: RpcService) {
+    var username by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    
+    val scope = rememberCoroutineScope()
+    
     AppTheme(dark = true) {
         Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
             
@@ -49,7 +57,6 @@ fun LoginPage(navController: NavController) {
                     Modifier.padding(horizontal = 20.dp),
                     verticalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterVertically)
                 ) {
-                    var username by remember { mutableStateOf("") }
                     TextField(
                         username,
                         { username = it },
@@ -59,7 +66,6 @@ fun LoginPage(navController: NavController) {
                         singleLine = true
                     )
                     
-                    var password by remember { mutableStateOf("") }
                     TextField(
                         password,
                         { password = it },
@@ -70,7 +76,16 @@ fun LoginPage(navController: NavController) {
                     )
                 }
                 
-                Button({}, Modifier.fillMaxWidth().padding(20.dp)) {
+                Button({
+                    scope.launch {
+                        try {
+                            client.login(username, password)
+                            navController.navigate(Home)
+                        } catch (e: Exception) {
+                            println(e) // TODO display text
+                        }
+                    }
+                }, Modifier.fillMaxWidth().padding(20.dp)) {
                     Text("Login", fontSize = 20.sp, lineHeight = 5.sp)
                 }
                 
