@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.AccessibilityNew
 import androidx.compose.material.icons.filled.LocalDining
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.SportsHandball
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -63,12 +64,20 @@ fun ChoosePage(navController: NavController) {
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    "Choose your Program!",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(bottom = 16.dp)
-                )
+                Button(
+                    onClick = { navController.navigate(WorkoutGenerator) },
+                    modifier = Modifier
+                        .fillMaxWidth(0.8f)  // Adjust width to 80% of parent container
+                        .height(50.dp)  // Slim height
+                        .padding(bottom = 16.dp),
+                ) {
+                    Text(
+                        text = "Workout Generator",
+                        fontSize = 18.sp,
+                        color = MaterialTheme.colorScheme.onPrimary,  // Make text color contrast
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                }
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween

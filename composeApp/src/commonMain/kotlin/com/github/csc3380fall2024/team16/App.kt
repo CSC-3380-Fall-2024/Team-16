@@ -51,6 +51,8 @@ import com.github.csc3380fall2024.team16.ui.pages.home.Powerlifting
 import com.github.csc3380fall2024.team16.ui.pages.home.PowerliftingPage
 import com.github.csc3380fall2024.team16.ui.pages.home.WeightLoss
 import com.github.csc3380fall2024.team16.ui.pages.home.WeightLossPage
+import com.github.csc3380fall2024.team16.ui.pages.home.WorkoutGenerator
+import com.github.csc3380fall2024.team16.ui.pages.home.WorkoutGeneratorPage
 import com.github.csc3380fall2024.team16.ui.theme.AppTheme
 
 @Composable
@@ -83,6 +85,7 @@ fun App() {
                     
                     navigation<Home>(Choose) {
                         composable<Choose> { ChoosePage(navController) }
+                        composable<WorkoutGenerator> { WorkoutGeneratorPage(navController) }
                         composable<Bodybuilding> { BodybuildingPage(navController) }
                         composable<Powerlifting> { PowerliftingPage(navController) }
                         composable<Athletics> { AthleticsPage(navController) }
