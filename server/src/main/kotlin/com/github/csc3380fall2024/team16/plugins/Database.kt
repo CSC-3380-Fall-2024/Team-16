@@ -12,7 +12,7 @@ import org.jetbrains.exposed.sql.kotlin.datetime.timestampWithTimeZone
 import org.jetbrains.exposed.sql.transactions.transaction
 
 fun Application.configureDatabase() {
-    val url = "jdbc:postgresql://localhost:5432/universalfitness"
+    val url = "jdbc:postgresql://localhost:26543/universalfitness"
     val user = "universalfitness"
     val password = "universalfitness"
     

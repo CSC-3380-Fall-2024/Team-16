@@ -22,11 +22,13 @@ This is a Kotlin Multiplatform project for Android and IOS.
 
 ### Set up development environment
 
-1. Install [Android Studio](https://developer.android.com/studio).
-2. Install [Kotlin Multiplatform plugin](https://plugins.jetbrains.com/plugin/14936-kotlin-multiplatform).
-3. Install a [JDK](https://adoptium.net/temurin/releases/?package=jdk) if you don't already have one.
-4. Clone this repo.
-5. Open it in Android Studio.
+1. Install [Docker](https://www.docker.com/).
+2. Install a [JDK](https://adoptium.net/temurin/releases/?package=jdk) if you don't already have one.
+3. Install [Android Studio](https://developer.android.com/studio).
+4. Install [Kotlin Multiplatform plugin](https://plugins.jetbrains.com/plugin/14936-kotlin-multiplatform).
+5. Install [Docker plugin](https://plugins.jetbrains.com/plugin/7724-docker).
+6. Clone this repo.
+7. Open it in Android Studio.
 
 ### Enable useful settings
 
@@ -34,6 +36,14 @@ This is a Kotlin Multiplatform project for Android and IOS.
 2. Enable **Reformat code** and **Optimize imports**.
 3. Navigate to **Version Control > Git**.
 4. Enable staging area.
+
+### Running the app in development
+
+Run the `Frontend` run configuration to run the Android app.
+
+Run the `Backend` run configuration to run the backend. This will also spin up the database and S3 server behind the scenes.
+
+While the database is running, you can navigate to http://localhost:26545/ to view and edit the database graphically.
 
 ### Links
 

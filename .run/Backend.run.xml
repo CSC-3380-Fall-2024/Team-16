@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Backend" type="JetRunConfigurationType">
+    <option name="MAIN_CLASS_NAME" value="com.github.csc3380fall2024.team16.ApplicationKt" />
+    <module name="UniversalFitness.server.main" />
+    <shortenClasspath name="NONE" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+      <option name="RunConfigurationTask" enabled="true" run_configuration_name="Database" run_configuration_type="docker-deploy" />
+    </method>
+  </configuration>
+</component>
