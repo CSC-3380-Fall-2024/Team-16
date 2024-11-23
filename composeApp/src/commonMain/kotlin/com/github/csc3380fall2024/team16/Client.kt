@@ -13,7 +13,7 @@ suspend fun createRpcClient(): RpcService {
         installRPC()
     }
     
-    return client.rpc("ws://10.0.0.8:8080/rpc") {
+    return client.rpc("ws://10.0.2.2:26542/rpc") {
         rpcConfig {
             serialization {
                 json()
