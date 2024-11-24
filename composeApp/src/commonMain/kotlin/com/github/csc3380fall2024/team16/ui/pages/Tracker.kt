@@ -5,8 +5,6 @@ import kotlinx.serialization.Serializable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -22,12 +20,19 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Button
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 
 @Serializable
 object Tracker
 
 @Composable
 fun TrackerPage(navController: NavController, currentCalories: Float, calorieGoal: Float) {
+    var showDialog by remember { mutableStateOf(false) }
+    val foodList = remember { mutableStateOf(listOf<String>()) }
+    
     Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         Column(
             Modifier
@@ -39,7 +44,7 @@ fun TrackerPage(navController: NavController, currentCalories: Float, calorieGoa
                 Modifier
                     .fillMaxWidth()
                     .background(color = MaterialTheme.colorScheme.surfaceBright)
-                    .padding(vertical = 60.dp)
+                    .padding(vertical = 20.dp)
             ) {
                 Text(
                     "Tracker",
@@ -51,7 +56,7 @@ fun TrackerPage(navController: NavController, currentCalories: Float, calorieGoa
             CalorieProgress(currentCalories = currentCalories, calorieGoal = calorieGoal)
             
             Button(
-                onClick = { /*navigate to food search page */ },
+                onClick = { showDialog = true },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 20.dp)
@@ -59,36 +64,86 @@ fun TrackerPage(navController: NavController, currentCalories: Float, calorieGoa
                 Text(text = "Add Food")
             }
             
+            if (showDialog) {
+                AddFoodDialog(
+                    onDismiss = { showDialog = false },
+                    onSave = { newFoodName ->
+                        foodList.value += newFoodName
+                        showDialog = false
+                    }
+                )
+            }
+            
             Column(
                 Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 20.dp, vertical = 20.dp),
-                verticalArrangement = Arrangement.spacedBy(20.dp)
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                
-                Row(
-                    Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                
-                }
-                Box(
-                    Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight()
-                        .background(color = MaterialTheme.colorScheme.surfaceBright),
-                    contentAlignment = Alignment.Center
-                ) {
+                if (foodList.value.isEmpty()) {
                     Text(
-                        text = "food goes here",
-                        style = MaterialTheme.typography.titleLarge
+                        text = "No foods added yet.",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
+                } else {
+                    foodList.value.forEach { food ->
+                        Box(
+                            Modifier
+                                .fillMaxWidth()
+                                .background(MaterialTheme.colorScheme.surfaceBright)
+                                .padding(8.dp)
+                        ) {
+                            Text(
+                                text = food,
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                    }
                 }
             }
         }
     }
+}
+
+@Composable
+fun AddFoodDialog(onDismiss: () -> Unit, onSave: (String) -> Unit) {
+    var textFieldValue by remember { mutableStateOf("") }
+    
+    androidx.compose.material3.AlertDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            Button(
+                onClick = {
+                    if (textFieldValue.isNotBlank()) {
+                        onSave(textFieldValue.trim())
+                        textFieldValue = ""
+                    }
+                }
+            ) {
+                Text("Save")
+            }
+        },
+        dismissButton = {
+            Button(
+                onClick = onDismiss
+            ) {
+                Text("Cancel")
+            }
+        },
+        title = { Text("Add Food") },
+        text = {
+            androidx.compose.material3.TextField(
+                value = textFieldValue,
+                onValueChange = { textFieldValue = it },
+                label = { Text("Food Name") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+    )
 }
 
 @Composable
