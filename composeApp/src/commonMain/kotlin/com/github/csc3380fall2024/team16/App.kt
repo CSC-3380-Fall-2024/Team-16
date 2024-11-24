@@ -13,15 +13,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import com.github.csc3380fall2024.team16.ui.MainViewModel
 import com.github.csc3380fall2024.team16.ui.components.BottomBar
 import com.github.csc3380fall2024.team16.ui.components.Tab
 import com.github.csc3380fall2024.team16.ui.pages.Add
@@ -55,9 +53,7 @@ import com.github.csc3380fall2024.team16.ui.theme.AppTheme
 
 @Composable
 fun App() {
-    var serviceOrNull: RpcService? by remember { mutableStateOf(null) }
-    LaunchedEffect(Unit) { serviceOrNull = createRpcClient() }
-    val client = serviceOrNull ?: return
+    val viewModel = viewModel { MainViewModel() }
     
     val navController = rememberNavController()
     val tabs = listOf(
@@ -77,8 +73,8 @@ fun App() {
                     exitTransition = { ExitTransition.None },
                 ) {
                     composable<Welcome> { WelcomePage(navController) }
-                    composable<Register> { RegisterPage(navController, client) }
-                    composable<Login> { LoginPage(navController, client) }
+                    composable<Register> { RegisterPage(navController, viewModel) }
+                    composable<Login> { LoginPage(navController, viewModel) }
                     composable<ForgotPassword> { ForgotPasswordPage(navController) }
                     
                     navigation<Home>(Choose) {
@@ -94,6 +90,12 @@ fun App() {
                     composable<Add> { AddFood(navController) }
                 }
             }
+        }
+    }
+    
+    LaunchedEffect(viewModel.isLoggedIn) {
+        if (!viewModel.isLoggedIn) {
+            navController.navigate(Welcome)
         }
     }
 }

@@ -25,7 +25,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.github.csc3380fall2024.team16.RpcService
+import com.github.csc3380fall2024.team16.ui.MainViewModel
 import com.github.csc3380fall2024.team16.ui.theme.AppTheme
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
@@ -36,7 +36,7 @@ object Login
 
 @Composable
 @Preview
-fun LoginPage(navController: NavController, client: RpcService) {
+fun LoginPage(navController: NavController, viewModel: MainViewModel) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     
@@ -78,12 +78,8 @@ fun LoginPage(navController: NavController, client: RpcService) {
                 
                 Button({
                     scope.launch {
-                        try {
-                            client.login(username, password)
-                            navController.navigate(Home)
-                        } catch (e: Exception) {
-                            println(e) // TODO display text
-                        }
+                        viewModel.login(username, password)
+                        navController.navigate(Home)
                     }
                 }, Modifier.fillMaxWidth().padding(20.dp)) {
                     Text("Login", fontSize = 20.sp, lineHeight = 5.sp)

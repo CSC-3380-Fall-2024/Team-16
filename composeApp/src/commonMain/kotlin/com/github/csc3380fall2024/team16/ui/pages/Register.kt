@@ -30,7 +30,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.github.csc3380fall2024.team16.RpcService
+import com.github.csc3380fall2024.team16.ui.MainViewModel
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
@@ -38,7 +38,7 @@ import kotlinx.serialization.Serializable
 object Register
 
 @Composable
-fun RegisterPage(navController: NavController, client: RpcService) {
+fun RegisterPage(navController: NavController, viewModel: MainViewModel) {
     var username by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -212,12 +212,8 @@ fun RegisterPage(navController: NavController, client: RpcService) {
                     } else {
                         errorMessage = ""  // Clear error message if all validations pass
                         scope.launch {
-                            try {
-                                client.register(username, email, password)
-                                navController.navigate(Home)
-                            } catch (e: Exception) {
-                                println(e) // TODO display text
-                            }
+                            viewModel.register(username, email, password)
+                            navController.navigate(Home)
                         }
                     }
                 },
