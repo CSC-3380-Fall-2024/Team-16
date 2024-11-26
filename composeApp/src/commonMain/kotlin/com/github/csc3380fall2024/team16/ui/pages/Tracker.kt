@@ -31,7 +31,7 @@ object Tracker
 @Composable
 fun TrackerPage(navController: NavController, currentCalories: Float, calorieGoal: Float) {
     var showDialog by remember { mutableStateOf(false) }
-    val foodList = remember { mutableStateOf(listOf<String>()) }
+    var foodList by remember { mutableStateOf(listOf<String>()) }
     
     Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         Column(
@@ -68,7 +68,7 @@ fun TrackerPage(navController: NavController, currentCalories: Float, calorieGoa
                 AddFoodDialog(
                     onDismiss = { showDialog = false },
                     onSave = { newFoodName ->
-                        foodList.value += newFoodName
+                        foodList += newFoodName
                         showDialog = false
                     }
                 )
@@ -80,7 +80,7 @@ fun TrackerPage(navController: NavController, currentCalories: Float, calorieGoa
                     .padding(horizontal = 20.dp, vertical = 20.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                if (foodList.value.isEmpty()) {
+                if (foodList.isEmpty()) {
                     Text(
                         text = "No foods added yet.",
                         style = MaterialTheme.typography.titleLarge,
@@ -88,7 +88,7 @@ fun TrackerPage(navController: NavController, currentCalories: Float, calorieGoa
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
                 } else {
-                    foodList.value.forEach { food ->
+                    foodList.forEach { food ->
                         Box(
                             Modifier
                                 .fillMaxWidth()
