@@ -31,7 +31,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.TextField
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.input.KeyboardType
 
 @Serializable
@@ -39,9 +40,9 @@ object Tracker
 
 @Composable
 fun TrackerPage(navController: NavController, currentCalories: Float, calorieGoal: Float) {
-    val showDialogState = remember { mutableStateOf(false) }
-    val updatedCurrentCaloriesState = remember { mutableStateOf(currentCalories.toString()) }
-    val updatedCalorieGoalState = remember { mutableStateOf(calorieGoal.toString()) }
+    var showDialogState by remember { mutableStateOf(false) }
+    var updatedCurrentCaloriesState by remember { mutableStateOf(currentCalories) }
+    var updatedCalorieGoalState by remember { mutableStateOf(calorieGoal) }
     
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -67,15 +68,15 @@ fun TrackerPage(navController: NavController, currentCalories: Float, calorieGoa
             }
             
             CalorieProgress(
-                currentCalories = updatedCurrentCaloriesState.value.toFloatOrNull() ?: 0f,
-                calorieGoal = updatedCalorieGoalState.value.toFloatOrNull() ?: 1f
+                currentCalories = updatedCurrentCaloriesState,
+                calorieGoal = updatedCalorieGoalState
             )
             
             Text(
                 text = "Modify Calorie Data",
                 style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.primary),
                 modifier = Modifier
-                    .clickable { showDialogState.value = true }
+                    .clickable { showDialogState = true }
                     .padding(horizontal = 20.dp)
             )
             
@@ -103,19 +104,21 @@ fun TrackerPage(navController: NavController, currentCalories: Float, calorieGoa
         }
     }
     
-    if (showDialogState.value) {
+    if (showDialogState) {
         EditCalorie(
-            onDismissRequest = { showDialogState.value = false },
+            onDismissRequest = { showDialogState = false },
             onConfirmation = {
-                updatedCurrentCaloriesState.value = updatedCurrentCaloriesState.value
-                updatedCalorieGoalState.value = updatedCalorieGoalState.value
-                showDialogState.value = false
+                showDialogState = false
             },
             dialogTitle = "Modify Calorie Data",
             dialogText = "Please update your current calories and goal.",
             icon = Icons.Default.Edit,
             updatedCurrentCaloriesState = updatedCurrentCaloriesState,
-            updatedCalorieGoalState = updatedCalorieGoalState
+            updatedCalorieGoalState = updatedCalorieGoalState,
+            onUpdateCalories = { newCurrentCalories, newGoal ->
+                updatedCurrentCaloriesState = newCurrentCalories
+                updatedCalorieGoalState = newGoal
+            }
         )
     }
 }
@@ -127,9 +130,13 @@ fun EditCalorie(
     dialogTitle: String,
     dialogText: String,
     icon: ImageVector,
-    updatedCurrentCaloriesState: MutableState<String>,
-    updatedCalorieGoalState: MutableState<String>
+    updatedCurrentCaloriesState: Float,
+    updatedCalorieGoalState: Float,
+    onUpdateCalories: (Float, Float) -> Unit
 ) {
+    var currentCaloriesText by remember { mutableStateOf(updatedCurrentCaloriesState.toString()) }
+    var calorieGoalText by remember { mutableStateOf(updatedCalorieGoalState.toString()) }
+    
     AlertDialog(
         title = {
             Text(text = dialogTitle)
@@ -137,15 +144,15 @@ fun EditCalorie(
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 TextField(
-                    value = updatedCurrentCaloriesState.value,
-                    onValueChange = { updatedCurrentCaloriesState.value = it },
+                    value = currentCaloriesText,
+                    onValueChange = { currentCaloriesText = it },
                     label = { Text("Current Calories") },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
                 )
                 TextField(
-                    value = updatedCalorieGoalState.value,
-                    onValueChange = { updatedCalorieGoalState.value = it },
+                    value = calorieGoalText,
+                    onValueChange = { calorieGoalText = it },
                     label = { Text("Calorie Goal") },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
@@ -158,6 +165,9 @@ fun EditCalorie(
         confirmButton = {
             TextButton(
                 onClick = {
+                    val newCurrentCalories by lazy { currentCaloriesText.toFloatOrNull() ?: updatedCurrentCaloriesState }
+                    val newGoal by lazy { calorieGoalText.toFloatOrNull() ?: updatedCalorieGoalState }
+                    onUpdateCalories(newCurrentCalories, newGoal)
                     onConfirmation()
                 }
             ) {
