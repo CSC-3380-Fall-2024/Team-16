@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -20,6 +21,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Button
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -112,7 +114,7 @@ fun TrackerPage(navController: NavController, currentCalories: Float, calorieGoa
 fun AddFoodDialog(onDismiss: () -> Unit, onSave: (String) -> Unit) {
     var textFieldValue by remember { mutableStateOf("") }
     
-    androidx.compose.material3.AlertDialog(
+    AlertDialog(
         onDismissRequest = onDismiss,
         confirmButton = {
             Button(
@@ -135,7 +137,7 @@ fun AddFoodDialog(onDismiss: () -> Unit, onSave: (String) -> Unit) {
         },
         title = { Text("Add Food") },
         text = {
-            androidx.compose.material3.TextField(
+            TextField(
                 value = textFieldValue,
                 onValueChange = { textFieldValue = it },
                 label = { Text("Food Name") },
