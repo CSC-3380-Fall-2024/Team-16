@@ -18,7 +18,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.github.csc3380fall2024.team16.ui.theme.AppTheme
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -26,40 +25,38 @@ object News
 
 @Composable
 fun NewsPage(navController: NavController) {
-    AppTheme {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState()) // Enabling vertical scroll
-        ) {
-            // Fun Fact of the Day
-            FunFactOfDay()
-            
-            Spacer(modifier = Modifier.height(24.dp))
-            
-            // The Latest News
-            NewsSection(
-                sectionTitle = "The Latest News",
-                newsItems = listOf("Article 1", "Article 2", "Article 3")
-            )
-            
-            Spacer(modifier = Modifier.height(24.dp))
-            
-            // Daily Sports News
-            NewsSection(
-                sectionTitle = "Daily Sports News",
-                newsItems = listOf("Sports News 1", "Latest Sports Update", "Sports News 2")
-            )
-            
-            Spacer(modifier = Modifier.height(24.dp))
-            
-            // The Science of Fitness
-            NewsSection(
-                sectionTitle = "The Science of Fitness",
-                newsItems = listOf("Fitness Science 1", "Research Update on Fitness", "Benefits of Strength Training")
-            )
-        }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState()) // Enabling vertical scroll
+    ) {
+        // Fun Fact of the Day
+        FunFactOfDay()
+        
+        Spacer(modifier = Modifier.height(24.dp))
+        
+        // The Latest News
+        NewsSection(
+            sectionTitle = "The Latest News",
+            newsItems = listOf("Article 1", "Article 2", "Article 3")
+        )
+        
+        Spacer(modifier = Modifier.height(24.dp))
+        
+        // Daily Sports News
+        NewsSection(
+            sectionTitle = "Daily Sports News",
+            newsItems = listOf("Sports News 1", "Latest Sports Update", "Sports News 2")
+        )
+        
+        Spacer(modifier = Modifier.height(24.dp))
+        
+        // The Science of Fitness
+        NewsSection(
+            sectionTitle = "The Science of Fitness",
+            newsItems = listOf("Fitness Science 1", "Research Update on Fitness", "Benefits of Strength Training")
+        )
     }
 }
 

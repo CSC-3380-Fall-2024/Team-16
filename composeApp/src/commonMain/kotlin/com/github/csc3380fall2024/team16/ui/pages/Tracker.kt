@@ -15,7 +15,6 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -45,88 +44,83 @@ fun TrackerPage(navController: NavController, currentCalories: Float, calorieGoa
     var showAddFoodDialog by remember { mutableStateOf(false) }
     var foodList by remember { mutableStateOf(listOf<String>()) }
     
-    Surface(
+    Column(
         modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(20.dp)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(color = MaterialTheme.colorScheme.surfaceBright)
+                .padding(vertical = 20.dp)
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(color = MaterialTheme.colorScheme.surfaceBright)
-                    .padding(vertical = 20.dp)
-            ) {
-                Text(
-                    text = "Tracker",
-                    fontSize = 30.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.align(Alignment.Center)
-                )
-            }
-            
-            CalorieProgress(
-                currentCalories = updatedCurrentCalories,
-                calorieGoal = updatedCalorieGoal
-            )
-            
             Text(
-                text = "Modify Calorie Data",
-                style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.primary),
-                modifier = Modifier
-                    .clickable { showEditCalorieDialog = true }
-                    .padding(horizontal = 20.dp)
+                text = "Tracker",
+                fontSize = 30.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.align(Alignment.Center)
             )
-            
-            Button(
-                onClick = { showAddFoodDialog = true },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp)
-            ) {
-                Text(text = "Add Food")
-            }
-            
-            if (showAddFoodDialog) {
-                AddFoodDialog(
-                    onDismiss = { showAddFoodDialog = false },
-                    onSave = { newFoodName ->
-                        foodList += newFoodName
-                        showAddFoodDialog = false
-                    }
+        }
+        
+        CalorieProgress(
+            currentCalories = updatedCurrentCalories,
+            calorieGoal = updatedCalorieGoal
+        )
+        
+        Text(
+            text = "Modify Calorie Data",
+            style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.primary),
+            modifier = Modifier
+                .clickable { showEditCalorieDialog = true }
+                .padding(horizontal = 20.dp)
+        )
+        
+        Button(
+            onClick = { showAddFoodDialog = true },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp)
+        ) {
+            Text(text = "Add Food")
+        }
+        
+        if (showAddFoodDialog) {
+            AddFoodDialog(
+                onDismiss = { showAddFoodDialog = false },
+                onSave = { newFoodName ->
+                    foodList += newFoodName
+                    showAddFoodDialog = false
+                }
+            )
+        }
+        
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp, vertical = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            if (foodList.isEmpty()) {
+                Text(
+                    text = "No foods added yet.",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
-            }
-            
-            Column(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp, vertical = 20.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                if (foodList.isEmpty()) {
-                    Text(
-                        text = "No foods added yet.",
-                        style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                    )
-                } else {
-                    foodList.forEach { food ->
-                        Box(
-                            Modifier
-                                .fillMaxWidth()
-                                .background(MaterialTheme.colorScheme.surfaceBright)
-                                .padding(8.dp)
-                        ) {
-                            Text(
-                                text = food,
-                                style = MaterialTheme.typography.titleMedium,
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                        }
+            } else {
+                foodList.forEach { food ->
+                    Box(
+                        Modifier
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.surfaceBright)
+                            .padding(8.dp)
+                    ) {
+                        Text(
+                            text = food,
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
                     }
                 }
             }
