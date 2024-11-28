@@ -18,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,16 +28,15 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import com.github.csc3380fall2024.team16.RpcService
-import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
 @Serializable
 object Register
 
 @Composable
-fun RegisterPage(navController: NavController, client: RpcService) {
+fun RegisterPage(
+    onRegister: (username: String, email: String, password: String) -> Unit,
+) {
     var username by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -56,8 +54,6 @@ fun RegisterPage(navController: NavController, client: RpcService) {
     
     // Regex pattern for email validation
     val emailPattern = Regex("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}")
-    
-    val scope = rememberCoroutineScope()
     
     Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         Column(
@@ -211,14 +207,7 @@ fun RegisterPage(navController: NavController, client: RpcService) {
                         errorMessage = "Passwords do not match."
                     } else {
                         errorMessage = ""  // Clear error message if all validations pass
-                        scope.launch {
-                            try {
-                                client.register(username, email, password)
-                                navController.navigate(Home)
-                            } catch (e: Exception) {
-                                println(e) // TODO display text
-                            }
-                        }
+                        onRegister(username, email, password)
                     }
                 },
                 Modifier.fillMaxWidth().padding(20.dp)
