@@ -20,6 +20,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.github.csc3380fall2024.team16.Exercise
+import com.github.csc3380fall2024.team16.ExerciseRepository
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -27,10 +29,10 @@ object WorkoutGenerator
 
 @Composable
 fun WorkoutGeneratorPage(navController: NavController) {
-    // State management
     var selectedGoal by remember { mutableStateOf<String?>(null) }
     var selectedTarget by remember { mutableStateOf<String?>(null) }
     var selectedIntensity by remember { mutableStateOf<String?>(null) }
+    var generatedWorkout by remember { mutableStateOf(emptyList<Exercise>()) } // Moved here
     
     val goalOptions = listOf("Strength", "Aesthetics", "Sports Performance", "Weight Loss")
     val targetOptions = mapOf(
@@ -46,7 +48,6 @@ fun WorkoutGeneratorPage(navController: NavController) {
         color = MaterialTheme.colorScheme.background
     ) {
         Box(Modifier.fillMaxSize()) {
-            // Back Button in the top-left corner
             Button(
                 onClick = { navController.popBackStack() },
                 modifier = Modifier
@@ -112,11 +113,46 @@ fun WorkoutGeneratorPage(navController: NavController) {
                         fontSize = 16.sp,
                         modifier = Modifier.padding(top = 16.dp)
                     )
+                    
                     Button(
-                        onClick = { /* Logic to generate workout */ },
+                        onClick = {
+                            val exercises = when (selectedGoal) {
+                                "Strength"           -> ExerciseRepository.getPowerliftingExercises()
+                                "Aesthetics"         -> ExerciseRepository.getBodybuildingExercises()
+                                "Sports Performance" -> ExerciseRepository.getAthleticExercises()
+                                "Weight Loss"        -> ExerciseRepository.getWeightLossExercises()
+                                else                 -> emptyList()
+                            }
+                            
+                            val filteredExercises = exercises.filter {
+                                it.target.contains(selectedTarget!!, ignoreCase = true)
+                            }
+                            
+                            val (sets, reps) = when (selectedIntensity) {
+                                "Low"      -> 3 to 6
+                                "Moderate" -> 4 to 8
+                                "High"     -> 4 to 12
+                                else       -> 3 to 6
+                            }
+                            
+                            val randomExercises = filteredExercises.shuffled().take(6)
+                            
+                            generatedWorkout = randomExercises.map { exercise ->
+                                exercise.copy(description = "${exercise.description} - $sets sets of $reps reps")
+                            }
+                        },
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text("Generate Workout")
+                    }
+                    
+                    if (generatedWorkout.isNotEmpty()) {
+                        Column(modifier = Modifier.padding(top = 16.dp)) {
+                            Text("Generated Workout:", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                            generatedWorkout.forEach { exercise ->
+                                Text("- ${exercise.name}: ${exercise.description}", fontSize = 14.sp)
+                            }
+                        }
                     }
                 }
             }
