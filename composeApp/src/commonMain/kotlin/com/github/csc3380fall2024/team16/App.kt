@@ -13,13 +13,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import com.github.csc3380fall2024.team16.ui.MainViewModel
 import com.github.csc3380fall2024.team16.ui.components.BottomBar
 import com.github.csc3380fall2024.team16.ui.components.Tab
 import com.github.csc3380fall2024.team16.ui.pages.Add
@@ -50,10 +51,12 @@ import com.github.csc3380fall2024.team16.ui.pages.home.PowerliftingPage
 import com.github.csc3380fall2024.team16.ui.pages.home.WeightLoss
 import com.github.csc3380fall2024.team16.ui.pages.home.WeightLossPage
 import com.github.csc3380fall2024.team16.ui.theme.AppTheme
+import kotlinx.coroutines.launch
 
 @Composable
 fun App() {
-    val viewModel = viewModel { MainViewModel() }
+    val client = remember { RpcClient() }
+    val viewModel = viewModel { AppViewModel() }
     
     val navController = rememberNavController()
     val tabs = listOf(
@@ -73,8 +76,36 @@ fun App() {
                     exitTransition = { ExitTransition.None },
                 ) {
                     composable<Welcome> { WelcomePage(navController) }
-                    composable<Register> { RegisterPage(navController, viewModel) }
-                    composable<Login> { LoginPage(navController, viewModel) }
+                    composable<Register> {
+                        RegisterPage(
+                            onRegister = { username, email, password ->
+                                viewModel.viewModelScope.launch {
+                                    when (val resp = client.rpc { register(username, email, password) }) {
+                                        is RpcResult.ConnectionFailure -> {}
+                                        is RpcResult.Success           -> viewModel.onAuthenticated(resp.value)
+                                    }
+                                }
+                            }
+                        )
+                    }
+                    composable<Login> {
+                        LoginPage(
+                            onLogin = { usernameOrEmail, password ->
+                                viewModel.viewModelScope.launch {
+                                    when (val resp = client.rpc { login(usernameOrEmail, password) }) {
+                                        is RpcResult.ConnectionFailure -> {}
+                                        is RpcResult.Success           -> viewModel.onAuthenticated(resp.value)
+                                    }
+                                }
+                            },
+                            onNavigateRegister = {
+                                navController.navigate(Register)
+                            },
+                            onNavigateForgotPassword = {
+                                navController.navigate(ForgotPassword)
+                            }
+                        )
+                    }
                     composable<ForgotPassword> { ForgotPasswordPage(navController) }
                     
                     navigation<Home>(Choose) {
@@ -93,9 +124,10 @@ fun App() {
         }
     }
     
-    LaunchedEffect(viewModel.isLoggedIn) {
-        if (!viewModel.isLoggedIn) {
-            navController.navigate(Welcome)
+    LaunchedEffect(viewModel.state) {
+        when (viewModel.state) {
+            is AppState.LoggedOut -> navController.navigate(Welcome)
+            is AppState.LoggedIn  -> navController.navigate(Home)
         }
     }
 }

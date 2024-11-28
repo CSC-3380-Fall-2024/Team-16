@@ -16,7 +16,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,10 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import com.github.csc3380fall2024.team16.ui.MainViewModel
 import com.github.csc3380fall2024.team16.ui.theme.AppTheme
-import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -36,11 +32,13 @@ object Login
 
 @Composable
 @Preview
-fun LoginPage(navController: NavController, viewModel: MainViewModel) {
+fun LoginPage(
+    onLogin: (usernameOrEmail: String, password: String) -> Unit,
+    onNavigateRegister: () -> Unit,
+    onNavigateForgotPassword: () -> Unit,
+) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    
-    val scope = rememberCoroutineScope()
     
     AppTheme(dark = true) {
         Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
@@ -77,10 +75,7 @@ fun LoginPage(navController: NavController, viewModel: MainViewModel) {
                 }
                 
                 Button({
-                    scope.launch {
-                        viewModel.login(username, password)
-                        navController.navigate(Home)
-                    }
+                    onLogin(username, password)
                 }, Modifier.fillMaxWidth().padding(20.dp)) {
                     Text("Login", fontSize = 20.sp, lineHeight = 5.sp)
                 }
@@ -89,7 +84,7 @@ fun LoginPage(navController: NavController, viewModel: MainViewModel) {
                     text = "Register",
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.clickable {
-                        navController.navigate(Register)
+                        onNavigateRegister()
                     }
                 )
                 
@@ -97,7 +92,7 @@ fun LoginPage(navController: NavController, viewModel: MainViewModel) {
                     text = "Forgot Password",
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.clickable {
-                        navController.navigate(ForgotPassword)
+                        onNavigateForgotPassword()
                     }
                 )
             }

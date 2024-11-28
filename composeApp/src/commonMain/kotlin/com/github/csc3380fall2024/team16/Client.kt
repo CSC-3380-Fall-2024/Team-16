@@ -12,24 +12,37 @@ import kotlinx.rpc.withService
 // A wrapper around an rpc service.
 // Needed because kotlinx.rpc does not yet support one-shot rpc calls.
 class RpcClient(private val url: String = "ws://10.0.2.2:26542/rpc") {
-	private val client = HttpClient(CIO) {
-		installRPC()
-	}
-	
-	suspend fun rpc(fn: suspend RpcService.() -> Unit) {
-		val rpc = client.rpc(url) {
-			rpcConfig {
-				serialization {
-					json()
-				}
-			}
-		}
-		
-		try {
-			val service = rpc.withService<RpcService>()
-			service.fn()
-		} finally {
-			rpc.webSocketSession.cancel()
-		}
-	}
+    private val client = HttpClient(CIO) {
+        installRPC()
+    }
+    
+    suspend fun <T> rpc(fn: suspend RpcService.() -> T): RpcResult<T> {
+        val rpc = try {
+            client.rpc(url) {
+                rpcConfig {
+                    serialization {
+                        json()
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            return RpcResult.ConnectionFailure(e)
+        }
+        
+        val response = try {
+            val service = rpc.withService<RpcService>()
+            service.fn()
+        } catch (e: Exception) {
+            return RpcResult.ConnectionFailure(e)
+        } finally {
+            rpc.webSocketSession.cancel()
+        }
+        
+        return RpcResult.Success(response)
+    }
+}
+
+sealed class RpcResult<out T> {
+    data class ConnectionFailure(val exception: Exception) : RpcResult<Nothing>()
+    data class Success<T>(val value: T) : RpcResult<T>()
 }
