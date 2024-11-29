@@ -23,6 +23,7 @@ postgres-version = "42.5.1"
 navigationComposeVersion = "2.8.0-alpha10"
 serializationPlugin = "2.0.21"
 rpc = "0.4.0"
+dotenv = "4.0.0"
 
 [libraries]
 java-jwt = { module = "com.auth0:java-jwt", version.ref = "javaJwt" }
@@ -66,3 +67,4 @@ ktor = { id = "io.ktor.plugin", version.ref = "ktor" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "serializationPlugin" }
 rpc = { id = "org.jetbrains.kotlinx.rpc.plugin", version.ref = "rpc"}
+dotenv = { id = "co.uzzu.dotenv.gradle", version.ref = "dotenv" }

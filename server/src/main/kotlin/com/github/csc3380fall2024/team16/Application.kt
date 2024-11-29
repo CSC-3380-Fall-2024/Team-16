@@ -7,7 +7,9 @@ import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 
 fun main() {
-    embeddedServer(Netty, port = 26542, host = "0.0.0.0", module = Application::module)
+    val port = env("SERVER_PORT").toInt()
+    
+    embeddedServer(Netty, port = port, host = "0.0.0.0", module = Application::module)
         .start(wait = true)
 }
 
@@ -15,3 +17,6 @@ fun Application.module() {
     configureDatabase()
     configureRpc()
 }
+
+fun env(name: String) =
+    System.getenv(name) ?: throw Exception("environment variable $name not set")
