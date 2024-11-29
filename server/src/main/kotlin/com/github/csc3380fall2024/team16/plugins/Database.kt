@@ -1,5 +1,6 @@
 package com.github.csc3380fall2024.team16.plugins
 
+import com.github.csc3380fall2024.team16.server.BuildConfig
 import io.ktor.server.application.Application
 import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.Database
@@ -12,7 +13,7 @@ import org.jetbrains.exposed.sql.kotlin.datetime.timestampWithTimeZone
 import org.jetbrains.exposed.sql.transactions.transaction
 
 fun Application.configureDatabase() {
-    val url = "jdbc:postgresql://localhost:26543/universalfitness"
+    val url = "jdbc:postgresql://localhost:${BuildConfig.DATABASE_PORT}/universalfitness"
     val user = "universalfitness"
     val password = "universalfitness"
     
