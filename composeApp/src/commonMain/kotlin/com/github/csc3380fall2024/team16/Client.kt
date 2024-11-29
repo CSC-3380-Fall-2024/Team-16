@@ -2,6 +2,7 @@ package com.github.csc3380fall2024.team16
 
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.cancel
 import kotlinx.rpc.krpc.ktor.client.installRPC
 import kotlinx.rpc.krpc.ktor.client.rpc
@@ -33,6 +34,7 @@ class RpcClient(private val url: String = "ws://10.0.2.2:26542/rpc") {
             val service = rpc.withService<RpcService>()
             service.fn()
         } catch (e: Exception) {
+            if (e is CancellationException) throw e
             return RpcResult.ConnectionFailure(e)
         } finally {
             rpc.webSocketSession.cancel()
