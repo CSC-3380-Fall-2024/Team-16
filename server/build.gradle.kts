@@ -1,4 +1,5 @@
 plugins {
+    alias(libs.plugins.buildconfig)
     alias(libs.plugins.kotlinJvm)
     alias(libs.plugins.ktor)
     application
@@ -7,8 +8,12 @@ plugins {
 group = "com.github.csc3380fall2024.team16"
 version = "1.0.0"
 application {
-    mainClass.set("com.github.csc3380fall2024.team16.ApplicationKt")
-    applicationDefaultJvmArgs = listOf("-Dio.ktor.development=${extra["io.ktor.development"] ?: "false"}")
+    mainClass = "com.github.csc3380fall2024.team16.ApplicationKt"
+}
+
+buildConfig {
+    buildConfigField("SERVER_PORT", env.fetch("SERVER_PORT").toInt())
+    buildConfigField("DATABASE_PORT", env.fetch("DATABASE_PORT").toInt())
 }
 
 dependencies {
@@ -24,6 +29,4 @@ dependencies {
     implementation(libs.exposed.jdbc)
     implementation(libs.exposed.kotlin.datetime)
     implementation(libs.postgresql)
-    testImplementation(libs.ktor.server.tests)
-    testImplementation(libs.kotlin.test.junit)
 }

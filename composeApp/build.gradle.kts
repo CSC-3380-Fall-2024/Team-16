@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.serialization)
+    alias(libs.plugins.buildconfig)
 }
 
 kotlin {
@@ -53,6 +54,11 @@ kotlin {
             implementation(projects.shared)
         }
     }
+}
+
+buildConfig {
+    buildConfigField("SERVER_IP", env.fetch("SERVER_IP"))
+    buildConfigField("SERVER_PORT", env.fetch("SERVER_PORT").toInt())
 }
 
 android {
