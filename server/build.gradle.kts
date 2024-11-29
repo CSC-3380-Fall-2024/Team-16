@@ -1,3 +1,5 @@
+val envVars = listOf("SERVER_PORT")
+
 plugins {
     alias(libs.plugins.kotlinJvm)
     alias(libs.plugins.ktor)
@@ -10,10 +12,23 @@ application {
     mainClass = "com.github.csc3380fall2024.team16.ApplicationKt"
 }
 
-tasks.named<JavaExec>("run") {
-    listOf("SERVER_PORT").forEach {
-        environment(it, env.fetch(it))
+tasks.register("generateDevelopmentConfig") {
+    val resourcesDir = layout.buildDirectory.dir("resources/main").get().asFile
+    inputs.file(rootDir.resolve(".env"))
+    outputs.dir(resourcesDir)
+    
+    doLast {
+        val file = resourcesDir.resolve("config.properties")
+        file.parentFile.mkdirs()
+        
+        var text = ""
+        envVars.forEach { text += "$it = ${env.fetch(it)}\n" }
+        file.writeText(text)
     }
+}
+
+tasks.compileJava {
+    dependsOn("generateDevelopmentConfig")
 }
 
 dependencies {

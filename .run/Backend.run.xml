@@ -1,10 +1,10 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Backend" type="JetRunConfigurationType">
-    <option name="MAIN_CLASS_NAME" value="com.github.csc3380fall2024.team16.ApplicationKt" />
-    <module name="UniversalFitness.server.main" />
-    <shortenClasspath name="NONE" />
+  <configuration default="false" name="Backend" type="JarApplication">
+    <option name="JAR_PATH" value="$PROJECT_DIR$/server/build/libs/server-all.jar" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+    <option name="ALTERNATIVE_JRE_PATH" />
     <method v="2">
-      <option name="Make" enabled="true" />
+      <option name="Gradle.BeforeRunTask" enabled="true" tasks="buildFatJar" externalProjectPath="$PROJECT_DIR$/server" vmOptions="" scriptParameters="" />
       <option name="RunConfigurationTask" enabled="true" run_configuration_name="Database" run_configuration_type="docker-deploy" />
     </method>
   </configuration>
