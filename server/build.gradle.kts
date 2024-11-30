@@ -15,11 +15,13 @@ buildConfig {
     buildConfigField("SERVER_PORT", env.fetch("SERVER_PORT").toInt())
     buildConfigField("DATABASE_PORT", env.fetch("DATABASE_PORT").toInt())
     buildConfigField("JWT_SECRET", env.fetch("JWT_SECRET"))
+    buildConfigField("BING_SEARCH_API_KEY", env.fetch("BING_SEARCH_API_KEY"))
 }
 
 dependencies {
     implementation(projects.shared)
     implementation(libs.logback)
+    implementation(libs.ktor.client.cio)
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.server.netty)
     implementation(libs.java.jwt)

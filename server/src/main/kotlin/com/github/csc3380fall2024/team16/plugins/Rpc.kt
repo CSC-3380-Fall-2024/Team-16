@@ -3,7 +3,10 @@ package com.github.csc3380fall2024.team16.plugins
 import com.github.csc3380fall2024.team16.RpcService
 import com.github.csc3380fall2024.team16.TokenManager
 import com.github.csc3380fall2024.team16.emailRegex
+import com.github.csc3380fall2024.team16.model.NewsArticle
+import com.github.csc3380fall2024.team16.news.NewsClient
 import com.github.csc3380fall2024.team16.repository.UserRepository
+import com.github.csc3380fall2024.team16.server.BuildConfig
 import com.github.csc3380fall2024.team16.usernameRegex
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
@@ -30,6 +33,8 @@ fun Application.configureRpc() {
 }
 
 class RpcServiceImpl(override val coroutineContext: CoroutineContext) : RpcService {
+    private val newsClient = NewsClient(BuildConfig.BING_SEARCH_API_KEY)
+    
     override suspend fun register(username: String, email: String, password: String): String {
         when {
             username.length !in 3..24        -> throw Exception("username must be between 3 and 24 characters")
@@ -50,5 +55,10 @@ class RpcServiceImpl(override val coroutineContext: CoroutineContext) : RpcServi
         
         val user = UserRepository.getUser(usernameOrEmail, password) ?: throw Exception("invalid credentials")
         return TokenManager.createToken(user.id, user.passwordHash)
+    }
+    
+    override suspend fun getNewsArticles(token: String, query: String): List<NewsArticle> {
+        UserRepository.userFromToken(token) ?: throw Exception("unauthorized")
+        return newsClient.getNewsArticles(query)
     }
 }
