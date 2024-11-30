@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -76,14 +77,29 @@ fun TrackerPage(navController: NavController, currentCalories: Float, calorieGoa
                 .padding(horizontal = 20.dp)
         )
         
-        Button(
-            onClick = { showAddFoodDialog = true },
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 20.dp)
+                .padding(horizontal = 20.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text(text = "Add Food")
+            Button(
+                onClick = { /* Should display previous days */ },
+                modifier = Modifier
+                    .weight(1f)
+            ) {
+                Text(text = "View Previous")
+            }
+            
+            Button(
+                onClick = { showAddFoodDialog = true },
+                modifier = Modifier
+                    .weight(1f)
+            ) {
+                Text(text = "Add Food")
+            }
         }
+
         
         if (showAddFoodDialog) {
             AddFoodDialog(
@@ -166,13 +182,6 @@ fun EditCalorieDialog(
         },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                TextField(
-                    value = currentCaloriesText,
-                    onValueChange = { currentCaloriesText = it },
-                    label = { Text("Current Calories") },
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
-                )
                 TextField(
                     value = calorieGoalText,
                     onValueChange = { calorieGoalText = it },
