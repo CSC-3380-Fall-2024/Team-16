@@ -17,18 +17,17 @@ data class Tab(val label: String, val icon: ImageVector, val route: Any)
 @Composable
 fun BottomBar(navController: NavController, tabs: List<Tab>) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    
-    val currentDestination = navBackStackEntry?.destination ?: return
-    val currentTab = tabs.find { tab ->
-        currentDestination.hierarchy.any { it.hasRoute(tab.route::class) }
-    } ?: return
+    val currentTab = run {
+        val currentDestination = navBackStackEntry?.destination ?: return@run null
+        tabs.find { tab -> currentDestination.hierarchy.any { it.hasRoute(tab.route::class) } }
+    }
     
     NavigationBar {
         tabs.forEach {
             NavigationBarItem(
                 icon = { Icon(it.icon, it.label) },
                 label = { Text(it.label) },
-                selected = it.route == currentTab.route,
+                selected = it.route == currentTab?.route,
                 onClick = { navController.navigate(it.route) },
             )
         }
