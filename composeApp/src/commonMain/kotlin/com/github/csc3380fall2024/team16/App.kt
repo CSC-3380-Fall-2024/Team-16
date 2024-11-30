@@ -118,7 +118,7 @@ fun App() {
                         composable<Athletics> { AthleticsPage(navController) }
                         composable<WeightLoss> { WeightLossPage(navController) }
                     }
-                    composable<Tracker> { TrackerPage(navController, currentCalories = 0f, calorieGoal = 2000f) }
+                    composable<Tracker> { TrackerPage(navController, currentCalories = 0, calorieGoal = 2000 ) }
                     composable<News> { NewsPage(navController) }
                     composable<Social> { SocialPage(navController) }
                     composable<Add> { AddFood(navController) }

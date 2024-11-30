@@ -38,12 +38,12 @@ import kotlinx.serialization.Serializable
 object Tracker
 
 @Composable
-fun TrackerPage(navController: NavController, currentCalories: Float, calorieGoal: Float) {
+fun TrackerPage(navController: NavController, currentCalories: Int, calorieGoal: Int) {
     var showEditCalorieDialog by remember { mutableStateOf(false) }
     var updatedCurrentCalories by remember { mutableStateOf(currentCalories) }
     var updatedCalorieGoal by remember { mutableStateOf(calorieGoal) }
     var showAddFoodDialog by remember { mutableStateOf(false) }
-    var foodList by remember { mutableStateOf(listOf<String>()) }
+    var foodList by remember { mutableStateOf(listOf<Pair<String, Int>>()) }
     
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -104,8 +104,9 @@ fun TrackerPage(navController: NavController, currentCalories: Float, calorieGoa
         if (showAddFoodDialog) {
             AddFoodDialog(
                 onDismiss = { showAddFoodDialog = false },
-                onSave = { newFoodName ->
-                    foodList += newFoodName
+                onSave = { newFoodName, calories ->
+                    foodList += newFoodName to calories
+                    updatedCurrentCalories += calories
                     showAddFoodDialog = false
                 }
             )
@@ -125,7 +126,7 @@ fun TrackerPage(navController: NavController, currentCalories: Float, calorieGoa
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
             } else {
-                foodList.forEach { food ->
+                foodList.forEach { (food, calories) ->
                     Box(
                         Modifier
                             .fillMaxWidth()
@@ -133,7 +134,7 @@ fun TrackerPage(navController: NavController, currentCalories: Float, calorieGoa
                             .padding(8.dp)
                     ) {
                         Text(
-                            text = food,
+                            text = "$food: $calories kcal",
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onSurface
                         )
@@ -169,9 +170,9 @@ fun EditCalorieDialog(
     dialogTitle: String,
     dialogText: String,
     icon: ImageVector,
-    updatedCurrentCaloriesState: Float,
-    updatedCalorieGoalState: Float,
-    onUpdateCalories: (Float, Float) -> Unit
+    updatedCurrentCaloriesState: Int,
+    updatedCalorieGoalState: Int,
+    onUpdateCalories: (Int, Int) -> Unit
 ) {
     var currentCaloriesText by remember { mutableStateOf(updatedCurrentCaloriesState.toString()) }
     var calorieGoalText by remember { mutableStateOf(updatedCalorieGoalState.toString()) }
@@ -197,8 +198,8 @@ fun EditCalorieDialog(
         confirmButton = {
             TextButton(
                 onClick = {
-                    val newCurrentCalories by lazy { currentCaloriesText.toFloatOrNull() ?: updatedCurrentCaloriesState }
-                    val newGoal by lazy { calorieGoalText.toFloatOrNull() ?: updatedCalorieGoalState }
+                    val newCurrentCalories = currentCaloriesText.toIntOrNull() ?: updatedCurrentCaloriesState
+                    val newGoal = calorieGoalText.toIntOrNull() ?: updatedCalorieGoalState
                     onUpdateCalories(newCurrentCalories, newGoal)
                     onConfirmation()
                 }
@@ -219,17 +220,28 @@ fun EditCalorieDialog(
 }
 
 @Composable
-fun AddFoodDialog(onDismiss: () -> Unit, onSave: (String) -> Unit) {
-    var textFieldValue by remember { mutableStateOf("") }
+fun AddFoodDialog(onDismiss: () -> Unit, onSave: (String, Int) -> Unit) {
+    var foodName by remember { mutableStateOf("") }
+    var calorieCount by remember { mutableStateOf("") }
+    var errorMessage by remember { mutableStateOf("") }
     
     AlertDialog(
         onDismissRequest = onDismiss,
         confirmButton = {
             Button(
                 onClick = {
-                    if (textFieldValue.isNotBlank()) {
-                        onSave(textFieldValue.trim())
-                        textFieldValue = ""
+                    val calories = calorieCount.toFloatOrNull()
+                    if (foodName.isNotBlank() && calories != null) {
+                        if (calories >= 0) {
+                            onSave(foodName.trim(), calories.toInt())
+                            foodName = ""
+                            calorieCount = ""
+                            errorMessage = ""
+                        } else {
+                            errorMessage = "Calories cannot be negative."
+                        }
+                    } else {
+                        errorMessage = "Invalid input. Please enter valid food and calories."
                     }
                 }
             ) {
@@ -245,20 +257,38 @@ fun AddFoodDialog(onDismiss: () -> Unit, onSave: (String) -> Unit) {
         },
         title = { Text("Add Food") },
         text = {
-            TextField(
-                value = textFieldValue,
-                onValueChange = { textFieldValue = it },
-                label = { Text("Food Name") },
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth()
-            )
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                TextField(
+                    value = foodName,
+                    onValueChange = { foodName = it },
+                    label = { Text("Food Name") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                TextField(
+                    value = calorieCount,
+                    onValueChange = { calorieCount = it },
+                    label = { Text("Calories") },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                    modifier = Modifier.fillMaxWidth()
+                )
+                if (errorMessage.isNotEmpty()) {
+                    Text(
+                        text = errorMessage,
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(top = 8.dp)
+                    )
+                }
+            }
         }
     )
 }
 
 @Composable
-fun CalorieProgress(currentCalories: Float, calorieGoal: Float) {
-    val progress = (currentCalories / calorieGoal).coerceIn(0f, 1f)
+fun CalorieProgress(currentCalories: Int, calorieGoal: Int) {
+    val progress = (currentCalories.toFloat() / calorieGoal).coerceIn(0f, 1f)
     
     Column(
         Modifier
@@ -274,13 +304,13 @@ fun CalorieProgress(currentCalories: Float, calorieGoal: Float) {
             color = MaterialTheme.colorScheme.onBackground
         )
         LinearProgressIndicator(
-            progress = { progress },
+            progress = progress,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 4.dp),
         )
         Text(
-            text = "${currentCalories.toInt()} / ${calorieGoal.toInt()} kcal",
+            text = "$currentCalories / $calorieGoal kcal",
             fontSize = 14.sp,
             color = MaterialTheme.colorScheme.onBackground
         )
