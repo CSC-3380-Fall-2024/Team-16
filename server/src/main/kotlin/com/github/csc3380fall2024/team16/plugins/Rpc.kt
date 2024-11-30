@@ -5,6 +5,7 @@ import com.github.csc3380fall2024.team16.createHash
 import com.github.csc3380fall2024.team16.createRandomSalt
 import com.github.csc3380fall2024.team16.createToken
 import com.github.csc3380fall2024.team16.emailRegex
+import com.github.csc3380fall2024.team16.userFromToken
 import com.github.csc3380fall2024.team16.usernameRegex
 import io.ktor.server.application.Application
 import io.ktor.server.application.install

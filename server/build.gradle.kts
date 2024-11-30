@@ -14,6 +14,7 @@ application {
 buildConfig {
     buildConfigField("SERVER_PORT", env.fetch("SERVER_PORT").toInt())
     buildConfigField("DATABASE_PORT", env.fetch("DATABASE_PORT").toInt())
+    buildConfigField("JWT_SECRET", env.fetch("JWT_SECRET"))
 }
 
 dependencies {
