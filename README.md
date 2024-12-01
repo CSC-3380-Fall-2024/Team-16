@@ -29,6 +29,7 @@ This is a Kotlin Multiplatform project for Android and IOS.
 5. Install [Docker plugin](https://plugins.jetbrains.com/plugin/7724-docker).
 6. Clone this repo.
 7. Open it in Android Studio.
+8. Copy [`.env.template`](/.env.template) to a new file named `.env`, and follow the instructions inside.
 
 ### Enable useful settings
 
