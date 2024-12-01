@@ -22,11 +22,19 @@ object HomeRoute
 @Composable
 fun HomeRoute.compose() {
     Navigator(start = ChooseRoute) {
-        route<ChooseRoute> { this.compose(navController) }
-        route<WorkoutGeneratorRoute> { this.compose(navController) }
-        route<BodybuildingRoute> { this.compose(navController) }
-        route<PowerliftingRoute> { this.compose(navController) }
-        route<AthleticsRoute> { this.compose(navController) }
-        route<WeightLossRoute> { this.compose(navController) }
+        route<ChooseRoute> {
+            this.compose(
+                onBack = { navController.popBackStack() },
+                onNavigateBodyBuilding = { navController.navigate(BodybuildingRoute) },
+                onNavigatePowerlifting = { navController.navigate(PowerliftingRoute) },
+                onNavigateAthletics = { navController.navigate(AthleticsRoute) },
+                onNavigateWeightloss = { navController.navigate(WeightLossRoute) },
+            )
+        }
+        route<WorkoutGeneratorRoute> { this.compose(onBack = { navController.popBackStack() }) }
+        route<BodybuildingRoute> { this.compose(onBack = { navController.popBackStack() }) }
+        route<PowerliftingRoute> { this.compose(onBack = { navController.popBackStack() }) }
+        route<AthleticsRoute> { this.compose(onBack = { navController.popBackStack() }) }
+        route<WeightLossRoute> { this.compose(onBack = { navController.popBackStack() }) }
     }
 }

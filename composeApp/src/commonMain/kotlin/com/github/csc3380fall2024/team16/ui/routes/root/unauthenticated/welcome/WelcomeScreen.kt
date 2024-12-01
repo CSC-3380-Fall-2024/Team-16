@@ -21,12 +21,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import com.github.csc3380fall2024.team16.ui.routes.root.unauthenticated.login.LoginRoute
-import com.github.csc3380fall2024.team16.ui.routes.root.unauthenticated.register.RegisterRoute
 
 @Composable
-fun WelcomeScreen(navController: NavController) {
+fun WelcomeScreen(onNavigateRegister: () -> Unit, onNavigateLogin: () -> Unit) {
     Box(
         modifier = Modifier.fillMaxSize()
             .padding(horizontal = 20.dp)
@@ -60,7 +57,7 @@ fun WelcomeScreen(navController: NavController) {
             )
             
             Button(
-                onClick = { navController.navigate(RegisterRoute) },
+                onClick = { onNavigateRegister() },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 20.dp),
@@ -80,7 +77,7 @@ fun WelcomeScreen(navController: NavController) {
                 text = "Log In",
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.clickable {
-                    navController.navigate(LoginRoute)
+                    onNavigateLogin()
                 }
             )
         }

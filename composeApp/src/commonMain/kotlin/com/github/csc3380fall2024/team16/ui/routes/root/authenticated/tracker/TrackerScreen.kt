@@ -31,10 +31,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 
 @Composable
-fun TrackerScreen(navController: NavController, currentCalories: Int, calorieGoal: Int) {
+fun TrackerScreen(currentCalories: Int, calorieGoal: Int) {
     var showEditCalorieDialog by remember { mutableStateOf(false) }
     var updatedCurrentCalories by remember { mutableStateOf(currentCalories) }
     var updatedCalorieGoal by remember { mutableStateOf(calorieGoal) }

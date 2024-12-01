@@ -22,7 +22,12 @@ fun UnauthenticatedRoute.compose(
     onAuthenticated: (token: String) -> Unit,
 ) {
     Navigator(start = WelcomeRoute) {
-        route<WelcomeRoute> { this.compose(navController) }
+        route<WelcomeRoute> {
+            this.compose(
+                onNavigateRegister = { navController.navigate(RegisterRoute) },
+                onNavigateLogin = { navController.navigate(LoginRoute) }
+            )
+        }
         route<RegisterRoute> { this.compose(client, onAuthenticated) }
         route<LoginRoute> {
             this.compose(
@@ -32,6 +37,10 @@ fun UnauthenticatedRoute.compose(
                 onNavigateForgotPassword = { navController.navigate(ForgotPasswordRoute) },
             )
         }
-        route<ForgotPasswordRoute> { this.compose(navController) }
+        route<ForgotPasswordRoute> {
+            this.compose(
+                onNavigateLogin = { navController.navigate(LoginRoute) }
+            )
+        }
     }
 }

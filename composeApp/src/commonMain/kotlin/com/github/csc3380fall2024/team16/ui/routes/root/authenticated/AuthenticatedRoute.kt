@@ -39,8 +39,8 @@ fun AuthenticatedRoute.compose(client: RpcClient) {
         }
     ) {
         route<HomeRoute> { this.compose() }
-        route<TrackerRoute> { this.compose(navController, currentCalories = 0, calorieGoal = 2000) }
-        route<NewsRoute> { this.compose(navController) }
-        route<SocialRoute> { this.compose(navController) }
+        route<TrackerRoute> { this.compose(currentCalories = 0, calorieGoal = 2000) }
+        route<NewsRoute> { this.compose() }
+        route<SocialRoute> { this.compose() }
     }
 }

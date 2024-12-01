@@ -24,10 +24,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 
 @Composable
-fun SocialScreen(navController: NavController) {
+fun SocialScreen() {
     var showProfileCreation by remember { mutableStateOf(true) }
     var name by remember { mutableStateOf("") }
     var bio by remember { mutableStateOf("") }
@@ -46,7 +45,7 @@ fun SocialScreen(navController: NavController) {
             }
         )
     } else {
-        SocialFeedPage(navController = navController, name, bio, profilePicture)
+        SocialFeedPage(name, bio, profilePicture)
     }
 }
 
@@ -122,7 +121,6 @@ fun ProfileCreationScreen(
 
 @Composable
 fun SocialFeedPage(
-    navController: NavController,
     name: String?,
     bio: String?,
     profilePicture: Painter?

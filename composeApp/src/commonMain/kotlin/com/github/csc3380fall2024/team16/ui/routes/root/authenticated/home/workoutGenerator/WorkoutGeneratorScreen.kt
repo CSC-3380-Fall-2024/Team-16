@@ -17,12 +17,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.github.csc3380fall2024.team16.Exercise
 import com.github.csc3380fall2024.team16.ExerciseRepository
 
 @Composable
-fun WorkoutGeneratorScreen(navController: NavController) {
+fun WorkoutGeneratorScreen(onBack: () -> Unit) {
     var selectedGoal by remember { mutableStateOf<String?>(null) }
     var selectedTarget by remember { mutableStateOf<String?>(null) }
     var selectedIntensity by remember { mutableStateOf<String?>(null) }
@@ -39,7 +38,7 @@ fun WorkoutGeneratorScreen(navController: NavController) {
     
     Box(Modifier.fillMaxSize()) {
         Button(
-            onClick = { navController.popBackStack() },
+            onClick = { onBack() },
             modifier = Modifier
                 .padding(top = 50.dp, start = 8.dp)
         ) {
