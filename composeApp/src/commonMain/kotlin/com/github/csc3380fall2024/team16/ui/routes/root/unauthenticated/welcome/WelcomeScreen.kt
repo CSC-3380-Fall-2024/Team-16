@@ -1,4 +1,4 @@
-package com.github.csc3380fall2024.team16.ui.pages
+package com.github.csc3380fall2024.team16.ui.routes.root.unauthenticated.welcome
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -21,16 +21,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import kotlinx.serialization.Serializable
-import org.jetbrains.compose.ui.tooling.preview.Preview
-
-@Serializable
-object Welcome
 
 @Composable
-@Preview
-fun WelcomePage(navController: NavController) {
+fun WelcomeScreen(onNavigateRegister: () -> Unit, onNavigateLogin: () -> Unit) {
     Box(
         modifier = Modifier.fillMaxSize()
             .padding(horizontal = 20.dp)
@@ -64,7 +57,7 @@ fun WelcomePage(navController: NavController) {
             )
             
             Button(
-                onClick = { navController.navigate(Register) },
+                onClick = { onNavigateRegister() },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 20.dp),
@@ -84,7 +77,7 @@ fun WelcomePage(navController: NavController) {
                 text = "Log In",
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.clickable {
-                    navController.navigate(Login)
+                    onNavigateLogin()
                 }
             )
         }

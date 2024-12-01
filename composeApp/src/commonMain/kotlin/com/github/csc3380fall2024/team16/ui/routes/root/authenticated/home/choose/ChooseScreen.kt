@@ -1,4 +1,4 @@
-package com.github.csc3380fall2024.team16.ui.pages.home
+package com.github.csc3380fall2024.team16.ui.routes.root.authenticated.home.choose
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -27,14 +27,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import kotlinx.serialization.Serializable
-
-@Serializable
-object Choose
 
 @Composable
-fun ChoosePage(navController: NavController) {
+fun ChooseScreen(
+    onBack: () -> Unit,
+    onNavigateBodyBuilding: () -> Unit,
+    onNavigatePowerlifting: () -> Unit,
+    onNavigateAthletics: () -> Unit,
+    onNavigateWeightloss: () -> Unit,
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -60,7 +61,7 @@ fun ChoosePage(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Button(
-                onClick = { navController.navigate(WorkoutGenerator) },
+                onClick = { onBack() },
                 modifier = Modifier
                     .fillMaxWidth(0.8f)  // Adjust width to 80% of parent container
                     .height(50.dp)  // Slim height
@@ -81,7 +82,7 @@ fun ChoosePage(navController: NavController) {
                     Card(
                         modifier = Modifier
                             .size(125.dp)
-                            .clickable { navController.navigate(Bodybuilding) },
+                            .clickable { onNavigateBodyBuilding() },
                         colors = androidx.compose.material3.CardDefaults.cardColors(
                             containerColor = MaterialTheme.colorScheme.inversePrimary
                         )
@@ -104,7 +105,7 @@ fun ChoosePage(navController: NavController) {
                     Card(
                         modifier = Modifier
                             .size(125.dp)
-                            .clickable { navController.navigate(Powerlifting) },
+                            .clickable { onNavigatePowerlifting() },
                         colors = androidx.compose.material3.CardDefaults.cardColors(
                             containerColor = MaterialTheme.colorScheme.inversePrimary
                         )
@@ -133,7 +134,7 @@ fun ChoosePage(navController: NavController) {
                     Card(
                         modifier = Modifier
                             .size(125.dp)
-                            .clickable { navController.navigate(Athletics) },
+                            .clickable { onNavigateAthletics() },
                         colors = androidx.compose.material3.CardDefaults.cardColors(
                             containerColor = MaterialTheme.colorScheme.inversePrimary
                         )
@@ -156,7 +157,7 @@ fun ChoosePage(navController: NavController) {
                     Card(
                         modifier = Modifier
                             .size(125.dp)
-                            .clickable { navController.navigate(WeightLoss) },
+                            .clickable { onNavigateWeightloss() },
                         colors = androidx.compose.material3.CardDefaults.cardColors(
                             containerColor = MaterialTheme.colorScheme.inversePrimary
                         )

@@ -1,4 +1,4 @@
-package com.github.csc3380fall2024.team16.ui.pages
+package com.github.csc3380fall2024.team16.ui.routes.root.authenticated.news
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -17,14 +17,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import kotlinx.serialization.Serializable
-
-@Serializable
-object News
 
 @Composable
-fun NewsPage(navController: NavController) {
+fun NewsScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()

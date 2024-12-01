@@ -1,4 +1,4 @@
-package com.github.csc3380fall2024.team16.ui.pages.home
+package com.github.csc3380fall2024.team16.ui.routes.root.authenticated.home.workoutGenerator
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,16 +17,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.github.csc3380fall2024.team16.Exercise
 import com.github.csc3380fall2024.team16.ExerciseRepository
-import kotlinx.serialization.Serializable
-
-@Serializable
-object WorkoutGenerator
 
 @Composable
-fun WorkoutGeneratorPage(navController: NavController) {
+fun WorkoutGeneratorScreen(onBack: () -> Unit) {
     var selectedGoal by remember { mutableStateOf<String?>(null) }
     var selectedTarget by remember { mutableStateOf<String?>(null) }
     var selectedIntensity by remember { mutableStateOf<String?>(null) }
@@ -43,7 +38,7 @@ fun WorkoutGeneratorPage(navController: NavController) {
     
     Box(Modifier.fillMaxSize()) {
         Button(
-            onClick = { navController.popBackStack() },
+            onClick = { onBack() },
             modifier = Modifier
                 .padding(top = 50.dp, start = 8.dp)
         ) {

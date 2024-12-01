@@ -1,26 +1,32 @@
-package com.github.csc3380fall2024.team16.ui.pages
+package com.github.csc3380fall2024.team16.ui.routes.root.authenticated.social
 
-import androidx.compose.runtime.Composable
-import androidx.navigation.NavController
-import kotlinx.serialization.Serializable
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-@Serializable
-object Social
-
 @Composable
-fun SocialPage(navController: NavController) {
+fun SocialScreen() {
     var showProfileCreation by remember { mutableStateOf(true) }
     var name by remember { mutableStateOf("") }
     var bio by remember { mutableStateOf("") }
@@ -39,7 +45,7 @@ fun SocialPage(navController: NavController) {
             }
         )
     } else {
-        SocialFeedPage(navController = navController, name, bio, profilePicture)
+        SocialFeedPage(name, bio, profilePicture)
     }
 }
 
@@ -115,7 +121,6 @@ fun ProfileCreationScreen(
 
 @Composable
 fun SocialFeedPage(
-    navController: NavController,
     name: String?,
     bio: String?,
     profilePicture: Painter?

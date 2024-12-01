@@ -1,4 +1,4 @@
-package com.github.csc3380fall2024.team16.ui.pages
+package com.github.csc3380fall2024.team16.ui.routes.root.unauthenticated.forgotPassword
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -22,16 +22,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import kotlinx.serialization.Serializable
-import org.jetbrains.compose.ui.tooling.preview.Preview
-
-@Serializable
-object ForgotPassword
 
 @Composable
-@Preview
-fun ForgotPasswordPage(navController: NavController) {
+fun ForgotPasswordScreen(onNavigateLogin: () -> Unit) {
     Column(
         Modifier.fillMaxSize().padding(horizontal = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -65,7 +58,7 @@ fun ForgotPasswordPage(navController: NavController) {
             text = "Back to Login",
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.clickable {
-                navController.navigate(Login)
+                onNavigateLogin()
             }
         )
     }

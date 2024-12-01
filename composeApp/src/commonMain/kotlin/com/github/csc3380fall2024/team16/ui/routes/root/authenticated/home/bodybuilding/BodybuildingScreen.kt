@@ -1,4 +1,4 @@
-package com.github.csc3380fall2024.team16.ui.pages.home
+package com.github.csc3380fall2024.team16.ui.routes.root.authenticated.home.bodybuilding
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,20 +12,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.github.csc3380fall2024.team16.ExerciseRepository
 import com.github.csc3380fall2024.team16.ui.components.ExerciseItem
-import kotlinx.serialization.Serializable
-
-@Serializable
-object Athletics
 
 @Composable
-fun AthleticsPage(navController: NavController) {
+fun BodybuildingScreen(onBack: () -> Unit) {
     Box(Modifier.fillMaxSize()) {
         // Back Button in the top-left corner
         Button(
-            onClick = { navController.popBackStack() },
+            onClick = { onBack() },
             modifier = Modifier
                 .padding(top = 50.dp, start = 8.dp)
         ) {
@@ -37,10 +32,10 @@ fun AthleticsPage(navController: NavController) {
                 .fillMaxSize()
                 .padding(top = 100.dp)
         ) {
-            Text("Athletic Exercises", fontSize = 24.sp, modifier = Modifier.padding(8.dp))
+            Text("Bodybuilding Exercises", fontSize = 24.sp, modifier = Modifier.padding(8.dp))
             
             // Fetch exercises list from repository
-            val exercises = ExerciseRepository.getAthleticExercises()
+            val exercises = ExerciseRepository.getBodybuildingExercises()
             
             LazyColumn(
                 modifier = Modifier.fillMaxSize()

@@ -1,4 +1,4 @@
-package com.github.csc3380fall2024.team16.ui.pages
+package com.github.csc3380fall2024.team16.ui.routes.root.unauthenticated.login
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -22,15 +22,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.serialization.Serializable
-import org.jetbrains.compose.ui.tooling.preview.Preview
-
-@Serializable
-object Login
 
 @Composable
-@Preview
-fun LoginPage(
+fun LoginScreen(
     onLogin: (usernameOrEmail: String, password: String) -> Unit,
     onNavigateRegister: () -> Unit,
     onNavigateForgotPassword: () -> Unit,
