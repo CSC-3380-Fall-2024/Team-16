@@ -5,9 +5,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 
-sealed class AppState {
-    data object LoggedOut : AppState()
-    data class LoggedIn(val token: String) : AppState()
+sealed interface AppState {
+    data object LoggedOut : AppState
+    data class LoggedIn(val token: String) : AppState
 }
 
 class AppViewModel : ViewModel() {
