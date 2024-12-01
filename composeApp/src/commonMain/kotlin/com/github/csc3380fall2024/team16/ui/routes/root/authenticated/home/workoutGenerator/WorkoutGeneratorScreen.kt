@@ -1,4 +1,4 @@
-package com.github.csc3380fall2024.team16.ui.pages.home
+package com.github.csc3380fall2024.team16.ui.routes.root.authenticated.home.workoutGenerator
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,7 +22,7 @@ import com.github.csc3380fall2024.team16.Exercise
 import com.github.csc3380fall2024.team16.ExerciseRepository
 
 @Composable
-fun WorkoutGeneratorPage(navController: NavController) {
+fun WorkoutGeneratorScreen(navController: NavController) {
     var selectedGoal by remember { mutableStateOf<String?>(null) }
     var selectedTarget by remember { mutableStateOf<String?>(null) }
     var selectedIntensity by remember { mutableStateOf<String?>(null) }

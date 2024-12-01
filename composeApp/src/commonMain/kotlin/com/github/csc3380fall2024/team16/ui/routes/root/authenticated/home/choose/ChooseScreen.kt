@@ -1,4 +1,4 @@
-package com.github.csc3380fall2024.team16.ui.pages.home
+package com.github.csc3380fall2024.team16.ui.routes.root.authenticated.home.choose
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -35,7 +35,7 @@ import com.github.csc3380fall2024.team16.ui.routes.root.authenticated.home.weigh
 import com.github.csc3380fall2024.team16.ui.routes.root.authenticated.home.workoutGenerator.WorkoutGeneratorRoute
 
 @Composable
-fun ChoosePage(navController: NavController) {
+fun ChooseScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()

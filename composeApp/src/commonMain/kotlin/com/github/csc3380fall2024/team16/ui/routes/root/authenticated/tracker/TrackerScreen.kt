@@ -1,4 +1,4 @@
-package com.github.csc3380fall2024.team16.ui.pages
+package com.github.csc3380fall2024.team16.ui.routes.root.authenticated.tracker
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
 @Composable
-fun TrackerPage(navController: NavController, currentCalories: Int, calorieGoal: Int) {
+fun TrackerScreen(navController: NavController, currentCalories: Int, calorieGoal: Int) {
     var showEditCalorieDialog by remember { mutableStateOf(false) }
     var updatedCurrentCalories by remember { mutableStateOf(currentCalories) }
     var updatedCalorieGoal by remember { mutableStateOf(calorieGoal) }

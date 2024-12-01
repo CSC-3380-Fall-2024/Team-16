@@ -1,4 +1,4 @@
-package com.github.csc3380fall2024.team16.ui.pages
+package com.github.csc3380fall2024.team16.ui.routes.root.authenticated.social
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
 @Composable
-fun SocialPage(navController: NavController) {
+fun SocialScreen(navController: NavController) {
     var showProfileCreation by remember { mutableStateOf(true) }
     var name by remember { mutableStateOf("") }
     var bio by remember { mutableStateOf("") }

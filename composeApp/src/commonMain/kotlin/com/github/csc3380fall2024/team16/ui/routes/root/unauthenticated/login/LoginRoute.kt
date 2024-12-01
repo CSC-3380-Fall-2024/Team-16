@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.github.csc3380fall2024.team16.RpcClient
-import com.github.csc3380fall2024.team16.ui.pages.LoginPage
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -18,7 +17,7 @@ fun LoginRoute.compose(
     onNavigateForgotPassword: () -> Unit,
 ) {
     val viewModel = viewModel { LoginViewModel(client) }
-    LoginPage(
+    LoginScreen(
         onLogin = viewModel::login,
         onNavigateRegister = onNavigateRegister,
         onNavigateForgotPassword = onNavigateForgotPassword,

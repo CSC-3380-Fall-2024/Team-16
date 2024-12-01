@@ -1,4 +1,4 @@
-package com.github.csc3380fall2024.team16.ui.pages.home
+package com.github.csc3380fall2024.team16.ui.routes.root.authenticated.home.bodybuilding
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,7 +17,7 @@ import com.github.csc3380fall2024.team16.ExerciseRepository
 import com.github.csc3380fall2024.team16.ui.components.ExerciseItem
 
 @Composable
-fun BodybuildingPage(navController: NavController) {
+fun BodybuildingScreen(navController: NavController) {
     Box(Modifier.fillMaxSize()) {
         // Back Button in the top-left corner
         Button(

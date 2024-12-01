@@ -1,4 +1,4 @@
-package com.github.csc3380fall2024.team16.ui.pages
+package com.github.csc3380fall2024.team16.ui.routes.root.unauthenticated.welcome
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -24,11 +24,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.github.csc3380fall2024.team16.ui.routes.root.unauthenticated.login.LoginRoute
 import com.github.csc3380fall2024.team16.ui.routes.root.unauthenticated.register.RegisterRoute
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-@Preview
-fun WelcomePage(navController: NavController) {
+fun WelcomeScreen(navController: NavController) {
     Box(
         modifier = Modifier.fillMaxSize()
             .padding(horizontal = 20.dp)

@@ -2,7 +2,6 @@ package com.github.csc3380fall2024.team16.ui.routes.root.authenticated.home.work
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
-import com.github.csc3380fall2024.team16.ui.pages.home.WorkoutGeneratorPage
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -10,5 +9,5 @@ object WorkoutGeneratorRoute
 
 @Composable
 fun WorkoutGeneratorRoute.compose(navController: NavController) {
-    WorkoutGeneratorPage(navController)
+    WorkoutGeneratorScreen(navController)
 }

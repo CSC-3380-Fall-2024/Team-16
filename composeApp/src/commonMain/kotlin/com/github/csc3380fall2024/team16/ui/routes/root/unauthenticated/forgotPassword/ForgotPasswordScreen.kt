@@ -1,4 +1,4 @@
-package com.github.csc3380fall2024.team16.ui.pages
+package com.github.csc3380fall2024.team16.ui.routes.root.unauthenticated.forgotPassword
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -22,68 +22,45 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
+import com.github.csc3380fall2024.team16.ui.routes.root.unauthenticated.login.LoginRoute
 
 @Composable
-@Preview
-fun LoginPage(
-    onLogin: (usernameOrEmail: String, password: String) -> Unit,
-    onNavigateRegister: () -> Unit,
-    onNavigateForgotPassword: () -> Unit,
-) {
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    
+fun ForgotPasswordScreen(navController: NavController) {
     Column(
         Modifier.fillMaxSize().padding(horizontal = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(40.dp, Alignment.CenterVertically),
     ) {
-        Text("Login", fontSize = 30.sp, fontWeight = FontWeight.Bold)
-        Text("Welcome back to Universal Fitness.")
+        Text("Forgot Password", fontSize = 30.sp, fontWeight = FontWeight.Bold)
         
         Column(
             Modifier.padding(horizontal = 20.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterVertically)
+            verticalArrangement = Arrangement.spacedBy(
+                20.dp,
+                Alignment.CenterVertically
+            )
         ) {
+            var username by remember { mutableStateOf("") }
             TextField(
                 username,
                 { username = it },
                 Modifier.fillMaxWidth(),
-                placeholder = { Text("Username") },
+                placeholder = { Text("Enter Email") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 singleLine = true
             )
-            
-            TextField(
-                password,
-                { password = it },
-                Modifier.fillMaxWidth(),
-                placeholder = { Text("Password") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                singleLine = true
-            )
         }
         
-        Button({
-            onLogin(username, password)
-        }, Modifier.fillMaxWidth().padding(20.dp)) {
-            Text("Login", fontSize = 20.sp, lineHeight = 5.sp)
+        Button(onClick = {}, Modifier.fillMaxWidth().padding(20.dp)) {
+            Text("Submit", fontSize = 20.sp, lineHeight = 5.sp)
         }
         
         Text(
-            text = "Register",
+            text = "Back to Login",
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.clickable {
-                onNavigateRegister()
-            }
-        )
-        
-        Text(
-            text = "Forgot Password",
-            style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier.clickable {
-                onNavigateForgotPassword()
+                navController.navigate(LoginRoute)
             }
         )
     }

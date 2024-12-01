@@ -1,4 +1,4 @@
-package com.github.csc3380fall2024.team16.ui.pages
+package com.github.csc3380fall2024.team16.ui.routes.root.unauthenticated.register
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun RegisterPage(
+fun RegisterScreen(
     onRegister: (username: String, email: String, password: String) -> Unit,
 ) {
     var username by remember { mutableStateOf("") }

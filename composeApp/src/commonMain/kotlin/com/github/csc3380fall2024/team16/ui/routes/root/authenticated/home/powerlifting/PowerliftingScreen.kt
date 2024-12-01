@@ -1,4 +1,4 @@
-package com.github.csc3380fall2024.team16.ui.pages.home
+package com.github.csc3380fall2024.team16.ui.routes.root.authenticated.home.powerlifting
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,7 +17,7 @@ import com.github.csc3380fall2024.team16.ExerciseRepository
 import com.github.csc3380fall2024.team16.ui.components.ExerciseItem
 
 @Composable
-fun AthleticsPage(navController: NavController) {
+fun PowerliftingScreen(navController: NavController) {
     Box(Modifier.fillMaxSize()) {
         // Back Button in the top-left corner
         Button(
@@ -33,10 +33,10 @@ fun AthleticsPage(navController: NavController) {
                 .fillMaxSize()
                 .padding(top = 100.dp)
         ) {
-            Text("Athletic Exercises", fontSize = 24.sp, modifier = Modifier.padding(8.dp))
+            Text("Powerlifting Exercises", fontSize = 24.sp, modifier = Modifier.padding(8.dp))
             
             // Fetch exercises list from repository
-            val exercises = ExerciseRepository.getAthleticExercises()
+            val exercises = ExerciseRepository.getPowerliftingExercises()
             
             LazyColumn(
                 modifier = Modifier.fillMaxSize()
