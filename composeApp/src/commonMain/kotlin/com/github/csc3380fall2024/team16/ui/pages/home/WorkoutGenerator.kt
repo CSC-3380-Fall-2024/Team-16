@@ -20,10 +20,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.github.csc3380fall2024.team16.Exercise
 import com.github.csc3380fall2024.team16.ExerciseRepository
-import kotlinx.serialization.Serializable
-
-@Serializable
-object WorkoutGenerator
 
 @Composable
 fun WorkoutGeneratorPage(navController: NavController) {

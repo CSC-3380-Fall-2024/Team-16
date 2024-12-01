@@ -23,11 +23,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import kotlinx.serialization.Serializable
+import com.github.csc3380fall2024.team16.ui.routes.root.unauthenticated.login.LoginRoute
 import org.jetbrains.compose.ui.tooling.preview.Preview
-
-@Serializable
-object ForgotPassword
 
 @Composable
 @Preview
@@ -65,7 +62,7 @@ fun ForgotPasswordPage(navController: NavController) {
             text = "Back to Login",
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.clickable {
-                navController.navigate(Login)
+                navController.navigate(LoginRoute)
             }
         )
     }

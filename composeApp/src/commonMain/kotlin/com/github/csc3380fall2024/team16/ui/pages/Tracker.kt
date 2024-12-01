@@ -32,10 +32,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import kotlinx.serialization.Serializable
-
-@Serializable
-object Tracker
 
 @Composable
 fun TrackerPage(navController: NavController, currentCalories: Int, calorieGoal: Int) {
@@ -99,7 +95,7 @@ fun TrackerPage(navController: NavController, currentCalories: Int, calorieGoal:
                 Text(text = "Add Food")
             }
         }
-
+        
         
         if (showAddFoodDialog) {
             AddFoodDialog(

@@ -58,7 +58,7 @@ fun Navigator(
 class NavHostComposer(val navController: NavController)
 
 class RoutesBuilder(val underlyingNavGraphBuilder: NavGraphBuilder, val navController: NavController) {
-    inline fun <reified T : Any> route(noinline content: @Composable (T) -> Unit) {
+    inline fun <reified T : Any> route(noinline content: @Composable T.() -> Unit) {
         underlyingNavGraphBuilder.composable<T> {
             content(it.toRoute<T>())
         }

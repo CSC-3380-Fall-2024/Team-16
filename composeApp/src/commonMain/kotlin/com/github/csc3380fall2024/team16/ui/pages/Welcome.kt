@@ -22,11 +22,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import kotlinx.serialization.Serializable
+import com.github.csc3380fall2024.team16.ui.routes.root.unauthenticated.login.LoginRoute
+import com.github.csc3380fall2024.team16.ui.routes.root.unauthenticated.register.RegisterRoute
 import org.jetbrains.compose.ui.tooling.preview.Preview
-
-@Serializable
-object Welcome
 
 @Composable
 @Preview
@@ -64,7 +62,7 @@ fun WelcomePage(navController: NavController) {
             )
             
             Button(
-                onClick = { navController.navigate(Register) },
+                onClick = { navController.navigate(RegisterRoute) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 20.dp),
@@ -84,7 +82,7 @@ fun WelcomePage(navController: NavController) {
                 text = "Log In",
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.clickable {
-                    navController.navigate(Login)
+                    navController.navigate(LoginRoute)
                 }
             )
         }

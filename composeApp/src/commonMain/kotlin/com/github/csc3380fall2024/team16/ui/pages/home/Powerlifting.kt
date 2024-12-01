@@ -15,10 +15,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.github.csc3380fall2024.team16.ExerciseRepository
 import com.github.csc3380fall2024.team16.ui.components.ExerciseItem
-import kotlinx.serialization.Serializable
-
-@Serializable
-object Powerlifting
 
 @Composable
 fun PowerliftingPage(navController: NavController) {
