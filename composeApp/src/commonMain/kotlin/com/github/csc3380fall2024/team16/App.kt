@@ -15,7 +15,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.compose.rememberNavController
 import com.github.csc3380fall2024.team16.ui.components.BottomBar
 import com.github.csc3380fall2024.team16.ui.components.Tab
 import com.github.csc3380fall2024.team16.ui.pages.Add
@@ -58,13 +57,22 @@ fun App() {
         Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
             val client = remember { RpcClient() }
             val viewModel = viewModel { AppViewModel() }
-            val navController = rememberNavController()
-            CustomNavHost(navController, Unauthenticated) {
-                composable<Unauthenticated> {
-                    val navController = rememberNavController()
-                    CustomNavHost(navController, Welcome) {
-                        composable<Welcome> { WelcomePage(navController) }
-                        composable<Register> {
+            
+            Navigator(
+                start = Unauthenticated,
+                effect = {
+                    LaunchedEffect(viewModel.state) {
+                        when (val state = viewModel.state) {
+                            is AppState.LoggedOut -> navController.navigate(Unauthenticated) { popUpTo(0) }
+                            is AppState.LoggedIn  -> navController.navigate(Authenticated(state.token)) { popUpTo(0) }
+                        }
+                    }
+                }
+            ) {
+                route<Unauthenticated> {
+                    Navigator(start = Welcome) {
+                        route<Welcome> { WelcomePage(navController) }
+                        route<Register> {
                             RegisterPage(
                                 onRegister = { username, email, password ->
                                     viewModel.viewModelScope.launch {
@@ -76,7 +84,7 @@ fun App() {
                                 }
                             )
                         }
-                        composable<Login> {
+                        route<Login> {
                             LoginPage(
                                 onLogin = { usernameOrEmail, password ->
                                     viewModel.viewModelScope.launch {
@@ -94,45 +102,38 @@ fun App() {
                                 }
                             )
                         }
-                        composable<ForgotPassword> { ForgotPasswordPage(navController) }
+                        route<ForgotPassword> { ForgotPasswordPage(navController) }
                     }
                 }
                 
-                composable<Authenticated> {
-                    val navController = rememberNavController()
-                    val tabs = listOf(
-                        Tab("Home", Icons.Filled.Home, Home),
-                        Tab("Tracker", Icons.Filled.InsertChart, Tracker),
-                        Tab("News", Icons.Filled.Newspaper, News),
-                        Tab("Social", Icons.Filled.Group, Social),
-                    )
-                    
-                    Scaffold(bottomBar = { BottomBar(navController, tabs) }) {
-                        CustomNavHost(navController, Home) {
-                            composable<Home> {
-                                val navController = rememberNavController()
-                                CustomNavHost(navController, Choose) {
-                                    composable<Choose> { ChoosePage(navController) }
-                                    composable<WorkoutGenerator> { WorkoutGeneratorPage(navController) }
-                                    composable<Bodybuilding> { BodybuildingPage(navController) }
-                                    composable<Powerlifting> { PowerliftingPage(navController) }
-                                    composable<Athletics> { AthleticsPage(navController) }
-                                    composable<WeightLoss> { WeightLossPage(navController) }
-                                }
-                            }
-                            composable<Tracker> { TrackerPage(navController, currentCalories = 0, calorieGoal = 2000) }
-                            composable<News> { NewsPage(navController) }
-                            composable<Social> { SocialPage(navController) }
-                            composable<Add> { AddFood(navController) }
+                route<Authenticated> {
+                    Navigator(
+                        start = Home,
+                        compose = {
+                            val tabs = listOf(
+                                Tab("Home", Icons.Filled.Home, Home),
+                                Tab("Tracker", Icons.Filled.InsertChart, Tracker),
+                                Tab("News", Icons.Filled.Newspaper, News),
+                                Tab("Social", Icons.Filled.Group, Social),
+                            )
+                            Scaffold(bottomBar = { BottomBar(navController, tabs) }) { it() }
                         }
+                    ) {
+                        route<Home> {
+                            Navigator(start = Choose) {
+                                route<Choose> { ChoosePage(navController) }
+                                route<WorkoutGenerator> { WorkoutGeneratorPage(navController) }
+                                route<Bodybuilding> { BodybuildingPage(navController) }
+                                route<Powerlifting> { PowerliftingPage(navController) }
+                                route<Athletics> { AthleticsPage(navController) }
+                                route<WeightLoss> { WeightLossPage(navController) }
+                            }
+                        }
+                        route<Tracker> { TrackerPage(navController, currentCalories = 0, calorieGoal = 2000) }
+                        route<News> { NewsPage(navController) }
+                        route<Social> { SocialPage(navController) }
+                        route<Add> { AddFood(navController) }
                     }
-                }
-            }
-            
-            LaunchedEffect(viewModel.state) {
-                when (val state = viewModel.state) {
-                    is AppState.LoggedOut -> navController.navigate(Unauthenticated) { popUpTo(0) }
-                    is AppState.LoggedIn  -> navController.navigate(Authenticated(state.token)) { popUpTo(0) }
                 }
             }
         }
