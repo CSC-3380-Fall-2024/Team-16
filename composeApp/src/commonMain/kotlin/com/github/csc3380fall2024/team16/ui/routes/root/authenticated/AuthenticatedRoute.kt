@@ -1,5 +1,7 @@
 package com.github.csc3380fall2024.team16.ui.routes.root.authenticated
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.Home
@@ -7,6 +9,7 @@ import androidx.compose.material.icons.filled.InsertChart
 import androidx.compose.material.icons.filled.Newspaper
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import com.github.csc3380fall2024.team16.Navigator
 import com.github.csc3380fall2024.team16.RpcClient
 import com.github.csc3380fall2024.team16.ui.components.BottomBar
@@ -35,7 +38,11 @@ fun AuthenticatedRoute.compose(client: RpcClient) {
                 Tab("News", Icons.Filled.Newspaper, NewsRoute),
                 Tab("Social", Icons.Filled.Group, SocialRoute),
             )
-            Scaffold(bottomBar = { BottomBar(navController, tabs) }) { it() }
+            Scaffold(
+                bottomBar = { BottomBar(navController, tabs) }
+            ) {
+                Box(Modifier.padding(it)) { it() }
+            }
         }
     ) {
         route<HomeRoute> { this.compose() }

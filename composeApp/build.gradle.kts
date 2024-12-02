@@ -51,6 +51,8 @@ kotlin {
             implementation(libs.kotlinx.rpc.krpc.client)
             implementation(libs.kotlinx.rpc.krpc.ktor.client)
             implementation(libs.kotlinx.rpc.krpc.serialization.json)
+            implementation(libs.coil.compose)
+            implementation(libs.coil.network.ktor3)
             implementation(projects.shared)
         }
     }

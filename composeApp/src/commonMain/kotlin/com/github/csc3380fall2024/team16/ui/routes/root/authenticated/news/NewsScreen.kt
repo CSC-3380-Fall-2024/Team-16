@@ -1,12 +1,16 @@
 package com.github.csc3380fall2024.team16.ui.routes.root.authenticated.news
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -16,14 +20,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 
 @Composable
 fun NewsScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            //                .padding(16.dp)
             .verticalScroll(rememberScrollState()) // Enabling vertical scroll
     ) {
         // Fun Fact of the Day
@@ -34,7 +40,7 @@ fun NewsScreen() {
         // The Latest News
         NewsSection(
             sectionTitle = "The Latest News",
-            newsItems = listOf("Article 1", "Article 2", "Article 3")
+            articles = listOf("Article 1", "Article 2", "Article 3")
         )
         
         Spacer(modifier = Modifier.height(24.dp))
@@ -42,7 +48,7 @@ fun NewsScreen() {
         // Daily Sports News
         NewsSection(
             sectionTitle = "Daily Sports News",
-            newsItems = listOf("Sports News 1", "Latest Sports Update", "Sports News 2")
+            articles = listOf("Sports News 1", "Latest Sports Update", "Sports News 2")
         )
         
         Spacer(modifier = Modifier.height(24.dp))
@@ -50,7 +56,7 @@ fun NewsScreen() {
         // The Science of Fitness
         NewsSection(
             sectionTitle = "The Science of Fitness",
-            newsItems = listOf("Fitness Science 1", "Research Update on Fitness", "Benefits of Strength Training")
+            articles = listOf("Fitness Science 1", "Research Update on Fitness", "Benefits of Strength Training")
         )
     }
 }
@@ -84,12 +90,11 @@ fun FunFactOfDay() {
 }
 
 @Composable
-fun NewsSection(sectionTitle: String, newsItems: List<String>) {
+fun NewsSection(sectionTitle: String, articles: List<String>) {
     Column {
         Text(
             text = sectionTitle,
             style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onPrimary,
             modifier = Modifier.padding(8.dp)
         )
         HorizontalDivider(modifier = Modifier.padding(horizontal = 8.dp))
@@ -100,8 +105,8 @@ fun NewsSection(sectionTitle: String, newsItems: List<String>) {
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp)
         ) {
-            newsItems.forEach { news ->
-                NewsCard(newsTitle = news)
+            articles.forEach {
+                NewsCard(it)
                 Spacer(modifier = Modifier.height(12.dp))
             }
         }
@@ -109,7 +114,7 @@ fun NewsSection(sectionTitle: String, newsItems: List<String>) {
 }
 
 @Composable
-fun NewsCard(newsTitle: String) {
+fun NewsCard(article: String) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -117,18 +122,29 @@ fun NewsCard(newsTitle: String) {
         elevation = CardDefaults.cardElevation(4.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(
-                text = newsTitle,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
-            )
-            Text(
-                text = "Read more...",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(top = 8.dp)
-            )
+        Row(
+            Modifier.padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column(Modifier.weight(4f)) {
+                Text(
+                    text = article,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                )
+                Text(
+                    text = "Read more...",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
+            }
+            Box(Modifier.weight(1f).clip(RoundedCornerShape(15.dp))) {
+                AsyncImage(
+                    model = "https://learn.getgrav.org/system/images/media/thumb-jpg.png",
+                    contentDescription = null,
+                )
+            }
         }
     }
 }
