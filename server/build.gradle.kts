@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.buildconfig)
     alias(libs.plugins.kotlinJvm)
     alias(libs.plugins.ktor)
+    alias(libs.plugins.serialization)
     application
 }
 
@@ -22,6 +23,8 @@ dependencies {
     implementation(projects.shared)
     implementation(libs.logback)
     implementation(libs.ktor.client.cio)
+    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.server.netty)
     implementation(libs.java.jwt)

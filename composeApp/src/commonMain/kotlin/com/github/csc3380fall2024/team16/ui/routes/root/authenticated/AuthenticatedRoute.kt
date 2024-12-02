@@ -29,25 +29,25 @@ data class AuthenticatedRoute(val token: String)
 
 @Composable
 fun AuthenticatedRoute.compose(client: RpcClient) {
-    Navigator(
-        start = HomeRoute,
-        compose = {
-            val tabs = listOf(
-                Tab("Home", Icons.Filled.Home, HomeRoute),
-                Tab("Tracker", Icons.Filled.InsertChart, TrackerRoute),
-                Tab("News", Icons.Filled.Newspaper, NewsRoute),
-                Tab("Social", Icons.Filled.Group, SocialRoute),
-            )
-            Scaffold(
-                bottomBar = { BottomBar(navController, tabs) }
-            ) {
-                Box(Modifier.padding(it)) { it() }
-            }
-        }
-    ) {
-        route<HomeRoute> { this.compose() }
-        route<TrackerRoute> { this.compose(currentCalories = 0, calorieGoal = 2000) }
-        route<NewsRoute> { this.compose() }
-        route<SocialRoute> { this.compose() }
-    }
+	Navigator(
+		start = HomeRoute,
+		compose = {
+			val tabs = listOf(
+				Tab("Home", Icons.Filled.Home, HomeRoute),
+				Tab("Tracker", Icons.Filled.InsertChart, TrackerRoute),
+				Tab("News", Icons.Filled.Newspaper, NewsRoute(token)),
+				Tab("Social", Icons.Filled.Group, SocialRoute),
+			)
+			Scaffold(
+				bottomBar = { BottomBar(navController, tabs) }
+			) {
+				Box(Modifier.padding(it)) { it() }
+			}
+		}
+	) {
+		route<HomeRoute> { this.compose() }
+		route<TrackerRoute> { this.compose(currentCalories = 0, calorieGoal = 2000) }
+		route<NewsRoute> { this.compose(client) }
+		route<SocialRoute> { this.compose() }
+	}
 }
