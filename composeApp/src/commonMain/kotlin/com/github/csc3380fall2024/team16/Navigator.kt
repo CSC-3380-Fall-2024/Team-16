@@ -2,7 +2,12 @@ package com.github.csc3380fall2024.team16
 
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
@@ -60,7 +65,10 @@ class NavHostComposer(val navController: NavController)
 class RoutesBuilder(val underlyingNavGraphBuilder: NavGraphBuilder, val navController: NavController) {
     inline fun <reified T : Any> route(noinline content: @Composable T.() -> Unit) {
         underlyingNavGraphBuilder.composable<T> {
-            content(it.toRoute<T>())
+            // wrap in colored box to hide screens from overlapping for a split second
+            Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+                content(it.toRoute<T>())
+            }
         }
     }
 }
