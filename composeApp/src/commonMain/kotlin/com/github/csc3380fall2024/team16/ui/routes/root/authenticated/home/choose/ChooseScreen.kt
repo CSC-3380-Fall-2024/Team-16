@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun ChooseScreen(
-    onBack: () -> Unit,
+    onNavigateWorkoutGenerator: () -> Unit,
     onNavigateBodyBuilding: () -> Unit,
     onNavigatePowerlifting: () -> Unit,
     onNavigateAthletics: () -> Unit,
@@ -61,7 +61,7 @@ fun ChooseScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Button(
-                onClick = { onBack() },
+                onClick = { onNavigateWorkoutGenerator() },
                 modifier = Modifier
                     .fillMaxWidth(0.8f)  // Adjust width to 80% of parent container
                     .height(50.dp)  // Slim height

@@ -24,7 +24,7 @@ fun HomeRoute.compose() {
     Navigator(start = ChooseRoute) {
         route<ChooseRoute> {
             this.compose(
-                onBack = { navController.popBackStack() },
+                onNavigateWorkoutGenerator = { navController.navigate(WorkoutGeneratorRoute) },
                 onNavigateBodyBuilding = { navController.navigate(BodybuildingRoute) },
                 onNavigatePowerlifting = { navController.navigate(PowerliftingRoute) },
                 onNavigateAthletics = { navController.navigate(AthleticsRoute) },

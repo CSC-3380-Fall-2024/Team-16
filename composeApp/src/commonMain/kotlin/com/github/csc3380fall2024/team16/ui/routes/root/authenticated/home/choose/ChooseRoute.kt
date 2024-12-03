@@ -8,11 +8,17 @@ object ChooseRoute
 
 @Composable
 fun ChooseRoute.compose(
-    onBack: () -> Unit,
+    onNavigateWorkoutGenerator: () -> Unit,
     onNavigateBodyBuilding: () -> Unit,
     onNavigatePowerlifting: () -> Unit,
     onNavigateAthletics: () -> Unit,
     onNavigateWeightloss: () -> Unit,
 ) {
-    ChooseScreen(onBack, onNavigateBodyBuilding, onNavigatePowerlifting, onNavigateAthletics, onNavigateWeightloss)
+    ChooseScreen(
+        onNavigateWorkoutGenerator,
+        onNavigateBodyBuilding,
+        onNavigatePowerlifting,
+        onNavigateAthletics,
+        onNavigateWeightloss,
+    )
 }
