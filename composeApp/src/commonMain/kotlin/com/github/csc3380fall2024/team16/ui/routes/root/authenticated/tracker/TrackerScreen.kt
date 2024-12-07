@@ -294,8 +294,14 @@ fun AddFoodDialog(onDismiss: () -> Unit, onSave: (String, Int) -> Unit) {
 
 @Composable
 fun CalorieProgress(currentCalories: Int, calorieGoal: Int) {
-    val progress = (currentCalories.toFloat() / calorieGoal).coerceIn(0f, 1f)
-    
+    val progress = currentCalories.toFloat() / calorieGoal
+    val progressPercent = progress * 100
+    val progressColor = when {
+        progressPercent < 55 -> MaterialTheme.colorScheme.errorContainer
+        progressPercent < 95 -> MaterialTheme.colorScheme.error
+        progressPercent <= 100 -> MaterialTheme.colorScheme.primary
+        else -> MaterialTheme.colorScheme.errorContainer
+    }
     Column(
         Modifier
             .fillMaxWidth()
@@ -314,6 +320,7 @@ fun CalorieProgress(currentCalories: Int, calorieGoal: Int) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 4.dp),
+            color = progressColor,
         )
         Text(
             text = "$currentCalories / $calorieGoal kcal",
