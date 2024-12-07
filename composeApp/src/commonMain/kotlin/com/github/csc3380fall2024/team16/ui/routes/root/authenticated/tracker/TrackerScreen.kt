@@ -31,6 +31,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.datetime.DatePeriod
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.plus
+import kotlinx.datetime.minus
+import kotlinx.datetime.Clock
+import kotlinx.datetime.toLocalDateTime
+import kotlinx.datetime.TimeZone
 
 @Composable
 fun TrackerScreen(currentCalories: Int, calorieGoal: Int) {
@@ -39,6 +46,8 @@ fun TrackerScreen(currentCalories: Int, calorieGoal: Int) {
     var updatedCalorieGoal by remember { mutableStateOf(calorieGoal) }
     var showAddFoodDialog by remember { mutableStateOf(false) }
     var foodList by remember { mutableStateOf(listOf<Pair<String, Int>>()) }
+    var showDateDialog by remember { mutableStateOf(false) }
+    var selectedDate by remember { mutableStateOf(Clock.System.now().toLocalDateTime(TimeZone.of("America/Chicago")).date) }
     
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -79,7 +88,7 @@ fun TrackerScreen(currentCalories: Int, calorieGoal: Int) {
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Button(
-                onClick = { /* Should display previous days */ },
+                onClick = { showDateDialog = true },
                 modifier = Modifier
                     .weight(1f)
             ) {
@@ -94,7 +103,6 @@ fun TrackerScreen(currentCalories: Int, calorieGoal: Int) {
                 Text(text = "Add Food")
             }
         }
-        
         
         if (showAddFoodDialog) {
             AddFoodDialog(
@@ -146,14 +154,19 @@ fun TrackerScreen(currentCalories: Int, calorieGoal: Int) {
                 showEditCalorieDialog = false
             },
             dialogTitle = "Modify Calorie Data",
-            dialogText = "Please update your current calories and goal.",
-            icon = Icons.Default.Edit,
             updatedCurrentCaloriesState = updatedCurrentCalories,
             updatedCalorieGoalState = updatedCalorieGoal,
             onUpdateCalories = { newCurrentCalories, newGoal ->
                 updatedCurrentCalories = newCurrentCalories
                 updatedCalorieGoal = newGoal
             }
+        )
+    }
+    if (showDateDialog) {
+        DateNavAlert(
+            selectedDate = selectedDate,
+            onDateChanged = { newDate -> selectedDate = newDate },
+            onDismiss = { showDateDialog = false }
         )
     }
 }
@@ -163,8 +176,6 @@ fun EditCalorieDialog(
     onDismissRequest: () -> Unit,
     onConfirmation: () -> Unit,
     dialogTitle: String,
-    dialogText: String,
-    icon: ImageVector,
     updatedCurrentCaloriesState: Int,
     updatedCalorieGoalState: Int,
     onUpdateCalories: (Int, Int) -> Unit
@@ -299,7 +310,7 @@ fun CalorieProgress(currentCalories: Int, calorieGoal: Int) {
             color = MaterialTheme.colorScheme.onBackground
         )
         LinearProgressIndicator(
-            progress = progress,
+            progress = { progress },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 4.dp),
@@ -311,3 +322,63 @@ fun CalorieProgress(currentCalories: Int, calorieGoal: Int) {
         )
     }
 }
+
+@Composable
+fun DateNavAlert(
+    selectedDate: LocalDate,
+    onDateChanged: (LocalDate) -> Unit,
+    onDismiss: () -> Unit
+) {
+    var currentDate by remember { mutableStateOf(selectedDate) }
+    
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(text = "Select Date")
+        },
+        text = {
+            Column {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Button(
+                        onClick = {
+                            currentDate = currentDate.minus(DatePeriod(days = 1))
+                            onDateChanged(currentDate)
+                        }
+                    ) {
+                        Text(text = "<")
+                    }
+                    Text(
+                        text = currentDate.toString(),
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                    Button(
+                        onClick = {
+                            currentDate = currentDate.plus(DatePeriod(days = 1))
+                            onDateChanged(currentDate)
+                        }
+                    ) {
+                        Text(text = ">")
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = onDismiss
+            ) {
+                Text("Done")
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = onDismiss
+            ) {
+                Text("Cancel")
+            }
+        }
+    )
+}
+
