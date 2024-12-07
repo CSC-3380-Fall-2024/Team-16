@@ -4,13 +4,13 @@ import com.github.csc3380fall2024.team16.plugins.configureDatabase
 import com.github.csc3380fall2024.team16.plugins.configureRpc
 import com.github.csc3380fall2024.team16.server.BuildConfig
 import io.ktor.server.application.Application
+import io.ktor.server.cio.CIO
 import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
 
 
 fun main() {
     embeddedServer(
-        Netty,
+        factory = CIO,
         port = BuildConfig.SERVER_PORT,
         host = "0.0.0.0",
         module = Application::module
