@@ -12,6 +12,7 @@ services:
     healthcheck:
       test: pg_isready -U universalfitness -h localhost
       interval: 1s
+      start_period: 30s
   s3:
     image: minio/minio:RELEASE.2024-11-07T00-52-20Z
     command: server /data --console-address ":9001"
