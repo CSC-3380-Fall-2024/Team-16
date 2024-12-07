@@ -8,7 +8,7 @@ services:
       POSTGRES_USER: universalfitness
       POSTGRES_PASSWORD: universalfitness
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - ./data/postgres:/var/lib/postgresql/data
     healthcheck:
       test: pg_isready -U universalfitness -h localhost
       interval: 1s
@@ -22,7 +22,7 @@ services:
       MINIO_ROOT_USER: universalfitness
       MINIO_ROOT_PASSWORD: universalfitness
     volumes:
-      - s3data:/data
+      - ./data/s3:/data
   pgweb:
     image: sosedoff/pgweb:0.16.2
     ports:
@@ -33,7 +33,3 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-
-volumes:
-  pgdata:
-  s3data:
