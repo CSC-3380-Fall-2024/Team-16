@@ -26,10 +26,9 @@ This is a Kotlin Multiplatform project for Android and IOS.
 2. Install a [JDK](https://adoptium.net/temurin/releases/?package=jdk) if you don't already have one.
 3. Install [Android Studio](https://developer.android.com/studio).
 4. Install [Kotlin Multiplatform plugin](https://plugins.jetbrains.com/plugin/14936-kotlin-multiplatform).
-5. Install [Docker plugin](https://plugins.jetbrains.com/plugin/7724-docker).
-6. Clone this repo.
-7. Open it in Android Studio.
-8. Copy [`.env.template`](/.env.template) to a new file named `.env`, and follow the instructions inside.
+5. Clone this repo.
+6. Open it in Android Studio.
+7. Copy [`.env.template`](/.env.template) to a new file named `.env`, and follow the instructions inside.
 
 ### Enable useful settings
 
@@ -39,6 +38,8 @@ This is a Kotlin Multiplatform project for Android and IOS.
 4. Enable staging area.
 
 ### Running the app in development
+
+Open Docker Desktop (to make sure the Docker daemon is running).
 
 Run the `Frontend` run configuration to run the Android app.
 

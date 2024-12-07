@@ -27,6 +27,7 @@ serializationPlugin = "2.0.21"
 rpc = "0.4.0"
 dotenv = "4.0.0"
 buildconfig = "5.5.1"
+dockerComposePlugin = "0.17.11"
 
 [libraries]
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
@@ -77,3 +78,4 @@ serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref 
 rpc = { id = "org.jetbrains.kotlinx.rpc.plugin", version.ref = "rpc"}
 dotenv = { id = "co.uzzu.dotenv.gradle", version.ref = "dotenv" }
 buildconfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildconfig" }
+dockerCompose = { id = "com.avast.gradle.docker-compose", version.ref="dockerComposePlugin" }
