@@ -6,9 +6,9 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.csc3380fall2024.team16.RpcClient
-import com.github.csc3380fall2024.team16.RpcResult
 import com.github.csc3380fall2024.team16.model.NewsArticle
 import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 
 sealed interface NewsState {
@@ -27,18 +27,16 @@ class NewsViewModel(private val client: RpcClient, private val token: String) : 
     
     private fun fetch(vararg queries: String) {
         val tasks = queries.map { query ->
-            query to viewModelScope.async {
-                client.rpc { getNewsArticles(token, query) }
+            viewModelScope.async {
+                query to client.rpc { getNewsArticles(token, query) }
             }
         }
         
         viewModelScope.launch {
-            val responses = tasks.map { it.first to it.second.await() }
-            val err = responses.find { it.second is RpcResult.ConnectionFailure }
-            state = if (err == null) {
-                NewsState.Loaded(responses.map { it.first to (it.second as RpcResult.Success).value })
-            } else {
-                NewsState.Error((err.second as RpcResult.ConnectionFailure).exception)
+            state = try {
+                NewsState.Loaded(tasks.awaitAll())
+            } catch (e: Exception) {
+                NewsState.Error(e)
             }
         }
     }
