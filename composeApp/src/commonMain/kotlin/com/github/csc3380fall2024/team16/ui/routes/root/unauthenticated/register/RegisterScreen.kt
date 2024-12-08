@@ -1,15 +1,12 @@
 package com.github.csc3380fall2024.team16.ui.routes.root.unauthenticated.register
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -23,8 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -49,6 +44,9 @@ fun RegisterScreen(
     
     // Regex pattern for email validation
     val emailPattern = Regex("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}")
+    
+    // Regex pattern for username validation (letters, numbers, underscores)
+    val usernamePattern = Regex("^[a-zA-Z0-9_]*$")
     
     Column(
         Modifier.fillMaxSize().padding(horizontal = 20.dp),
@@ -83,78 +81,7 @@ fun RegisterScreen(
                 )
             }
             
-            // Email TextField
-            TextField(
-                value = email,
-                onValueChange = {
-                    email = it
-                    isEmailEmpty = false // Reset error when user starts typing
-                },
-                Modifier.fillMaxWidth(),
-                placeholder = { Text("Email") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                singleLine = true
-            )
-            if (isEmailEmpty) {
-                Text(
-                    "*Required",
-                    color = Color.Red,
-                    fontSize = 12.sp,
-                    modifier = Modifier.padding(start = 4.dp)
-                )
-            }
-            
-            // Password TextField
-            TextField(
-                value = password,
-                onValueChange = {
-                    password = it
-                    isPasswordEmpty = false // Reset error when user starts typing
-                },
-                Modifier.fillMaxWidth(),
-                placeholder = { Text("Password") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                singleLine = true,
-                visualTransformation = if (isPasswordVisible)
-                    VisualTransformation.None
-                else
-                    PasswordVisualTransformation()
-            )
-            if (isPasswordEmpty) {
-                Text(
-                    "*Required",
-                    color = Color.Red,
-                    fontSize = 12.sp,
-                    modifier = Modifier.padding(start = 4.dp)
-                )
-            }
-            
-            // Confirm Password TextField
-            TextField(
-                value = confirmPassword,
-                onValueChange = {
-                    confirmPassword = it
-                    isConfirmPasswordEmpty = false // Reset error when user starts typing
-                },
-                Modifier.fillMaxWidth(),
-                placeholder = { Text("Confirm Password") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                singleLine = true,
-                visualTransformation = if (isPasswordVisible)
-                    VisualTransformation.None
-                else
-                    PasswordVisualTransformation()
-            )
-            if (isConfirmPasswordEmpty) {
-                Text(
-                    "*Required",
-                    color = Color.Red,
-                    fontSize = 12.sp,
-                    modifier = Modifier.padding(start = 4.dp)
-                )
-            }
-            
-            // Add error message display here
+            // Error message display
             if (errorMessage.isNotEmpty()) {
                 Text(
                     text = errorMessage,
@@ -163,45 +90,26 @@ fun RegisterScreen(
                     modifier = Modifier.padding(top = 8.dp)
                 )
             }
-            
-            // Add a Row for the checkbox
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(top = 10.dp)
-            ) {
-                Checkbox(
-                    checked = isPasswordVisible,
-                    onCheckedChange = { isPasswordVisible = it }
-                )
-                Text(
-                    text = "Show Password",
-                    modifier = Modifier.clickable { isPasswordVisible = !isPasswordVisible }
-                )
-            }
         }
         
         Button(
             onClick = {
-                // Reset empty field indicators
                 isUsernameEmpty = username.isEmpty()
                 isEmailEmpty = email.isEmpty()
                 isPasswordEmpty = password.isEmpty()
                 isConfirmPasswordEmpty = confirmPassword.isEmpty()
                 
-                // Check if any field is empty
                 if (isUsernameEmpty || isEmailEmpty || isPasswordEmpty || isConfirmPasswordEmpty) {
                     errorMessage = "Please fill in all required fields."
-                }
-                // Check for valid email format
-                else if (!emailPattern.matches(email)) {
+                } else if (!usernamePattern.matches(username)) {
+                    errorMessage = "Username can only contain letters, numbers, and underscores."
+                } else if (!emailPattern.matches(email)) {
                     errorMessage = "Please enter a valid email address."
-                }
-                // Check for matching passwords
-                else if (password != confirmPassword) {
+                } else if (password != confirmPassword) {
                     errorMessage = "Passwords do not match."
                 } else {
-                    errorMessage = ""  // Clear error message if all validations pass
-                    onRegister(username, email, password)
+                    errorMessage = ""  // Clear error message
+                    onRegister(username.lowercase(), email, password) // Pass lowercase username
                 }
             },
             Modifier.fillMaxWidth().padding(20.dp)

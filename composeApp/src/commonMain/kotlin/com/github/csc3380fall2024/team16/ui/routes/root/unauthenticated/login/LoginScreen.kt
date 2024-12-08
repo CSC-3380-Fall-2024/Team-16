@@ -64,7 +64,7 @@ fun LoginScreen(
         }
         
         Button({
-            onLogin(username, password)
+            onLogin(username.lowercase(), password) // Pass lowercase username
         }, Modifier.fillMaxWidth().padding(20.dp)) {
             Text("Login", fontSize = 20.sp, lineHeight = 5.sp)
         }
