@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.csc3380fall2024.team16.NetworkException
 import com.github.csc3380fall2024.team16.RpcClient
 import com.github.csc3380fall2024.team16.UnauthorizedException
 import com.github.csc3380fall2024.team16.ValidationException
@@ -30,8 +31,10 @@ class LoginViewModel(private val client: RpcClient) : ViewModel() {
             state = LoginState.Ready(e.message)
         } catch (e: UnauthorizedException) {
             state = LoginState.Ready("invalid credentials")
-        } catch (_: Exception) {
-            state = LoginState.Ready("error")
+        } catch (e: NetworkException) {
+            state = LoginState.Ready("could not reach server")
+        } catch (e: Exception) {
+            state = LoginState.Ready("unknown error")
         }
     }
 }

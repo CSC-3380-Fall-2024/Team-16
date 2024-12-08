@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.csc3380fall2024.team16.AlreadyExistsException
+import com.github.csc3380fall2024.team16.NetworkException
 import com.github.csc3380fall2024.team16.RpcClient
 import com.github.csc3380fall2024.team16.ValidationException
 import kotlinx.coroutines.launch
@@ -35,8 +36,10 @@ class RegisterViewModel(private val client: RpcClient) : ViewModel() {
             state = RegisterState.Ready(e.message)
         } catch (e: AlreadyExistsException) {
             state = RegisterState.Ready(e.message)
-        } catch (_: Exception) {
-            state = RegisterState.Ready("error")
+        } catch (e: NetworkException) {
+            state = RegisterState.Ready("could not reach server")
+        } catch (e: Exception) {
+            state = RegisterState.Ready("unknown error")
         }
     }
 }

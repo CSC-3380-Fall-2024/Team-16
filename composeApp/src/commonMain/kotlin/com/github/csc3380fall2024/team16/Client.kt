@@ -3,8 +3,8 @@ package com.github.csc3380fall2024.team16
 import UniversalFitness.composeApp.BuildConfig
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.timeout
 import kotlinx.coroutines.cancel
-import kotlinx.rpc.krpc.ktor.client.KtorRPCClient
 import kotlinx.rpc.krpc.ktor.client.installRPC
 import kotlinx.rpc.krpc.ktor.client.rpc
 import kotlinx.rpc.krpc.ktor.client.rpcConfig
@@ -19,24 +19,26 @@ class RpcClient(private val url: String = "ws://${BuildConfig.SERVER_IP}:${Build
     }
     
     suspend fun <T> rpc(fn: suspend RpcService.() -> T): T {
-        var rpc: KtorRPCClient? = null
+        val rpc = try {
+            client.rpc(url) {
+                timeout { connectTimeoutMillis = 3000 }
+                rpcConfig { serialization { json() } }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            throw NetworkException(e)
+        }
         
         try {
-            rpc = client.rpc(url) {
-                rpcConfig {
-                    serialization {
-                        json()
-                    }
-                }
-            }
-            
             val service = rpc.withService<RpcService>()
             return service.fn()
         } catch (e: Exception) {
             e.printStackTrace()
             throw e
         } finally {
-            rpc?.webSocketSession?.cancel()
+            rpc.webSocketSession.cancel()
         }
     }
 }
+
+class NetworkException(cause: Throwable) : Exception(cause)
