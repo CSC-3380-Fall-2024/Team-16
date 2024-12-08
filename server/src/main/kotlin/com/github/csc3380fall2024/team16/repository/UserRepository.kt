@@ -1,5 +1,6 @@
 package com.github.csc3380fall2024.team16.repository
 
+import com.github.csc3380fall2024.team16.AlreadyExistsException
 import com.github.csc3380fall2024.team16.TokenData
 import com.github.csc3380fall2024.team16.TokenManager
 import com.github.csc3380fall2024.team16.plugins.Users
@@ -17,6 +18,9 @@ import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.PBEKeySpec
 
 object UserRepository {
+    /**
+     * @throws AlreadyExistsException
+     */
     fun addUser(username: String, email: String, password: String): User {
         val salt = createRandomSalt()
         val hash = createHash(password, salt)
@@ -25,13 +29,13 @@ object UserRepository {
                 val existsOp = exists(Users.selectAll().where(Users.username eq username))
                 Table.Dual.select(existsOp).first()[existsOp]
             }
-            if (usernameExists) throw Exception("user with that username already exists")
+            if (usernameExists) throw AlreadyExistsException("user with that username already exists")
             
             val emailExists = run {
                 val existsOp = exists(Users.selectAll().where(Users.email eq email))
                 Table.Dual.select(existsOp).first()[existsOp]
             }
-            if (emailExists) throw Exception("user with that email already exists")
+            if (emailExists) throw AlreadyExistsException("user with that email already exists")
             
             Users.insertAndGetId {
                 it[Users.username] = username
