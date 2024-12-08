@@ -22,7 +22,7 @@ class NewsViewModel(private val client: RpcClient, private val token: String) : 
         private set
     
     init {
-        fetch("Fitness, excercise, and lifting", "Sports")
+        fetch("Fitness, exercise, and lifting", "Sports", "Health and body")
     }
     
     private fun fetch(vararg queries: String) {

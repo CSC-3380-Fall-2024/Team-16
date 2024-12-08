@@ -2,6 +2,7 @@ package com.github.csc3380fall2024.team16.ui.routes.root.authenticated.news
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -20,6 +21,10 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,29 +32,73 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.github.csc3380fall2024.team16.model.NewsArticle
+import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.until
 
 @Composable
 fun NewsScreen(state: NewsState) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-    ) {
-        FunFactOfDay()
+    
+    val scrollState = rememberScrollState()
+    val coroutineScope = rememberCoroutineScope()
+    val showBackToTopButton by remember {
+        derivedStateOf { scrollState.value >= scrollState.maxValue - 50 }
+    }
+    
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+        ) {
+            FunFactOfDay()
+            
+            Spacer(modifier = Modifier.height(24.dp))
+            
+            if (state is NewsState.Loaded) {
+                state.articles.forEach { (query, articles) ->
+                    NewsSection(
+                        sectionTitle = query,
+                        articles = articles
+                    )
+                }
+            }
+            
+            Spacer(modifier = Modifier.height(45.dp)) // Add space after all articles
+            
+        }
         
-        Spacer(modifier = Modifier.height(24.dp))
-        
-        if (state is NewsState.Loaded) {
-            state.articles.forEach { (query, articles) ->
-                NewsSection(
-                    sectionTitle = query,
-                    articles = articles
-                )
+        // Back to Top button
+        if (showBackToTopButton) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
+                    // .offset(y = 10.dp) // Positive value moves button down
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Card(
+                    modifier = Modifier.clickable {
+                        coroutineScope.launch {
+                            scrollState.animateScrollTo(0)
+                        }
+                    },
+                    shape = RoundedCornerShape(8.dp),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+                    elevation = CardDefaults.cardElevation(4.dp)
+                ) {
+                    Text(
+                        text = "Back to Top",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                    )
+                }
             }
         }
+        
     }
 }
 
