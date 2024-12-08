@@ -28,7 +28,12 @@ fun BottomBar(navController: NavController, tabs: List<Tab>) {
                 icon = { Icon(it.icon, it.label) },
                 label = { Text(it.label) },
                 selected = it.route == currentTab?.route,
-                onClick = { navController.navigate(it.route) },
+                onClick = {
+                    navController.navigate(it.route) {
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }
             )
         }
     }
