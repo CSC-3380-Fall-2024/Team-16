@@ -12,9 +12,13 @@ object RegisterRoute
 @Composable
 fun RegisterRoute.compose(client: RpcClient, onAuthenticated: (String) -> Unit) {
     val viewModel = viewModel { RegisterViewModel(client) }
-    RegisterScreen(onRegister = viewModel::register)
-    LaunchedEffect(viewModel.token) {
-        val token = viewModel.token
-        if (token != null) onAuthenticated(token)
+    RegisterScreen(
+        state = viewModel.state,
+        onRegister = viewModel::register,
+    )
+    LaunchedEffect(viewModel.state) {
+        viewModel.state.let {
+            if (it is RegisterState.Success) onAuthenticated(it.token)
+        }
     }
 }

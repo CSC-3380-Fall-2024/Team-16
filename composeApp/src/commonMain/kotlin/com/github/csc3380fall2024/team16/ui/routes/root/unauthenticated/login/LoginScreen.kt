@@ -25,11 +25,12 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun LoginScreen(
+    state: LoginState,
     onLogin: (usernameOrEmail: String, password: String) -> Unit,
     onNavigateRegister: () -> Unit,
     onNavigateForgotPassword: () -> Unit,
 ) {
-    var username by remember { mutableStateOf("") }
+    var usernameOrEmail by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     
     Column(
@@ -45,10 +46,10 @@ fun LoginScreen(
             verticalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterVertically)
         ) {
             TextField(
-                username,
-                { username = it },
+                usernameOrEmail,
+                { usernameOrEmail = it },
                 Modifier.fillMaxWidth(),
-                placeholder = { Text("Username") },
+                placeholder = { Text("Username or Email") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 singleLine = true
             )
@@ -63,9 +64,15 @@ fun LoginScreen(
             )
         }
         
-        Button({
-            onLogin(username, password)
-        }, Modifier.fillMaxWidth().padding(20.dp)) {
+        if (state is LoginState.Ready && state.lastError != null) {
+            Text(state.lastError, color = MaterialTheme.colorScheme.error)
+        }
+        
+        Button(
+            onClick = { onLogin(usernameOrEmail, password) },
+            modifier = Modifier.fillMaxWidth().padding(20.dp),
+            enabled = state !is LoginState.InProgress,
+        ) {
             Text("Login", fontSize = 20.sp, lineHeight = 5.sp)
         }
         

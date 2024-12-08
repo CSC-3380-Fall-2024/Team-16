@@ -3,7 +3,7 @@ package com.github.csc3380fall2024.team16
 import UniversalFitness.composeApp.BuildConfig
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
-import kotlinx.coroutines.CancellationException
+import io.ktor.client.plugins.timeout
 import kotlinx.coroutines.cancel
 import kotlinx.rpc.krpc.ktor.client.installRPC
 import kotlinx.rpc.krpc.ktor.client.rpc
@@ -18,34 +18,27 @@ class RpcClient(private val url: String = "ws://${BuildConfig.SERVER_IP}:${Build
         installRPC()
     }
     
-    suspend fun <T> rpc(fn: suspend RpcService.() -> T): RpcResult<T> {
+    suspend fun <T> rpc(fn: suspend RpcService.() -> T): T {
         val rpc = try {
             client.rpc(url) {
-                rpcConfig {
-                    serialization {
-                        json()
-                    }
-                }
+                timeout { connectTimeoutMillis = 3000 }
+                rpcConfig { serialization { json() } }
             }
         } catch (e: Exception) {
-            return RpcResult.ConnectionFailure(e)
+            e.printStackTrace()
+            throw NetworkException(e)
         }
         
-        val response = try {
+        try {
             val service = rpc.withService<RpcService>()
-            service.fn()
+            return service.fn()
         } catch (e: Exception) {
-            if (e is CancellationException) throw e
-            return RpcResult.ConnectionFailure(e)
+            e.printStackTrace()
+            throw e
         } finally {
             rpc.webSocketSession.cancel()
         }
-        
-        return RpcResult.Success(response)
     }
 }
 
-sealed class RpcResult<out T> {
-    data class ConnectionFailure(val exception: Exception) : RpcResult<Nothing>()
-    data class Success<T>(val value: T) : RpcResult<T>()
-}
+class NetworkException(cause: Throwable) : Exception(cause)

@@ -18,12 +18,14 @@ fun LoginRoute.compose(
 ) {
     val viewModel = viewModel { LoginViewModel(client) }
     LoginScreen(
+        state = viewModel.state,
         onLogin = viewModel::login,
         onNavigateRegister = onNavigateRegister,
         onNavigateForgotPassword = onNavigateForgotPassword,
     )
-    LaunchedEffect(viewModel.token) {
-        val token = viewModel.token
-        if (token != null) onAuthenticated(token)
+    LaunchedEffect(viewModel.state) {
+        viewModel.state.let {
+            if (it is LoginState.Success) onAuthenticated(it.token)
+        }
     }
 }
