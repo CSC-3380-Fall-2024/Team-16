@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.LinearProgressIndicator
@@ -26,18 +24,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.datetime.Clock
 import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.plus
-import kotlinx.datetime.minus
-import kotlinx.datetime.Clock
-import kotlinx.datetime.toLocalDateTime
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.minus
+import kotlinx.datetime.plus
+import kotlinx.datetime.toLocalDateTime
 
 @Composable
 fun TrackerScreen(currentCalories: Int, calorieGoal: Int) {
@@ -47,7 +44,12 @@ fun TrackerScreen(currentCalories: Int, calorieGoal: Int) {
     var showAddFoodDialog by remember { mutableStateOf(false) }
     var foodList by remember { mutableStateOf(listOf<Pair<String, Int>>()) }
     var showDateDialog by remember { mutableStateOf(false) }
-    var selectedDate by remember { mutableStateOf(Clock.System.now().toLocalDateTime(TimeZone.of("America/Chicago")).date) }
+    var selectedDate by remember {
+        mutableStateOf(
+            Clock.System.now()
+                .toLocalDateTime(TimeZone.of("America/Chicago")).date
+        )
+    }
     
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -141,6 +143,15 @@ fun TrackerScreen(currentCalories: Int, calorieGoal: Int) {
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onSurface
                         )
+                        Text(
+                            text = "X",
+                            modifier = Modifier
+                                .align(Alignment.CenterEnd)
+                                .clickable {
+                                    foodList -= (food to calories)
+                                    updatedCurrentCalories -= calories
+                                },
+                        )
                     }
                 }
             }
@@ -225,6 +236,7 @@ fun EditCalorieDialog(
     )
 }
 
+//delete & scroll
 @Composable
 fun AddFoodDialog(onDismiss: () -> Unit, onSave: (String, Int) -> Unit) {
     var foodName by remember { mutableStateOf("") }
