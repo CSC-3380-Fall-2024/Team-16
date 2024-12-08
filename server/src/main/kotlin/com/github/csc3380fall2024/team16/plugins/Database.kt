@@ -10,6 +10,7 @@ import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.TextColumnType
 import org.jetbrains.exposed.sql.kotlin.datetime.CurrentTimestampWithTimeZone
 import org.jetbrains.exposed.sql.kotlin.datetime.timestampWithTimeZone
+import org.jetbrains.exposed.sql.lowerCase
 import org.jetbrains.exposed.sql.transactions.transaction
 
 fun Application.configureDatabase() {
@@ -25,10 +26,15 @@ fun Application.configureDatabase() {
 }
 
 object Users : UUIDTable("users") {
-    val username = varchar("username", 24).uniqueIndex()
-    val email = varchar("email", 255).uniqueIndex()
+    val username = varchar("username", 24)
+    val email = varchar("email", 255)
     val passwordSalt = binary("password_salt", 16)
     val passwordHash = binary("password_hash", 128)
+    
+    init {
+        uniqueIndex("username_lower", functions = listOf(username.lowerCase()))
+        uniqueIndex("email_lower", functions = listOf(email.lowerCase()))
+    }
 }
 
 object Friends : Table("friends") {

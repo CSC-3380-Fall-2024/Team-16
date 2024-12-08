@@ -9,6 +9,7 @@ import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.exists
 import org.jetbrains.exposed.sql.insertAndGetId
+import org.jetbrains.exposed.sql.lowerCase
 import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -26,13 +27,13 @@ object UserRepository {
         val hash = createHash(password, salt)
         val id = transaction {
             val usernameExists = run {
-                val existsOp = exists(Users.selectAll().where(Users.username eq username))
+                val existsOp = exists(Users.selectAll().where(Users.username.lowerCase() eq username.lowercase()))
                 Table.Dual.select(existsOp).first()[existsOp]
             }
             if (usernameExists) throw AlreadyExistsException("user with that username already exists")
             
             val emailExists = run {
-                val existsOp = exists(Users.selectAll().where(Users.email eq email))
+                val existsOp = exists(Users.selectAll().where(Users.email.lowerCase() eq email.lowercase()))
                 Table.Dual.select(existsOp).first()[existsOp]
             }
             if (emailExists) throw AlreadyExistsException("user with that email already exists")
@@ -51,7 +52,9 @@ object UserRepository {
     fun getUser(usernameOrEmail: String, password: String): User? {
         val row = transaction {
             Users.selectAll()
-                .where { (Users.username eq usernameOrEmail) or (Users.email eq usernameOrEmail) }
+                .where {
+                    (Users.username.lowerCase() eq usernameOrEmail.lowercase()) or (Users.email.lowerCase() eq usernameOrEmail.lowercase())
+                }
                 .limit(1)
                 .firstOrNull()
         } ?: return null
