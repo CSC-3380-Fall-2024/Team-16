@@ -30,13 +30,13 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun RegisterScreen(
-    onRegister: (username: String, email: String, password: String) -> Unit,
+    state: RegisterState,
+    onRegister: (username: String, email: String, password: String, confirmPassword: String) -> Unit,
 ) {
     var username by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
-    var errorMessage by remember { mutableStateOf("") }
     
     // State variables for showing password
     var isPasswordVisible by remember { mutableStateOf(false) }
@@ -46,9 +46,6 @@ fun RegisterScreen(
     var isEmailEmpty by remember { mutableStateOf(false) }
     var isPasswordEmpty by remember { mutableStateOf(false) }
     var isConfirmPasswordEmpty by remember { mutableStateOf(false) }
-    
-    // Regex pattern for email validation
-    val emailPattern = Regex("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}")
     
     Column(
         Modifier.fillMaxSize().padding(horizontal = 20.dp),
@@ -154,17 +151,15 @@ fun RegisterScreen(
                 )
             }
             
-            // Add error message display here
-            if (errorMessage.isNotEmpty()) {
+            if (state is RegisterState.Ready && state.lastError != null) {
                 Text(
-                    text = errorMessage,
+                    text = state.lastError,
                     color = MaterialTheme.colorScheme.error,
                     fontSize = 14.sp,
                     modifier = Modifier.padding(top = 8.dp)
                 )
             }
             
-            // Add a Row for the checkbox
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(top = 10.dp)
@@ -181,30 +176,9 @@ fun RegisterScreen(
         }
         
         Button(
-            onClick = {
-                // Reset empty field indicators
-                isUsernameEmpty = username.isEmpty()
-                isEmailEmpty = email.isEmpty()
-                isPasswordEmpty = password.isEmpty()
-                isConfirmPasswordEmpty = confirmPassword.isEmpty()
-                
-                // Check if any field is empty
-                if (isUsernameEmpty || isEmailEmpty || isPasswordEmpty || isConfirmPasswordEmpty) {
-                    errorMessage = "Please fill in all required fields."
-                }
-                // Check for valid email format
-                else if (!emailPattern.matches(email)) {
-                    errorMessage = "Please enter a valid email address."
-                }
-                // Check for matching passwords
-                else if (password != confirmPassword) {
-                    errorMessage = "Passwords do not match."
-                } else {
-                    errorMessage = ""  // Clear error message if all validations pass
-                    onRegister(username, email, password)
-                }
-            },
-            Modifier.fillMaxWidth().padding(20.dp)
+            onClick = { onRegister(username, email, password, confirmPassword) },
+            modifier = Modifier.fillMaxWidth().padding(20.dp),
+            enabled = state !is RegisterState.InProgress,
         ) {
             Text("Register", fontSize = 20.sp, lineHeight = 5.sp)
         }
