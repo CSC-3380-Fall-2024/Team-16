@@ -10,5 +10,5 @@ data class NewsArticle(
     val source: String?,
     val publishedAt: Instant,
     val url: String,
-    val thumbnailUrl: String,
+    val thumbnailUrl: String?,
 )

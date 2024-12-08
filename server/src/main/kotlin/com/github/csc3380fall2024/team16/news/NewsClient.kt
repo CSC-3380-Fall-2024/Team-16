@@ -40,7 +40,7 @@ class NewsClient(private val apiKey: String) {
                 source = "TODO",
                 publishedAt = Instant.parse(it.datePublished),
                 url = it.url,
-                thumbnailUrl = it.image.thumbnail.contentUrl,
+                thumbnailUrl = it.image?.thumbnail?.contentUrl,
             )
         }
     }
@@ -56,7 +56,7 @@ private data class BingNewsArticle(
     val provider: List<BingOrganization>,
     val datePublished: String,
     val url: String,
-    val image: BingImage,
+    val image: BingImage? = null,
 )
 
 @Serializable
