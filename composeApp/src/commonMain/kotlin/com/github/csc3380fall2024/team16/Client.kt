@@ -18,6 +18,9 @@ class RpcClient(private val url: String = "ws://${BuildConfig.SERVER_IP}:${Build
         installRPC()
     }
     
+    /**
+     * @throws NetworkException
+     */
     suspend fun <T> rpc(fn: suspend RpcService.() -> T): T {
         val rpc = try {
             client.rpc(url) {
