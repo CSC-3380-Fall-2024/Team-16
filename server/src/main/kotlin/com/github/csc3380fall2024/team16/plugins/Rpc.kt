@@ -21,7 +21,7 @@ import kotlinx.rpc.krpc.serialization.json.json
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.deleteWhere
-import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.transactions.transaction
 import kotlin.coroutines.CoroutineContext
 
@@ -77,16 +77,18 @@ class RpcServiceImpl(
         proteinGrams: Int,
         carbsGrams: Int,
         fatsGrams: Int,
-    ) {
-        val user = UserRepository.userFromToken(token) ?: throw UnauthorizedException()
-        FoodLogs.insert {
-            it[FoodLogs.user] = user.id
-            it[FoodLogs.date] = date
-            it[FoodLogs.food] = food
-            it[FoodLogs.calories] = calories
-            it[FoodLogs.proteinGrams] = proteinGrams
-            it[FoodLogs.carbsGrams] = carbsGrams
-            it[FoodLogs.fatsGrams] = fatsGrams
+    ): Int {
+        return transaction {
+            val user = UserRepository.userFromToken(token) ?: throw UnauthorizedException()
+            FoodLogs.insertAndGetId {
+                it[FoodLogs.user] = user.id
+                it[FoodLogs.date] = date
+                it[FoodLogs.food] = food
+                it[FoodLogs.calories] = calories
+                it[FoodLogs.proteinGrams] = proteinGrams
+                it[FoodLogs.carbsGrams] = carbsGrams
+                it[FoodLogs.fatsGrams] = fatsGrams
+            }.value
         }
     }
     
@@ -101,10 +103,11 @@ class RpcServiceImpl(
         val rows = transaction {
             val user = UserRepository.userFromToken(token) ?: throw UnauthorizedException()
             FoodLogs.select(
+                FoodLogs.id,
                 FoodLogs.food,
                 FoodLogs.calories,
                 FoodLogs.proteinGrams,
-                FoodLogs.calories,
+                FoodLogs.carbsGrams,
                 FoodLogs.fatsGrams,
             ).where { (FoodLogs.user eq user.id) and (FoodLogs.date eq date) }.toList()
         }

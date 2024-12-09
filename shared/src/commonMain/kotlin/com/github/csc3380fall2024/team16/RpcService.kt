@@ -22,6 +22,7 @@ interface RpcService : RemoteService {
     
     /**
      * @throws UnauthorizedException
+     * @return id of the food log
      */
     suspend fun logFood(
         token: String,
@@ -31,7 +32,7 @@ interface RpcService : RemoteService {
         proteinGrams: Int,
         carbsGrams: Int,
         fatsGrams: Int,
-    )
+    ): Int
     
     /**
      * @throws UnauthorizedException

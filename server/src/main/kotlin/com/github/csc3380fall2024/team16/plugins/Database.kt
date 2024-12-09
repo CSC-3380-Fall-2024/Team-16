@@ -23,7 +23,7 @@ fun Application.configureDatabase() {
     Database.connect(url, user = user, password = password)
     
     transaction {
-        SchemaUtils.create(Users, Friends, Comments, PostLikes, CommentLikes, ExerciseLogs, PersonalRecords)
+        SchemaUtils.create(Users, Friends, Comments, PostLikes, CommentLikes, ExerciseLogs, PersonalRecords, FoodLogs)
     }
 }
 
