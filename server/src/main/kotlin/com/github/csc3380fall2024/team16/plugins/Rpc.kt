@@ -6,9 +6,8 @@ import com.github.csc3380fall2024.team16.UnauthorizedException
 import com.github.csc3380fall2024.team16.ValidationException
 import com.github.csc3380fall2024.team16.emailRegex
 import com.github.csc3380fall2024.team16.model.NewsArticle
-import com.github.csc3380fall2024.team16.news.NewsClient
+import com.github.csc3380fall2024.team16.repository.NewsRepository
 import com.github.csc3380fall2024.team16.repository.UserRepository
-import com.github.csc3380fall2024.team16.server.BuildConfig
 import com.github.csc3380fall2024.team16.usernameRegex
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
@@ -18,7 +17,7 @@ import kotlinx.rpc.krpc.ktor.server.rpc
 import kotlinx.rpc.krpc.serialization.json.json
 import kotlin.coroutines.CoroutineContext
 
-fun Application.configureRpc() {
+fun Application.configureRpc(newsRepo: NewsRepository) {
     install(RPC)
     
     routing {
@@ -29,14 +28,15 @@ fun Application.configureRpc() {
                 }
             }
             
-            registerService<RpcService> { ctx -> RpcServiceImpl(ctx) }
+            registerService<RpcService> { ctx -> RpcServiceImpl(newsRepo, ctx) }
         }
     }
 }
 
-class RpcServiceImpl(override val coroutineContext: CoroutineContext) : RpcService {
-    private val newsClient = NewsClient(BuildConfig.BING_SEARCH_API_KEY)
-    
+class RpcServiceImpl(
+    private val newsRepo: NewsRepository,
+    override val coroutineContext: CoroutineContext
+) : RpcService {
     override suspend fun register(username: String, email: String, password: String) {
         when {
             username.length !in 3..24        -> throw ValidationException("username must be between 3 and 24 characters")
@@ -60,6 +60,6 @@ class RpcServiceImpl(override val coroutineContext: CoroutineContext) : RpcServi
     
     override suspend fun getNewsArticles(token: String, query: String): List<NewsArticle> {
         UserRepository.userFromToken(token) ?: throw UnauthorizedException()
-        return newsClient.getNewsArticles(query)
+        return newsRepo.getNewsArticles(query)
     }
 }
