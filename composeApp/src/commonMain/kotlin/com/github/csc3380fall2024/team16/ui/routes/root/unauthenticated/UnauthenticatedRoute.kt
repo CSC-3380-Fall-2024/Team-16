@@ -23,7 +23,12 @@ fun UnauthenticatedRoute.compose(app: AppResources) {
                 onNavigateLogin = { navController.navigate(LoginRoute) }
             )
         }
-        route<RegisterRoute> { this.compose(app) }
+        route<RegisterRoute> {
+            this.compose(
+                app,
+                onNavigateLogin = { navController.navigate(LoginRoute) },
+            )
+        }
         route<LoginRoute> {
             this.compose(
                 app = app,

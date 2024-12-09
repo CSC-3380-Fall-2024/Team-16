@@ -10,7 +10,7 @@ interface RpcService : RemoteService {
      * @throws ValidationException
      * @throws AlreadyExistsException
      */
-    suspend fun register(username: String, email: String, password: String): String
+    suspend fun register(username: String, email: String, password: String)
     
     /**
      * @throws ValidationException

@@ -22,7 +22,7 @@ object UserRepository {
     /**
      * @throws AlreadyExistsException
      */
-    fun addUser(username: String, email: String, password: String): User {
+    fun addUser(username: String, email: String, password: String) {
         val salt = createRandomSalt()
         val hash = createHash(password, salt)
         val id = transaction {
@@ -45,8 +45,6 @@ object UserRepository {
                 it[passwordHash] = hash
             }
         }
-        
-        return User(id.value, username, email, salt, hash)
     }
     
     fun getUser(usernameOrEmail: String, password: String): User? {

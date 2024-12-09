@@ -32,7 +32,24 @@ import androidx.compose.ui.unit.sp
 fun RegisterScreen(
     state: RegisterState,
     onRegister: (username: String, email: String, password: String, confirmPassword: String) -> Unit,
+    onNavigateLogin: () -> Unit,
 ) {
+    if (state is RegisterState.Success) {
+        Column(
+            Modifier.fillMaxSize().padding(horizontal = 20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(40.dp, Alignment.CenterVertically),
+        ) {
+            Text("Registration Successful!", fontSize = 30.sp, fontWeight = FontWeight.Bold)
+            Text("You may now log in.")
+            
+            Button(onClick = onNavigateLogin) {
+                Text("Go to Login")
+            }
+        }
+        return
+    }
+    
     var username by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -182,5 +199,10 @@ fun RegisterScreen(
         ) {
             Text("Register", fontSize = 20.sp, lineHeight = 5.sp)
         }
+        
+        Text(
+            text = "Already have an account?",
+            modifier = Modifier.clickable(onClick = onNavigateLogin)
+        )
     }
 }

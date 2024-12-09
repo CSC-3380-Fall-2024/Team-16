@@ -37,7 +37,7 @@ fun Application.configureRpc() {
 class RpcServiceImpl(override val coroutineContext: CoroutineContext) : RpcService {
     private val newsClient = NewsClient(BuildConfig.BING_SEARCH_API_KEY)
     
-    override suspend fun register(username: String, email: String, password: String): String {
+    override suspend fun register(username: String, email: String, password: String) {
         when {
             username.length !in 3..24        -> throw ValidationException("username must be between 3 and 24 characters")
             !username.matches(usernameRegex) -> throw ValidationException("username must only contain letters, numbers, periods, and underscores")
@@ -45,8 +45,7 @@ class RpcServiceImpl(override val coroutineContext: CoroutineContext) : RpcServi
             password.isEmpty()               -> throw ValidationException("password must not be empty")
         }
         
-        val user = UserRepository.addUser(username, email, password)
-        return TokenManager.createToken(user.id, user.passwordHash)
+        UserRepository.addUser(username, email, password)
     }
     
     override suspend fun login(usernameOrEmail: String, password: String): String {

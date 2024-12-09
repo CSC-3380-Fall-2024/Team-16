@@ -74,11 +74,8 @@ fun WelcomeScreen(onNavigateRegister: () -> Unit, onNavigateLogin: () -> Unit) {
                 )
             }
             Text(
-                text = "Log In",
-                style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.clickable {
-                    onNavigateLogin()
-                }
+                text = "Already have an account?",
+                modifier = Modifier.clickable(onClick = onNavigateLogin)
             )
         }
     }

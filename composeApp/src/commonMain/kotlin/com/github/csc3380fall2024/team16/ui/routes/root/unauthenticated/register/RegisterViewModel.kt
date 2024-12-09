@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 sealed interface RegisterState {
     data class Ready(val lastError: String?) : RegisterState
     data object InProgress : RegisterState
-    data class Success(val token: String) : RegisterState
+    data object Success : RegisterState
 }
 
 class RegisterViewModel(private val client: RpcClient) : ViewModel() {
@@ -30,8 +30,8 @@ class RegisterViewModel(private val client: RpcClient) : ViewModel() {
         state = RegisterState.InProgress
         
         try {
-            val token = client.rpc { register(username, email, password) }
-            state = RegisterState.Success(token)
+            client.rpc { register(username, email, password) }
+            state = RegisterState.Success
         } catch (e: ValidationException) {
             state = RegisterState.Ready(e.message)
         } catch (e: AlreadyExistsException) {

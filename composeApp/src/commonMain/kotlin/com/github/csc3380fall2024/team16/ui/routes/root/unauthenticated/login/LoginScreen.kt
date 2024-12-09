@@ -76,11 +76,8 @@ fun LoginScreen(
         }
         
         Text(
-            text = "Register",
-            style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier.clickable {
-                onNavigateRegister()
-            }
+            text = "Don't have an account yet?",
+            modifier = Modifier.clickable(onClick = onNavigateRegister)
         )
     }
 }
