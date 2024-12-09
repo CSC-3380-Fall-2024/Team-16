@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,23 +36,18 @@ import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
-import kotlinx.datetime.plus
-import kotlinx.datetime.toLocalDateTime
+import kotlinx.datetime.todayIn
 
 @Composable
 fun TrackerScreen(currentCalories: Int, calorieGoal: Int) {
+    var calorieGoal by remember { mutableStateOf(2000) }
+    var foodList: List<Pair<String, Int>> by remember { mutableStateOf(emptyList()) }
+    
     var showEditCalorieDialog by remember { mutableStateOf(false) }
-    var updatedCurrentCalories by remember { mutableStateOf(currentCalories) }
-    var updatedCalorieGoal by remember { mutableStateOf(calorieGoal) }
     var showAddFoodDialog by remember { mutableStateOf(false) }
-    var foodList by remember { mutableStateOf(listOf<Pair<String, Int>>()) }
     var showDateDialog by remember { mutableStateOf(false) }
-    var selectedDate by remember {
-        mutableStateOf(
-            Clock.System.now()
-                .toLocalDateTime(TimeZone.of("America/Chicago")).date
-        )
-    }
+    
+    var selectedDate by remember { mutableStateOf(Clock.System.todayIn(TimeZone.currentSystemDefault())) }
     
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -73,12 +69,12 @@ fun TrackerScreen(currentCalories: Int, calorieGoal: Int) {
         }
         
         CalorieProgress(
-            currentCalories = updatedCurrentCalories,
-            calorieGoal = updatedCalorieGoal
+            currentCalories = foodList.sumOf { it.second },
+            calorieGoal = calorieGoal
         )
         
         Text(
-            text = "Modify Calorie Data",
+            text = "Set Calorie Goal",
             style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.primary),
             modifier = Modifier
                 .clickable { showEditCalorieDialog = true }
@@ -86,37 +82,18 @@ fun TrackerScreen(currentCalories: Int, calorieGoal: Int) {
         )
         
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Button(
                 onClick = { showDateDialog = true },
-                modifier = Modifier
-                    .weight(1f)
-            ) {
-                Text(text = "View Previous")
-            }
+                modifier = Modifier.weight(1f)
+            ) { Text(text = "View Previous") }
             
             Button(
                 onClick = { showAddFoodDialog = true },
-                modifier = Modifier
-                    .weight(1f)
-            ) {
-                Text(text = "Add Food")
-            }
-        }
-        
-        if (showAddFoodDialog) {
-            AddFoodDialog(
-                onDismiss = { showAddFoodDialog = false },
-                onSave = { newFoodName, calories ->
-                    foodList += newFoodName to calories
-                    updatedCurrentCalories += calories
-                    showAddFoodDialog = false
-                }
-            )
+                modifier = Modifier.weight(1f)
+            ) { Text(text = "Add Food") }
         }
         
         LazyColumn(
@@ -151,10 +128,7 @@ fun TrackerScreen(currentCalories: Int, calorieGoal: Int) {
                             text = "X",
                             modifier = Modifier
                                 .align(Alignment.CenterEnd)
-                                .clickable {
-                                    foodList -= (food to calories)
-                                    updatedCurrentCalories -= calories
-                                },
+                                .clickable { foodList -= (food to calories) },
                         )
                     }
                 }
@@ -162,19 +136,20 @@ fun TrackerScreen(currentCalories: Int, calorieGoal: Int) {
         }
     }
     
+    if (showAddFoodDialog) {
+        AddFoodDialog(
+            onClose = { showAddFoodDialog = false },
+            onSave = { newFoodName, calories ->
+                foodList += newFoodName to calories
+            }
+        )
+    }
+    
     if (showEditCalorieDialog) {
         EditCalorieDialog(
-            onDismissRequest = { showEditCalorieDialog = false },
-            onConfirmation = {
-                showEditCalorieDialog = false
-            },
-            dialogTitle = "Modify Calorie Data",
-            updatedCurrentCaloriesState = updatedCurrentCalories,
-            updatedCalorieGoalState = updatedCalorieGoal,
-            onUpdateCalories = { newCurrentCalories, newGoal ->
-                updatedCurrentCalories = newCurrentCalories
-                updatedCalorieGoal = newGoal
-            }
+            initialValue = calorieGoal,
+            onClose = { showEditCalorieDialog = false },
+            onUpdateCalories = { calorieGoal = it },
         )
     }
     if (showDateDialog) {
@@ -188,95 +163,58 @@ fun TrackerScreen(currentCalories: Int, calorieGoal: Int) {
 
 @Composable
 fun EditCalorieDialog(
-    onDismissRequest: () -> Unit,
-    onConfirmation: () -> Unit,
-    dialogTitle: String,
-    updatedCurrentCaloriesState: Int,
-    updatedCalorieGoalState: Int,
-    onUpdateCalories: (Int, Int) -> Unit
+    initialValue: Int,
+    onClose: () -> Unit,
+    onUpdateCalories: (Int) -> Unit
 ) {
-    var currentCaloriesText by remember { mutableStateOf(updatedCurrentCaloriesState.toString()) }
-    var calorieGoalText by remember { mutableStateOf(updatedCalorieGoalState.toString()) }
+    var goalStr by remember { mutableStateOf(initialValue.toString()) }
+    val goal by derivedStateOf { goalStr.toIntOrNull()?.takeIf { it > 0 } }
     
     AlertDialog(
-        title = {
-            Text(text = dialogTitle)
-        },
+        title = { Text(text = "Set Calorie Goal") },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 TextField(
-                    value = calorieGoalText,
-                    onValueChange = { calorieGoalText = it },
+                    value = goalStr,
+                    onValueChange = { goalStr = it },
                     label = { Text("Calorie Goal") },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
                 )
             }
         },
-        onDismissRequest = {
-            onDismissRequest()
-        },
+        onDismissRequest = { onClose() },
+        dismissButton = { TextButton({ onClose() }) { Text("Dismiss") } },
         confirmButton = {
             TextButton(
+                enabled = goal != null,
                 onClick = {
-                    val newCurrentCalories = currentCaloriesText.toIntOrNull() ?: updatedCurrentCaloriesState
-                    val newGoal = calorieGoalText.toIntOrNull() ?: updatedCalorieGoalState
-                    onUpdateCalories(newCurrentCalories, newGoal)
-                    onConfirmation()
+                    onUpdateCalories(goal!!)
+                    onClose()
                 }
-            ) {
-                Text("Confirm")
-            }
+            ) { Text("Confirm") }
         },
-        dismissButton = {
-            TextButton(
-                onClick = {
-                    onDismissRequest()
-                }
-            ) {
-                Text("Dismiss")
-            }
-        }
     )
 }
 
-//delete & scroll
 @Composable
-fun AddFoodDialog(onDismiss: () -> Unit, onSave: (String, Int) -> Unit) {
+fun AddFoodDialog(onClose: () -> Unit, onSave: (String, Int) -> Unit) {
     var foodName by remember { mutableStateOf("") }
-    var calorieCount by remember { mutableStateOf("") }
-    var errorMessage by remember { mutableStateOf("") }
+    var caloriesStr by remember { mutableStateOf("") }
+    val calories by derivedStateOf { caloriesStr.toIntOrNull()?.takeIf { it >= 0 } }
     
     AlertDialog(
-        onDismissRequest = onDismiss,
+        onDismissRequest = onClose,
         confirmButton = {
             Button(
+                enabled = foodName.isNotBlank() && calories != null,
                 onClick = {
-                    val calories = calorieCount.toFloatOrNull()
-                    if (foodName.isNotBlank() && calories != null) {
-                        if (calories >= 0) {
-                            onSave(foodName.trim(), calories.toInt())
-                            foodName = ""
-                            calorieCount = ""
-                            errorMessage = ""
-                        } else {
-                            errorMessage = "Calories cannot be negative."
-                        }
-                    } else {
-                        errorMessage = "Invalid input. Please enter valid food and calories."
-                    }
+                    onSave(foodName.trim(), calories!!)
+                    onClose()
                 }
-            ) {
-                Text("Save")
-            }
+            ) { Text("Save") }
         },
-        dismissButton = {
-            Button(
-                onClick = onDismiss
-            ) {
-                Text("Cancel")
-            }
-        },
+        dismissButton = { Button(onClose) { Text("Cancel") } },
         title = { Text("Add Food") },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -288,21 +226,13 @@ fun AddFoodDialog(onDismiss: () -> Unit, onSave: (String, Int) -> Unit) {
                     modifier = Modifier.fillMaxWidth()
                 )
                 TextField(
-                    value = calorieCount,
-                    onValueChange = { calorieCount = it },
+                    value = caloriesStr,
+                    onValueChange = { caloriesStr = it },
                     label = { Text("Calories") },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                     modifier = Modifier.fillMaxWidth()
                 )
-                if (errorMessage.isNotEmpty()) {
-                    Text(
-                        text = errorMessage,
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.padding(top = 8.dp)
-                    )
-                }
             }
         }
     )
@@ -319,9 +249,7 @@ fun CalorieProgress(currentCalories: Int, calorieGoal: Int) {
         else -> MaterialTheme.colorScheme.errorContainer
     }
     Column(
-        Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 20.dp),
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
@@ -333,9 +261,7 @@ fun CalorieProgress(currentCalories: Int, calorieGoal: Int) {
         )
         LinearProgressIndicator(
             progress = { progress },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 4.dp),
+            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
             color = progressColor,
         )
         Text(
@@ -356,52 +282,34 @@ fun DateNavAlert(
     
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = {
-            Text(text = "Select Date")
-        },
+        title = { Text(text = "Select Date") },
         text = {
-            Column {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Button(
-                        onClick = {
-                            currentDate = currentDate.minus(DatePeriod(days = 1))
-                            onDateChanged(currentDate)
-                        }
-                    ) {
-                        Text(text = "<")
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Button(
+                    onClick = {
+                        currentDate -= DatePeriod(days = 1)
+                        onDateChanged(currentDate)
                     }
-                    Text(
-                        text = currentDate.toString(),
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                    Button(
-                        onClick = {
-                            currentDate = currentDate.plus(DatePeriod(days = 1))
-                            onDateChanged(currentDate)
-                        }
-                    ) {
-                        Text(text = ">")
+                ) { Text(text = "<") }
+                
+                Text(
+                    text = currentDate.toString(),
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                
+                Button(
+                    onClick = {
+                        currentDate -= DatePeriod(days = 1)
+                        onDateChanged(currentDate)
                     }
-                }
+                ) { Text(text = ">") }
             }
         },
-        confirmButton = {
-            TextButton(
-                onClick = onDismiss
-            ) {
-                Text("Done")
-            }
-        },
-        dismissButton = {
-            TextButton(
-                onClick = onDismiss
-            ) {
-                Text("Cancel")
-            }
-        }
+        confirmButton = { TextButton(onDismiss) { Text("Done") } },
+        dismissButton = { TextButton(onDismiss) { Text("Cancel") } }
     )
 }
 
