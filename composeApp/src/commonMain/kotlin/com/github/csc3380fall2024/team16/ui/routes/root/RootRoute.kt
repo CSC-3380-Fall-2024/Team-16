@@ -1,6 +1,7 @@
 package com.github.csc3380fall2024.team16.ui.routes.root
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.github.csc3380fall2024.team16.AppResources
@@ -20,9 +21,11 @@ fun RootRoute(app: AppResources) {
             else -> AuthenticatedRoute(session.token)
         },
         effect = {
-            when (val session = state) {
-                null -> navController.navigate(UnauthenticatedRoute) { popUpTo(0) }
-                else -> navController.navigate(AuthenticatedRoute(session.token)) { popUpTo(0) }
+            SideEffect {
+                when (val session = state) {
+                    null -> navController.navigate(UnauthenticatedRoute) { popUpTo(0) }
+                    else -> navController.navigate(AuthenticatedRoute(session.token)) { popUpTo(0) }
+                }
             }
         }
     ) {
