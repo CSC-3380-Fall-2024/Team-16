@@ -5,16 +5,20 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.github.csc3380fall2024.team16.Navigator
 import com.github.csc3380fall2024.team16.RpcClient
+import com.github.csc3380fall2024.team16.repository.SessionRepository
 import com.github.csc3380fall2024.team16.ui.routes.root.authenticated.AuthenticatedRoute
 import com.github.csc3380fall2024.team16.ui.routes.root.authenticated.compose
 import com.github.csc3380fall2024.team16.ui.routes.root.unauthenticated.UnauthenticatedRoute
 import com.github.csc3380fall2024.team16.ui.routes.root.unauthenticated.compose
 
 @Composable
-fun RootRoute(client: RpcClient) {
-    val viewModel = viewModel { RootViewModel() }
+fun RootRoute(client: RpcClient, sessionRepo: SessionRepository) {
+    val viewModel = viewModel { RootViewModel(sessionRepo) }
     Navigator(
-        start = UnauthenticatedRoute,
+        start = when (val state = viewModel.state) {
+            is RootState.LoggedOut -> UnauthenticatedRoute
+            is RootState.LoggedIn  -> AuthenticatedRoute(state.token)
+        },
         effect = {
             LaunchedEffect(viewModel.state) {
                 when (val state = viewModel.state) {
