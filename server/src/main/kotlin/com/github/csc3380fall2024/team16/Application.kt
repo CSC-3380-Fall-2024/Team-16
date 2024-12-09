@@ -2,6 +2,7 @@ package com.github.csc3380fall2024.team16
 
 import com.github.csc3380fall2024.team16.plugins.configureDatabase
 import com.github.csc3380fall2024.team16.plugins.configureRpc
+import com.github.csc3380fall2024.team16.repository.NewsRepository
 import com.github.csc3380fall2024.team16.server.BuildConfig
 import io.ktor.server.application.Application
 import io.ktor.server.cio.CIO
@@ -19,5 +20,7 @@ fun main() {
 
 fun Application.module() {
     configureDatabase()
-    configureRpc()
+    
+    val newsRepo = NewsRepository(BuildConfig.BING_SEARCH_API_KEY)
+    configureRpc(newsRepo)
 }

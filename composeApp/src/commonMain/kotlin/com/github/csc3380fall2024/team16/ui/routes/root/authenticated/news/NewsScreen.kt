@@ -1,7 +1,9 @@
 package com.github.csc3380fall2024.team16.ui.routes.root.authenticated.news
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -10,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -35,28 +38,29 @@ import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.until
 
 @Composable
-fun NewsScreen(state: NewsState) {
-    
+fun NewsScreen(
+    articles: List<Pair<String, List<NewsArticle>>>,
+    error: Boolean,
+) {
     val scrollState = rememberScrollState()
     val coroutineScope = rememberCoroutineScope()
     
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(scrollState)
-    ) {
-        FunFactOfDay()
-        
-        Spacer(modifier = Modifier.height(24.dp))
-        
-        if (state is NewsState.Loaded) {
-            state.articles.forEach { (query, articles) ->
+    Box {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+        ) {
+            FunFactOfDay()
+            
+            Spacer(modifier = Modifier.height(24.dp))
+            
+            articles.forEach { (query, articles) ->
                 NewsSection(
                     sectionTitle = query,
                     articles = articles
                 )
             }
-            
             
             Button(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
@@ -71,6 +75,23 @@ fun NewsScreen(state: NewsState) {
             }
             
             Spacer(modifier = Modifier.height(16.dp))
+        }
+        
+        if (error) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .offset(y = (-10).dp)
+                    .clip(RoundedCornerShape(80.dp)),
+            ) {
+                Text(
+                    text = "There was an error fetching news.",
+                    modifier = Modifier
+                        .background(MaterialTheme.colorScheme.errorContainer)
+                        .padding(20.dp),
+                    color = MaterialTheme.colorScheme.error,
+                )
+            }
         }
     }
 }
