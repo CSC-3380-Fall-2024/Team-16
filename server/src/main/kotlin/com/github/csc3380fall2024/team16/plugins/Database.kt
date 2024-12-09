@@ -9,6 +9,7 @@ import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.TextColumnType
 import org.jetbrains.exposed.sql.kotlin.datetime.CurrentTimestampWithTimeZone
+import org.jetbrains.exposed.sql.kotlin.datetime.date
 import org.jetbrains.exposed.sql.kotlin.datetime.timestampWithTimeZone
 import org.jetbrains.exposed.sql.lowerCase
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -76,4 +77,14 @@ object PersonalRecords : Table("personal_records") {
     val user = reference("user", Users, onDelete = ReferenceOption.CASCADE)
     val exercise = varchar("exercise", 255)
     val pounds = float("pounds")
+}
+
+object FoodLogs : Table("food_logs") {
+    val user = reference("user", Users, onDelete = ReferenceOption.CASCADE)
+    val date = date("date")
+    val food = varchar("food", 255)
+    val calories = integer("calories")
+    val proteinGrams = integer("protein_grams")
+    val carbsGrams = integer("carbs_grams")
+    val fatsGrams = integer("fats_grams")
 }
