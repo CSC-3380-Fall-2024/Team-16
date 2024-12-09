@@ -35,6 +35,12 @@ interface RpcService : RemoteService {
     
     /**
      * @throws UnauthorizedException
+     * @throws DoesNotExistException
+     */
+    suspend fun removeFoodLog(token: String, id: Int)
+    
+    /**
+     * @throws UnauthorizedException
      */
     suspend fun getFoodLogs(token: String, date: LocalDate): List<FoodLog>
     
@@ -47,12 +53,14 @@ interface RpcService : RemoteService {
 class ValidationException(override val message: String) : Exception()
 class UnauthorizedException : Exception()
 class AlreadyExistsException(override val message: String) : Exception()
+class DoesNotExistException(override val message: String) : Exception()
 
 @Serializable
 data class Session(val token: String, val username: String)
 
 @Serializable
 data class FoodLog(
+    val id: Int,
     val food: String,
     val calories: Int,
     val proteinGrams: Int,

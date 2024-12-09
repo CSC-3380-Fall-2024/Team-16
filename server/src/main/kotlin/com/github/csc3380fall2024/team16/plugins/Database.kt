@@ -2,6 +2,7 @@ package com.github.csc3380fall2024.team16.plugins
 
 import com.github.csc3380fall2024.team16.server.BuildConfig
 import io.ktor.server.application.Application
+import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.ReferenceOption
@@ -79,7 +80,7 @@ object PersonalRecords : Table("personal_records") {
     val pounds = float("pounds")
 }
 
-object FoodLogs : Table("food_logs") {
+object FoodLogs : IntIdTable("food_logs") {
     val user = reference("user", Users, onDelete = ReferenceOption.CASCADE)
     val date = date("date")
     val food = varchar("food", 255)

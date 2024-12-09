@@ -18,7 +18,9 @@ import kotlinx.datetime.LocalDate
 import kotlinx.rpc.krpc.ktor.server.RPC
 import kotlinx.rpc.krpc.ktor.server.rpc
 import kotlinx.rpc.krpc.serialization.json.json
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.transaction
 import kotlin.coroutines.CoroutineContext
@@ -88,6 +90,13 @@ class RpcServiceImpl(
         }
     }
     
+    override suspend fun removeFoodLog(token: String, id: Int) {
+        transaction {
+            val user = UserRepository.userFromToken(token) ?: throw UnauthorizedException()
+            FoodLogs.deleteWhere { (FoodLogs.id eq id) and (FoodLogs.user eq user.id) }
+        }
+    }
+    
     override suspend fun getFoodLogs(token: String, date: LocalDate): List<FoodLog> {
         val rows = transaction {
             val user = UserRepository.userFromToken(token) ?: throw UnauthorizedException()
@@ -102,6 +111,7 @@ class RpcServiceImpl(
         
         return rows.map {
             FoodLog(
+                id = it[FoodLogs.id].value,
                 food = it[FoodLogs.food],
                 calories = it[FoodLogs.calories],
                 proteinGrams = it[FoodLogs.proteinGrams],
