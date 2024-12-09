@@ -54,6 +54,8 @@ kotlin {
             implementation(libs.coil.compose)
             implementation(libs.coil.network.ktor3)
             implementation(libs.kotlinx.datetime)
+            implementation(libs.kstore)
+            implementation(libs.kstore.file)
             implementation(projects.shared)
         }
     }

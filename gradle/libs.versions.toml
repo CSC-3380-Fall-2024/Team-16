@@ -21,6 +21,7 @@ rpc = "0.4.0"
 dotenv = "4.0.0"
 buildconfig = "5.5.1"
 dockerComposePlugin = "0.17.11"
+kstore = "0.9.1"
 
 [libraries]
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
@@ -48,6 +49,8 @@ exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "e
 exposed-kotlin-datetime = { module = "org.jetbrains.exposed:exposed-kotlin-datetime", version.ref = "exposed-version" }
 postgresql = { module = "org.postgresql:postgresql", version.ref = "postgres-version" }
 navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationComposeVersion" }
+kstore = { module = "io.github.xxfast:kstore", version.ref = "kstore" }
+kstore-file = { module = "io.github.xxfast:kstore-file", version.ref = "kstore" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

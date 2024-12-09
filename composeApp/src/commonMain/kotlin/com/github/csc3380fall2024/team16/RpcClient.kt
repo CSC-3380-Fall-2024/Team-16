@@ -1,9 +1,9 @@
 package com.github.csc3380fall2024.team16
 
-import UniversalFitness.composeApp.BuildConfig
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.timeout
+import io.ktor.http.Url
 import kotlinx.coroutines.cancel
 import kotlinx.rpc.krpc.ktor.client.installRPC
 import kotlinx.rpc.krpc.ktor.client.rpc
@@ -13,7 +13,7 @@ import kotlinx.rpc.withService
 
 // A wrapper around an rpc service.
 // Needed because kotlinx.rpc does not yet support one-shot rpc calls.
-class RpcClient(private val url: String = "ws://${BuildConfig.SERVER_IP}:${BuildConfig.SERVER_PORT}/rpc") {
+class RpcClient(private val url: Url) {
     private val client = HttpClient(CIO) {
         installRPC()
     }
@@ -23,7 +23,7 @@ class RpcClient(private val url: String = "ws://${BuildConfig.SERVER_IP}:${Build
      */
     suspend fun <T> rpc(fn: suspend RpcService.() -> T): T {
         val rpc = try {
-            client.rpc(url) {
+            client.rpc(url.toString()) {
                 timeout { connectTimeoutMillis = 3000 }
                 rpcConfig { serialization { json() } }
             }

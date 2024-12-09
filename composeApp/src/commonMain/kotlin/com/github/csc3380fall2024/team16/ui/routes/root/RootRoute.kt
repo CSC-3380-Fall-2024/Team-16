@@ -1,37 +1,33 @@
 package com.github.csc3380fall2024.team16.ui.routes.root
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import com.github.csc3380fall2024.team16.AppResources
 import com.github.csc3380fall2024.team16.Navigator
-import com.github.csc3380fall2024.team16.RpcClient
 import com.github.csc3380fall2024.team16.ui.routes.root.authenticated.AuthenticatedRoute
 import com.github.csc3380fall2024.team16.ui.routes.root.authenticated.compose
 import com.github.csc3380fall2024.team16.ui.routes.root.unauthenticated.UnauthenticatedRoute
 import com.github.csc3380fall2024.team16.ui.routes.root.unauthenticated.compose
 
 @Composable
-fun RootRoute(client: RpcClient) {
-    val viewModel = viewModel { RootViewModel() }
+fun RootRoute(app: AppResources) {
+    val state by app.sessionRepo.updates.collectAsState()
+    
     Navigator(
-        start = UnauthenticatedRoute,
+        start = when (val session = state) {
+            null -> UnauthenticatedRoute
+            else -> AuthenticatedRoute(session.token)
+        },
         effect = {
-            LaunchedEffect(viewModel.state) {
-                when (val state = viewModel.state) {
-                    is RootState.LoggedOut -> navController.navigate(UnauthenticatedRoute) { popUpTo(0) }
-                    is RootState.LoggedIn  -> navController.navigate(AuthenticatedRoute(state.token)) { popUpTo(0) }
-                }
+            when (val session = state) {
+                null -> navController.navigate(UnauthenticatedRoute) { popUpTo(0) }
+                else -> navController.navigate(AuthenticatedRoute(session.token)) { popUpTo(0) }
             }
         }
     ) {
-        route<UnauthenticatedRoute> {
-            this.compose(
-                client = client,
-                onAuthenticated = { viewModel.onAuthenticated(it) }
-            )
-        }
-        
-        route<AuthenticatedRoute> { this.compose(client = client) }
+        route<UnauthenticatedRoute> { this.compose(app) }
+        route<AuthenticatedRoute> { this.compose(app) }
     }
 }
 
