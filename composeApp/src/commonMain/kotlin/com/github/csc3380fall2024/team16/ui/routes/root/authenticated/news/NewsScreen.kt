@@ -62,16 +62,18 @@ fun NewsScreen(
                 )
             }
             
-            Button(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                onClick = {
-                    coroutineScope.launch {
-                        scrollState.animateScrollTo(0)
-                    }
-                },
-                shape = RoundedCornerShape(8.dp),
-            ) {
-                Text("Back to Top")
+            if (articles.isNotEmpty()) {
+                Button(
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    onClick = {
+                        coroutineScope.launch {
+                            scrollState.animateScrollTo(0)
+                        }
+                    },
+                    shape = RoundedCornerShape(8.dp),
+                ) {
+                    Text("Back to Top")
+                }
             }
             
             Spacer(modifier = Modifier.height(16.dp))
