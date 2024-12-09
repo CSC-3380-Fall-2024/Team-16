@@ -11,5 +11,5 @@ class AppResources(backendUrl: Url, appDir: String) {
         protocol = URLProtocol.WS
         pathSegments = listOf("rpc")
     }.build())
-    val sessionRepo = SessionRepository(Path(appDir, "session"))
+    val sessionRepo = SessionRepository(client, Path(appDir, "session"))
 }

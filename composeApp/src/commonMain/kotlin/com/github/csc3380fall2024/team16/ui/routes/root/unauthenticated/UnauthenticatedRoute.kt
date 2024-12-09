@@ -1,8 +1,8 @@
 package com.github.csc3380fall2024.team16.ui.routes.root.unauthenticated
 
 import androidx.compose.runtime.Composable
+import com.github.csc3380fall2024.team16.AppResources
 import com.github.csc3380fall2024.team16.Navigator
-import com.github.csc3380fall2024.team16.RpcClient
 import com.github.csc3380fall2024.team16.ui.routes.root.unauthenticated.forgotPassword.ForgotPasswordRoute
 import com.github.csc3380fall2024.team16.ui.routes.root.unauthenticated.forgotPassword.compose
 import com.github.csc3380fall2024.team16.ui.routes.root.unauthenticated.login.LoginRoute
@@ -17,10 +17,7 @@ import kotlinx.serialization.Serializable
 object UnauthenticatedRoute
 
 @Composable
-fun UnauthenticatedRoute.compose(
-    client: RpcClient,
-    onAuthenticated: (token: String) -> Unit,
-) {
+fun UnauthenticatedRoute.compose(app: AppResources) {
     Navigator(start = WelcomeRoute) {
         route<WelcomeRoute> {
             this.compose(
@@ -28,11 +25,10 @@ fun UnauthenticatedRoute.compose(
                 onNavigateLogin = { navController.navigate(LoginRoute) }
             )
         }
-        route<RegisterRoute> { this.compose(client, onAuthenticated) }
+        route<RegisterRoute> { this.compose(app) }
         route<LoginRoute> {
             this.compose(
-                client = client,
-                onAuthenticated = onAuthenticated,
+                app = app,
                 onNavigateRegister = { navController.navigate(RegisterRoute) },
                 onNavigateForgotPassword = { navController.navigate(ForgotPasswordRoute) },
             )

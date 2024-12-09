@@ -6,18 +6,17 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.csc3380fall2024.team16.NetworkException
-import com.github.csc3380fall2024.team16.RpcClient
 import com.github.csc3380fall2024.team16.UnauthorizedException
 import com.github.csc3380fall2024.team16.ValidationException
+import com.github.csc3380fall2024.team16.repository.SessionRepository
 import kotlinx.coroutines.launch
 
 sealed interface LoginState {
     data class Ready(val lastError: String?) : LoginState
     data object InProgress : LoginState
-    data class Success(val token: String) : LoginState
 }
 
-class LoginViewModel(private val client: RpcClient) : ViewModel() {
+class LoginViewModel(private val sessionRepo: SessionRepository) : ViewModel() {
     var state: LoginState by mutableStateOf(LoginState.Ready(null))
         private set
     
@@ -25,8 +24,7 @@ class LoginViewModel(private val client: RpcClient) : ViewModel() {
         state = LoginState.InProgress
         
         try {
-            val token = client.rpc { login(usernameOrEmail, password) }
-            state = LoginState.Success(token)
+            sessionRepo.create(usernameOrEmail, password)
         } catch (e: ValidationException) {
             state = LoginState.Ready(e.message)
         } catch (e: UnauthorizedException) {
