@@ -1,9 +1,7 @@
 package com.github.csc3380fall2024.team16.ui.routes.root.authenticated.news
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -12,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -32,6 +29,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.github.csc3380fall2024.team16.model.NewsArticle
+import com.github.csc3380fall2024.team16.ui.components.ErrWrap
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
@@ -45,7 +43,7 @@ fun NewsScreen(
     val scrollState = rememberScrollState()
     val coroutineScope = rememberCoroutineScope()
     
-    Box {
+    ErrWrap(if (error) "There was an error fetching news." else null) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -77,23 +75,6 @@ fun NewsScreen(
             }
             
             Spacer(modifier = Modifier.height(16.dp))
-        }
-        
-        if (error) {
-            Box(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .offset(y = (-10).dp)
-                    .clip(RoundedCornerShape(80.dp)),
-            ) {
-                Text(
-                    text = "There was an error fetching news.",
-                    modifier = Modifier
-                        .background(MaterialTheme.colorScheme.errorContainer)
-                        .padding(20.dp),
-                    color = MaterialTheme.colorScheme.error,
-                )
-            }
         }
     }
 }
