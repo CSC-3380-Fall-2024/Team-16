@@ -12,13 +12,11 @@ object LoginRoute
 fun LoginRoute.compose(
     app: AppResources,
     onNavigateRegister: () -> Unit,
-    onNavigateForgotPassword: () -> Unit,
 ) {
     val viewModel = viewModel { LoginViewModel(app.sessionRepo) }
     LoginScreen(
         state = viewModel.state,
         onLogin = viewModel::login,
         onNavigateRegister = onNavigateRegister,
-        onNavigateForgotPassword = onNavigateForgotPassword,
     )
 }

@@ -28,7 +28,6 @@ fun LoginScreen(
     state: LoginState,
     onLogin: (usernameOrEmail: String, password: String) -> Unit,
     onNavigateRegister: () -> Unit,
-    onNavigateForgotPassword: () -> Unit,
 ) {
     var usernameOrEmail by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -81,14 +80,6 @@ fun LoginScreen(
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.clickable {
                 onNavigateRegister()
-            }
-        )
-        
-        Text(
-            text = "Forgot Password",
-            style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier.clickable {
-                onNavigateForgotPassword()
             }
         )
     }

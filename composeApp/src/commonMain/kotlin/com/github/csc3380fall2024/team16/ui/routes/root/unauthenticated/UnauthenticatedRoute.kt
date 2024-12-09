@@ -3,8 +3,6 @@ package com.github.csc3380fall2024.team16.ui.routes.root.unauthenticated
 import androidx.compose.runtime.Composable
 import com.github.csc3380fall2024.team16.AppResources
 import com.github.csc3380fall2024.team16.Navigator
-import com.github.csc3380fall2024.team16.ui.routes.root.unauthenticated.forgotPassword.ForgotPasswordRoute
-import com.github.csc3380fall2024.team16.ui.routes.root.unauthenticated.forgotPassword.compose
 import com.github.csc3380fall2024.team16.ui.routes.root.unauthenticated.login.LoginRoute
 import com.github.csc3380fall2024.team16.ui.routes.root.unauthenticated.login.compose
 import com.github.csc3380fall2024.team16.ui.routes.root.unauthenticated.register.RegisterRoute
@@ -30,12 +28,6 @@ fun UnauthenticatedRoute.compose(app: AppResources) {
             this.compose(
                 app = app,
                 onNavigateRegister = { navController.navigate(RegisterRoute) },
-                onNavigateForgotPassword = { navController.navigate(ForgotPasswordRoute) },
-            )
-        }
-        route<ForgotPasswordRoute> {
-            this.compose(
-                onNavigateLogin = { navController.navigate(LoginRoute) }
             )
         }
     }
