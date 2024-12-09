@@ -2,6 +2,7 @@ package com.github.csc3380fall2024.team16.plugins
 
 import com.github.csc3380fall2024.team16.server.BuildConfig
 import io.ktor.server.application.Application
+import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.ReferenceOption
@@ -9,6 +10,7 @@ import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.TextColumnType
 import org.jetbrains.exposed.sql.kotlin.datetime.CurrentTimestampWithTimeZone
+import org.jetbrains.exposed.sql.kotlin.datetime.date
 import org.jetbrains.exposed.sql.kotlin.datetime.timestampWithTimeZone
 import org.jetbrains.exposed.sql.lowerCase
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -21,7 +23,7 @@ fun Application.configureDatabase() {
     Database.connect(url, user = user, password = password)
     
     transaction {
-        SchemaUtils.create(Users, Friends, Comments, PostLikes, CommentLikes, ExerciseLogs, PersonalRecords)
+        SchemaUtils.create(Users, Friends, Comments, PostLikes, CommentLikes, ExerciseLogs, PersonalRecords, FoodLogs)
     }
 }
 
@@ -76,4 +78,14 @@ object PersonalRecords : Table("personal_records") {
     val user = reference("user", Users, onDelete = ReferenceOption.CASCADE)
     val exercise = varchar("exercise", 255)
     val pounds = float("pounds")
+}
+
+object FoodLogs : IntIdTable("food_logs") {
+    val user = reference("user", Users, onDelete = ReferenceOption.CASCADE)
+    val date = date("date")
+    val food = varchar("food", 255)
+    val calories = integer("calories")
+    val proteinGrams = integer("protein_grams")
+    val carbsGrams = integer("carbs_grams")
+    val fatsGrams = integer("fats_grams")
 }

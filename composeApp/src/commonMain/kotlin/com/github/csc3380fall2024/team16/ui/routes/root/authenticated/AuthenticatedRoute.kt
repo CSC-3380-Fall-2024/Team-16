@@ -46,7 +46,7 @@ fun AuthenticatedRoute.compose(app: AppResources) {
         }
     ) {
         route<HomeRoute> { this.compose(username) }
-        route<TrackerRoute> { this.compose(currentCalories = 0, calorieGoal = 2000) }
+        route<TrackerRoute> { this.compose(app, token) }
         route<NewsRoute> { this.compose(app) }
         route<SocialRoute> { this.compose() }
     }

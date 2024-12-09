@@ -1,5 +1,6 @@
 package com.github.csc3380fall2024.team16.plugins
 
+import com.github.csc3380fall2024.team16.FoodLog
 import com.github.csc3380fall2024.team16.RpcService
 import com.github.csc3380fall2024.team16.Session
 import com.github.csc3380fall2024.team16.TokenManager
@@ -13,9 +14,15 @@ import com.github.csc3380fall2024.team16.usernameRegex
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.routing.routing
+import kotlinx.datetime.LocalDate
 import kotlinx.rpc.krpc.ktor.server.RPC
 import kotlinx.rpc.krpc.ktor.server.rpc
 import kotlinx.rpc.krpc.serialization.json.json
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.deleteWhere
+import org.jetbrains.exposed.sql.insertAndGetId
+import org.jetbrains.exposed.sql.transactions.transaction
 import kotlin.coroutines.CoroutineContext
 
 fun Application.configureRpc(newsRepo: NewsRepository) {
@@ -60,6 +67,61 @@ class RpcServiceImpl(
             token = TokenManager.createToken(user.id, user.passwordHash),
             username = user.username,
         )
+    }
+    
+    override suspend fun logFood(
+        token: String,
+        date: LocalDate,
+        food: String,
+        calories: Int,
+        proteinGrams: Int,
+        carbsGrams: Int,
+        fatsGrams: Int,
+    ): Int {
+        return transaction {
+            val user = UserRepository.userFromToken(token) ?: throw UnauthorizedException()
+            FoodLogs.insertAndGetId {
+                it[FoodLogs.user] = user.id
+                it[FoodLogs.date] = date
+                it[FoodLogs.food] = food
+                it[FoodLogs.calories] = calories
+                it[FoodLogs.proteinGrams] = proteinGrams
+                it[FoodLogs.carbsGrams] = carbsGrams
+                it[FoodLogs.fatsGrams] = fatsGrams
+            }.value
+        }
+    }
+    
+    override suspend fun removeFoodLog(token: String, id: Int) {
+        transaction {
+            val user = UserRepository.userFromToken(token) ?: throw UnauthorizedException()
+            FoodLogs.deleteWhere { (FoodLogs.id eq id) and (FoodLogs.user eq user.id) }
+        }
+    }
+    
+    override suspend fun getFoodLogs(token: String, date: LocalDate): List<FoodLog> {
+        val rows = transaction {
+            val user = UserRepository.userFromToken(token) ?: throw UnauthorizedException()
+            FoodLogs.select(
+                FoodLogs.id,
+                FoodLogs.food,
+                FoodLogs.calories,
+                FoodLogs.proteinGrams,
+                FoodLogs.carbsGrams,
+                FoodLogs.fatsGrams,
+            ).where { (FoodLogs.user eq user.id) and (FoodLogs.date eq date) }.toList()
+        }
+        
+        return rows.map {
+            FoodLog(
+                id = it[FoodLogs.id].value,
+                food = it[FoodLogs.food],
+                calories = it[FoodLogs.calories],
+                proteinGrams = it[FoodLogs.proteinGrams],
+                carbsGrams = it[FoodLogs.carbsGrams],
+                fatsGrams = it[FoodLogs.fatsGrams],
+            )
+        }
     }
     
     override suspend fun getNewsArticles(token: String, query: String): List<NewsArticle> {
