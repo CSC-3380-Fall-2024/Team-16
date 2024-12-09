@@ -3,7 +3,6 @@ package com.github.csc3380fall2024.team16.ui.routes.root.authenticated.social
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -39,6 +38,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.layout.Column as Column
+import androidx.compose.ui.window.Dialog
 
 @Composable
 fun SocialScreen(viewModel: SocialViewModel) {
@@ -189,6 +190,7 @@ fun SocialFeedPage(
     profilePicture: Any?
 ) {
     val scrollState = rememberScrollState()
+    var showCreatePostDialog by remember { mutableStateOf(false) }
     
     Box(
         modifier = Modifier.fillMaxSize()
@@ -265,7 +267,7 @@ fun SocialFeedPage(
         }
         
         FloatingActionButton(
-            onClick = { /* Navigate to video creation page */ },
+            onClick = { showCreatePostDialog = true },
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(16.dp)
@@ -274,6 +276,86 @@ fun SocialFeedPage(
                 imageVector = Icons.Filled.Add,
                 contentDescription = "Create"
             )
+        }
+        
+        // Display CreatePostDialog when the state is true
+        if (showCreatePostDialog) {
+            CreatePostDialog(
+                onDismiss = { showCreatePostDialog = false },
+                onPostCreated = { caption, image ->
+                    // Handle the newly created post
+                    showCreatePostDialog = false
+                    // You can store or display the new post here
+                    println("Post created with caption: $caption and image: $image")
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun CreatePostDialog(
+    onDismiss: () -> Unit,
+    onPostCreated: (String, Painter?) -> Unit
+) {
+    var caption by remember { mutableStateOf("") }
+    var image: Painter? by remember { mutableStateOf(null) }
+    
+    Dialog(onDismissRequest = { onDismiss() }) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .background(MaterialTheme.colorScheme.primaryContainer)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Create a Post",
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+            
+            TextField(
+                value = caption,
+                onValueChange = { caption = it },
+                placeholder = { Text("Enter a caption") },
+                modifier = Modifier.fillMaxWidth()
+            )
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            Button(
+                onClick = {
+                    // Placeholder for image picker logic
+                    // Replace this with an actual image picker implementation
+                    image = null // Replace with actual Painter object from image picker
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Choose Image")
+            }
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            Row(
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Button(onClick = { onDismiss() }) {
+                    Text("Cancel")
+                }
+                Button(onClick = {
+                    if (caption.isNotEmpty()) {
+                        onPostCreated(caption, image)
+                    }
+                }) {
+                    Text("Post")
+                }
+            }
         }
     }
 }
