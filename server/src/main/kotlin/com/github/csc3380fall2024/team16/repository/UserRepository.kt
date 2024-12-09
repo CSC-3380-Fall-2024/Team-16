@@ -8,7 +8,7 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.exists
-import org.jetbrains.exposed.sql.insertAndGetId
+import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.lowerCase
 import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.selectAll
@@ -25,7 +25,7 @@ object UserRepository {
     fun addUser(username: String, email: String, password: String) {
         val salt = createRandomSalt()
         val hash = createHash(password, salt)
-        val id = transaction {
+        transaction {
             val usernameExists = run {
                 val existsOp = exists(Users.selectAll().where(Users.username.lowerCase() eq username.lowercase()))
                 Table.Dual.select(existsOp).first()[existsOp]
@@ -38,7 +38,7 @@ object UserRepository {
             }
             if (emailExists) throw AlreadyExistsException("user with that email already exists")
             
-            Users.insertAndGetId {
+            Users.insert {
                 it[Users.username] = username
                 it[Users.email] = email
                 it[passwordSalt] = salt
