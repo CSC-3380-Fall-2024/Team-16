@@ -1,5 +1,6 @@
 package com.github.csc3380fall2024.team16
 
+import com.github.csc3380fall2024.team16.repository.NewsRepository
 import com.github.csc3380fall2024.team16.repository.SessionRepository
 import io.ktor.http.URLBuilder
 import io.ktor.http.URLProtocol
@@ -12,4 +13,5 @@ class AppResources(backendUrl: Url, appDir: String) {
         pathSegments = listOf("rpc")
     }.build())
     val sessionRepo = SessionRepository(client, Path(appDir, "session"))
+    val newsRepo = NewsRepository(client, Path(appDir, "news"))
 }
