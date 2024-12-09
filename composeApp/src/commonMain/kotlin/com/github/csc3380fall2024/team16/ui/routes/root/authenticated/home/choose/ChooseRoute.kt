@@ -8,6 +8,7 @@ object ChooseRoute
 
 @Composable
 fun ChooseRoute.compose(
+    username: String,
     onNavigateWorkoutGenerator: () -> Unit,
     onNavigateBodyBuilding: () -> Unit,
     onNavigatePowerlifting: () -> Unit,
@@ -15,6 +16,7 @@ fun ChooseRoute.compose(
     onNavigateWeightloss: () -> Unit,
 ) {
     ChooseScreen(
+        username,
         onNavigateWorkoutGenerator,
         onNavigateBodyBuilding,
         onNavigatePowerlifting,

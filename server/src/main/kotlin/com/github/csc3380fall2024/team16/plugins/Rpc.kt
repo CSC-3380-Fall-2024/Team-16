@@ -1,6 +1,7 @@
 package com.github.csc3380fall2024.team16.plugins
 
 import com.github.csc3380fall2024.team16.RpcService
+import com.github.csc3380fall2024.team16.Session
 import com.github.csc3380fall2024.team16.TokenManager
 import com.github.csc3380fall2024.team16.UnauthorizedException
 import com.github.csc3380fall2024.team16.ValidationException
@@ -48,14 +49,17 @@ class RpcServiceImpl(
         UserRepository.addUser(username, email, password)
     }
     
-    override suspend fun login(usernameOrEmail: String, password: String): String {
+    override suspend fun login(usernameOrEmail: String, password: String): Session {
         when {
             usernameOrEmail.isEmpty() -> throw ValidationException("username or email must not be empty")
             password.isEmpty()        -> throw ValidationException("password must not be empty")
         }
         
         val user = UserRepository.getUser(usernameOrEmail, password) ?: throw UnauthorizedException()
-        return TokenManager.createToken(user.id, user.passwordHash)
+        return Session(
+            token = TokenManager.createToken(user.id, user.passwordHash),
+            username = user.username,
+        )
     }
     
     override suspend fun getNewsArticles(token: String, query: String): List<NewsArticle> {

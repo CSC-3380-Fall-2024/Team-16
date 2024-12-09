@@ -18,13 +18,13 @@ fun RootRoute(app: AppResources) {
     Navigator(
         start = when (val session = state) {
             null -> UnauthenticatedRoute
-            else -> AuthenticatedRoute(session.token)
+            else -> AuthenticatedRoute(session.token, session.username)
         },
         effect = {
             SideEffect {
                 when (val session = state) {
                     null -> navController.navigate(UnauthenticatedRoute) { popUpTo(0) }
-                    else -> navController.navigate(AuthenticatedRoute(session.token)) { popUpTo(0) }
+                    else -> navController.navigate(AuthenticatedRoute(session.token, session.username)) { popUpTo(0) }
                 }
             }
         }

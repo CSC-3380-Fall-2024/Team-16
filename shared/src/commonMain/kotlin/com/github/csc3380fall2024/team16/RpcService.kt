@@ -3,6 +3,7 @@ package com.github.csc3380fall2024.team16
 import com.github.csc3380fall2024.team16.model.NewsArticle
 import kotlinx.rpc.RemoteService
 import kotlinx.rpc.annotations.Rpc
+import kotlinx.serialization.Serializable
 
 @Rpc
 interface RpcService : RemoteService {
@@ -16,7 +17,7 @@ interface RpcService : RemoteService {
      * @throws ValidationException
      * @throws UnauthorizedException
      */
-    suspend fun login(usernameOrEmail: String, password: String): String
+    suspend fun login(usernameOrEmail: String, password: String): Session
     
     /**
      * @throws UnauthorizedException
@@ -27,3 +28,6 @@ interface RpcService : RemoteService {
 class ValidationException(override val message: String) : Exception()
 class UnauthorizedException : Exception()
 class AlreadyExistsException(override val message: String) : Exception()
+
+@Serializable
+data class Session(val token: String, val username: String)

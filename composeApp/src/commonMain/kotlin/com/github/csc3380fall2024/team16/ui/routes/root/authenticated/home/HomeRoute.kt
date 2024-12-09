@@ -20,10 +20,11 @@ import kotlinx.serialization.Serializable
 object HomeRoute
 
 @Composable
-fun HomeRoute.compose() {
+fun HomeRoute.compose(username: String) {
     Navigator(start = ChooseRoute) {
         route<ChooseRoute> {
             this.compose(
+                username = username,
                 onNavigateWorkoutGenerator = { navController.navigate(WorkoutGeneratorRoute) },
                 onNavigateBodyBuilding = { navController.navigate(BodybuildingRoute) },
                 onNavigatePowerlifting = { navController.navigate(PowerliftingRoute) },

@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun ChooseScreen(
+    username: String,
     onNavigateWorkoutGenerator: () -> Unit,
     onNavigateBodyBuilding: () -> Unit,
     onNavigatePowerlifting: () -> Unit,
@@ -44,12 +45,7 @@ fun ChooseScreen(
         verticalArrangement = Arrangement.Top
     ) {
         Text(
-            text = "Hello,",
-            fontSize = 26.sp,
-            fontWeight = FontWeight.Bold
-        )
-        Text(
-            text = "username",
+            text = "Hello, $username",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold
         )

@@ -25,7 +25,7 @@ import com.github.csc3380fall2024.team16.ui.routes.root.authenticated.tracker.co
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class AuthenticatedRoute(val token: String)
+data class AuthenticatedRoute(val token: String, val username: String)
 
 @Composable
 fun AuthenticatedRoute.compose(app: AppResources) {
@@ -45,7 +45,7 @@ fun AuthenticatedRoute.compose(app: AppResources) {
             }
         }
     ) {
-        route<HomeRoute> { this.compose() }
+        route<HomeRoute> { this.compose(username) }
         route<TrackerRoute> { this.compose(currentCalories = 0, calorieGoal = 2000) }
         route<NewsRoute> { this.compose(app) }
         route<SocialRoute> { this.compose() }
