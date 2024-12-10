@@ -45,6 +45,8 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlinx.datetime.todayIn
+import kotlin.math.absoluteValue
+import kotlin.math.pow
 
 @Composable
 fun TrackerScreen(
@@ -255,6 +257,7 @@ fun AddFoodDialog(onClose: () -> Unit, onSave: (String, Int) -> Unit) {
 @Composable
 fun CalorieProgress(currentCalories: Int, calorieGoal: Int) {
     val progress = currentCalories.toFloat() / calorieGoal
+    val remaining = calorieGoal - currentCalories
     Column(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -273,21 +276,27 @@ fun CalorieProgress(currentCalories: Int, calorieGoal: Int) {
             CircularProgressIndicator(
                 modifier = Modifier.fillMaxSize(),
                 progress = { progress },
-                color = lerp(Color.Red, Color.Green, progress * progress), // quadratic color interpolation,
+                color = lerp(
+                    // quadratic color interpolation, accounting for going over
+                    start = Color.Red,
+                    stop = Color.Green,
+                    fraction = 1 - (1 - progress.pow(2)).absoluteValue,
+                ),
                 strokeWidth = 12.dp,
                 gapSize = 0.dp,
                 strokeCap = StrokeCap.Square,
             )
+            
             Column {
                 Text(
-                    "${calorieGoal - currentCalories}",
+                    "${remaining.absoluteValue}",
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp,
                 )
                 Text(
-                    text = "calories left",
+                    text = "calories " + if (remaining >= 0) "left" else "over",
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center,
                     fontSize = 14.sp,
