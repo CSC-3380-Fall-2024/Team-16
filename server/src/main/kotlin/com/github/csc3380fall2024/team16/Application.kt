@@ -1,6 +1,7 @@
 package com.github.csc3380fall2024.team16
 
 import com.github.csc3380fall2024.team16.plugins.configureDatabase
+import com.github.csc3380fall2024.team16.plugins.configureRoutes
 import com.github.csc3380fall2024.team16.plugins.configureRpc
 import com.github.csc3380fall2024.team16.repository.NewsRepository
 import com.github.csc3380fall2024.team16.server.BuildConfig
@@ -23,4 +24,6 @@ fun Application.module() {
     
     val newsRepo = NewsRepository(BuildConfig.BING_SEARCH_API_KEY)
     configureRpc(newsRepo)
+    
+    configureRoutes()
 }

@@ -8,7 +8,6 @@ import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.ReferenceOption
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.TextColumnType
 import org.jetbrains.exposed.sql.kotlin.datetime.CurrentTimestampWithTimeZone
 import org.jetbrains.exposed.sql.kotlin.datetime.date
 import org.jetbrains.exposed.sql.kotlin.datetime.timestampWithTimeZone
@@ -46,10 +45,11 @@ object Friends : Table("friends") {
     val since = timestampWithTimeZone("since").defaultExpression(CurrentTimestampWithTimeZone)
 }
 
-object Posts : UUIDTable("posts") {
+object Posts : IntIdTable("posts") {
     val user = reference("user", Users, onDelete = ReferenceOption.CASCADE)
     val description = varchar("description", 2000)
-    val photos = array("files", TextColumnType(), 20)
+    val image = binary("image")
+    val timestamp = timestampWithTimeZone("timestamp").defaultExpression(CurrentTimestampWithTimeZone)
 }
 
 object Comments : UUIDTable("comments") {

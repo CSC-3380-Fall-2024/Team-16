@@ -1,6 +1,7 @@
 package com.github.csc3380fall2024.team16
 
 import com.github.csc3380fall2024.team16.model.NewsArticle
+import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.rpc.RemoteService
 import kotlinx.rpc.annotations.Rpc
@@ -49,6 +50,16 @@ interface RpcService : RemoteService {
      * @throws UnauthorizedException
      */
     suspend fun getNewsArticles(token: String, query: String): List<NewsArticle>
+    
+    /**
+     * @throws UnauthorizedException
+     */
+    suspend fun getPosts(token: String): List<Post>
+    
+    /**
+     * @throws UnauthorizedException
+     */
+    suspend fun addPost(token: String, description: String, image: ByteArray)
 }
 
 class ValidationException(override val message: String) : Exception()
@@ -68,3 +79,12 @@ data class FoodLog(
     val carbsGrams: Int,
     val fatsGrams: Int,
 )
+
+@Serializable
+data class Post(
+    val id: Int,
+    val user: String,
+    val description: String,
+    val timestamp: Instant,
+)
+
