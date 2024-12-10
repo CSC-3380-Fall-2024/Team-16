@@ -378,12 +378,7 @@ fun CalorieProgress(currentCalories: Int, calorieGoal: Int, protein: Int, fat: I
             CircularProgressIndicator(
                 modifier = Modifier.fillMaxSize(),
                 progress = { progress },
-                color = lerp(
-                    // quadratic color interpolation, accounting for going over
-                    start = Color.Red,
-                    stop = Color.Green,
-                    fraction = 1 - (1 - progress.pow(2)).absoluteValue,
-                ),
+                color = interpolateColor(progress),
                 strokeWidth = 12.dp,
                 gapSize = 0.dp,
                 strokeCap = StrokeCap.Square,
@@ -465,6 +460,8 @@ fun DateNavAlert(
 
 @Composable
 fun MacroProgress(label: String, current: Int, goal: Int, unit: String) {
+    val progress = current.toFloat() / goal
+    
     Column(
         modifier = Modifier.width(100.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -476,9 +473,9 @@ fun MacroProgress(label: String, current: Int, goal: Int, unit: String) {
             color = MaterialTheme.colorScheme.onBackground
         )
         LinearProgressIndicator(
-            progress = { current.toFloat() / goal },
+            progress = { progress },
             modifier = Modifier.fillMaxWidth().height(8.dp),
-            color = MaterialTheme.colorScheme.primary,
+            color = interpolateColor(progress),
             gapSize = 0.dp,
             drawStopIndicator = {},
             strokeCap = StrokeCap.Square,
@@ -490,3 +487,10 @@ fun MacroProgress(label: String, current: Int, goal: Int, unit: String) {
         )
     }
 }
+
+// quadratic color interpolation between red and green, accounting for going over
+fun interpolateColor(progress: Float) = lerp(
+    start = Color.Red,
+    stop = Color.Green,
+    fraction = 1 - (1 - progress.pow(2)).absoluteValue,
+)
