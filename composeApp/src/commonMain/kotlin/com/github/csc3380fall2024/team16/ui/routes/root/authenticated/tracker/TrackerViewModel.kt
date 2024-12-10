@@ -22,13 +22,20 @@ class TrackerViewModel(private val foodLogsRepo: FoodLogsRepository, private val
         }
     }
     
-    fun setCalorieGoal(goal: Int) = viewModelScope.launch {
-        foodLogsRepo.setCalorieGoal(goal)
+    fun setGoals(calorieGoal: Int, proteinGoal: Int, fatGoal: Int, carbsGoal: Int) = viewModelScope.launch {
+        foodLogsRepo.setGoals(calorieGoal, proteinGoal, fatGoal, carbsGoal)
     }
     
-    fun addFoodLog(date: LocalDate, food: String, calories: Int) = viewModelScope.launch {
+    fun addFoodLog(
+        date: LocalDate,
+        food: String,
+        calories: Int,
+        protein: Int,
+        fat: Int,
+        carbs: Int
+    ) = viewModelScope.launch {
         try {
-            foodLogsRepo.logFood(token, date, food, calories, 0, 0, 0)
+            foodLogsRepo.logFood(token, date, food, calories, protein, fat, carbs)
             error = false
         } catch (e: Exception) {
             error = true

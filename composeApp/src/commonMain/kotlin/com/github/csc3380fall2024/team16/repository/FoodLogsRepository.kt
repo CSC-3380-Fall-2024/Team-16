@@ -35,9 +35,14 @@ class FoodLogsRepository(private val client: RpcClient, path: Path) {
         }
     }
     
-    suspend fun setCalorieGoal(goal: Int) {
+    suspend fun setGoals(calorieGoal: Int, proteinGoal: Int, fatGoal: Int, carbsGoal: Int) {
         store.update {
-            it?.copy(calorieGoal = goal)
+            it?.copy(
+                calorieGoal = calorieGoal,
+                proteinGoal = proteinGoal,
+                fatGoal = fatGoal,
+                carbsGoal = carbsGoal,
+            )
         }
     }
     
@@ -97,4 +102,10 @@ class FoodLogsRepository(private val client: RpcClient, path: Path) {
 }
 
 @Serializable
-data class FoodLogs(val logs: Map<LocalDate, List<FoodLog>> = emptyMap(), val calorieGoal: Int = 2000)
+data class FoodLogs(
+    val logs: Map<LocalDate, List<FoodLog>> = emptyMap(),
+    val calorieGoal: Int = 2000,
+    val proteinGoal: Int = 125,
+    val carbsGoal: Int = 225,
+    val fatGoal: Int = 67,
+)
