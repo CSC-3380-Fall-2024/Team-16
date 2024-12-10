@@ -28,6 +28,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -251,14 +253,6 @@ fun AddFoodDialog(onClose: () -> Unit, onSave: (String, Int) -> Unit) {
 @Composable
 fun CalorieProgress(currentCalories: Int, calorieGoal: Int) {
     val progress = currentCalories.toFloat() / calorieGoal
-    val progressPercent = progress * 100
-    val progressColor = when {
-        progressPercent < 55 -> MaterialTheme.colorScheme.errorContainer
-        progressPercent < 95 -> MaterialTheme.colorScheme.error
-        progressPercent <= 100 -> MaterialTheme.colorScheme.primary
-        else -> MaterialTheme.colorScheme.errorContainer
-    }
-    val remainingCalories = calorieGoal - currentCalories
     Column(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -276,13 +270,13 @@ fun CalorieProgress(currentCalories: Int, calorieGoal: Int) {
         ) {
             CircularProgressIndicator(
                 progress = { progress },
-                color = progressColor,
+                color = lerp(Color.Red, Color.Green, progress * progress), // quadratic color interpolation,
                 strokeWidth = 8.dp,
                 trackColor = MaterialTheme.colorScheme.surfaceVariant,
                 modifier = Modifier.size(100.dp)
             )
             Text(
-                text = "$remainingCalories cals left",
+                text = "${calorieGoal - currentCalories} cals left",
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onBackground,
                 fontSize = 12.sp
