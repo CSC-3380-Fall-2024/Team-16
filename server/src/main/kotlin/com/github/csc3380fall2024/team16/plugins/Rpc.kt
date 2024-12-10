@@ -1,6 +1,7 @@
 package com.github.csc3380fall2024.team16.plugins
 
 import com.github.csc3380fall2024.team16.FoodLog
+import com.github.csc3380fall2024.team16.Post
 import com.github.csc3380fall2024.team16.RpcService
 import com.github.csc3380fall2024.team16.Session
 import com.github.csc3380fall2024.team16.TokenManager
@@ -9,6 +10,7 @@ import com.github.csc3380fall2024.team16.ValidationException
 import com.github.csc3380fall2024.team16.emailRegex
 import com.github.csc3380fall2024.team16.model.NewsArticle
 import com.github.csc3380fall2024.team16.repository.NewsRepository
+import com.github.csc3380fall2024.team16.repository.PostsRepository
 import com.github.csc3380fall2024.team16.repository.UserRepository
 import com.github.csc3380fall2024.team16.usernameRegex
 import io.ktor.server.application.Application
@@ -127,5 +129,19 @@ class RpcServiceImpl(
     override suspend fun getNewsArticles(token: String, query: String): List<NewsArticle> {
         UserRepository.userFromToken(token) ?: throw UnauthorizedException()
         return newsRepo.getNewsArticles(query)
+    }
+    
+    override suspend fun getPosts(token: String): List<Post> {
+        return transaction {
+            UserRepository.userFromToken(token) ?: throw UnauthorizedException()
+            PostsRepository.getPosts()
+        }
+    }
+    
+    override suspend fun addPost(token: String, description: String, image: ByteArray) {
+        transaction {
+            val user = UserRepository.userFromToken(token) ?: throw UnauthorizedException()
+            PostsRepository.addPost(user.id, description, image)
+        }
     }
 }
