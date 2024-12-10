@@ -29,9 +29,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.csc3380fall2024.team16.repository.FoodLogs
@@ -131,7 +133,7 @@ fun TrackerScreen(
                                 .padding(8.dp)
                         ) {
                             Text(
-                                text = "${it.food}: ${it.calories} kcal",
+                                text = "${it.food}: ${it.calories} calories",
                                 style = MaterialTheme.typography.titleMedium,
                                 color = MaterialTheme.colorScheme.onSurface
                             )
@@ -265,25 +267,36 @@ fun CalorieProgress(currentCalories: Int, calorieGoal: Int) {
             color = MaterialTheme.colorScheme.onBackground
         )
         Box(
-            modifier = Modifier.size(100.dp),
+            modifier = Modifier.size(200.dp),
             contentAlignment = Alignment.Center
         ) {
             CircularProgressIndicator(
+                modifier = Modifier.fillMaxSize(),
                 progress = { progress },
                 color = lerp(Color.Red, Color.Green, progress * progress), // quadratic color interpolation,
-                strokeWidth = 8.dp,
-                trackColor = MaterialTheme.colorScheme.surfaceVariant,
-                modifier = Modifier.size(100.dp)
+                strokeWidth = 12.dp,
+                gapSize = 0.dp,
+                strokeCap = StrokeCap.Square,
             )
-            Text(
-                text = "${calorieGoal - currentCalories} cals left",
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onBackground,
-                fontSize = 12.sp
-            )
+            Column {
+                Text(
+                    "${calorieGoal - currentCalories}",
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp,
+                )
+                Text(
+                    text = "calories left",
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                    fontSize = 14.sp,
+                )
+            }
+            
         }
         Text(
-            text = "$currentCalories / $calorieGoal kcal",
+            text = "$currentCalories / $calorieGoal calories",
             fontSize = 14.sp,
             color = MaterialTheme.colorScheme.onBackground
         )
