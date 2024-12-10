@@ -8,14 +8,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -28,9 +28,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.csc3380fall2024.team16.repository.FoodLogs
@@ -42,6 +45,8 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlinx.datetime.todayIn
+import kotlin.math.absoluteValue
+import kotlin.math.pow
 
 @Composable
 fun TrackerScreen(
@@ -130,7 +135,7 @@ fun TrackerScreen(
                                 .padding(8.dp)
                         ) {
                             Text(
-                                text = "${it.food}: ${it.calories} kcal",
+                                text = "${it.food}: ${it.calories} calories",
                                 style = MaterialTheme.typography.titleMedium,
                                 color = MaterialTheme.colorScheme.onSurface
                             )
@@ -252,13 +257,7 @@ fun AddFoodDialog(onClose: () -> Unit, onSave: (String, Int) -> Unit) {
 @Composable
 fun CalorieProgress(currentCalories: Int, calorieGoal: Int) {
     val progress = currentCalories.toFloat() / calorieGoal
-    val progressPercent = progress * 100
-    val progressColor = when {
-        progressPercent < 55 -> MaterialTheme.colorScheme.errorContainer
-        progressPercent < 95 -> MaterialTheme.colorScheme.error
-        progressPercent <= 100 -> MaterialTheme.colorScheme.primary
-        else -> MaterialTheme.colorScheme.errorContainer
-    }
+    val remaining = calorieGoal - currentCalories
     Column(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -270,16 +269,43 @@ fun CalorieProgress(currentCalories: Int, calorieGoal: Int) {
             fontSize = 18.sp,
             color = MaterialTheme.colorScheme.onBackground
         )
-        LinearProgressIndicator(
-            progress = { progress },
-            modifier = Modifier.height(20.dp).fillMaxWidth().padding(vertical = 4.dp),
-            color = progressColor,
-            strokeCap = StrokeCap.Square,
-            gapSize = 0.dp,
-            drawStopIndicator = {},
-        )
+        Box(
+            modifier = Modifier.size(200.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator(
+                modifier = Modifier.fillMaxSize(),
+                progress = { progress },
+                color = lerp(
+                    // quadratic color interpolation, accounting for going over
+                    start = Color.Red,
+                    stop = Color.Green,
+                    fraction = 1 - (1 - progress.pow(2)).absoluteValue,
+                ),
+                strokeWidth = 12.dp,
+                gapSize = 0.dp,
+                strokeCap = StrokeCap.Square,
+            )
+            
+            Column {
+                Text(
+                    "${remaining.absoluteValue}",
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp,
+                )
+                Text(
+                    text = "calories " + if (remaining >= 0) "left" else "over",
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                    fontSize = 14.sp,
+                )
+            }
+            
+        }
         Text(
-            text = "$currentCalories / $calorieGoal kcal",
+            text = "$currentCalories / $calorieGoal calories",
             fontSize = 14.sp,
             color = MaterialTheme.colorScheme.onBackground
         )
