@@ -9,11 +9,10 @@ import com.github.csc3380fall2024.team16.repository.FoodLogsRepository
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 
-class TrackerViewModel(private val foodLogsRepo: FoodLogsRepository, private val token: String) :
-    ViewModel() {
+class TrackerViewModel(private val foodLogsRepo: FoodLogsRepository, private val token: String) : ViewModel() {
     var error by mutableStateOf(false)
         private set
-
+    
     fun fetch(vararg dates: LocalDate) = viewModelScope.launch {
         try {
             foodLogsRepo.fetch(token, *dates)
@@ -22,12 +21,11 @@ class TrackerViewModel(private val foodLogsRepo: FoodLogsRepository, private val
             error = true
         }
     }
-
-    fun setGoals(calorieGoal: Int, proteinGoal: Int, fatGoal: Int, carbsGoal: Int) =
-        viewModelScope.launch {
-            foodLogsRepo.setGoals(calorieGoal, proteinGoal, fatGoal, carbsGoal)
-        }
-
+    
+    fun setGoals(calorieGoal: Int, proteinGoal: Int, fatGoal: Int, carbsGoal: Int) = viewModelScope.launch {
+        foodLogsRepo.setGoals(calorieGoal, proteinGoal, fatGoal, carbsGoal)
+    }
+    
     fun addFoodLog(
         date: LocalDate,
         food: String,
@@ -43,7 +41,7 @@ class TrackerViewModel(private val foodLogsRepo: FoodLogsRepository, private val
             error = true
         }
     }
-
+    
     fun removeFoodLog(date: LocalDate, id: Int) = viewModelScope.launch {
         try {
             foodLogsRepo.removeFoodLog(token, date, id)

@@ -225,7 +225,7 @@ fun EditGoalsDialog(
     var goalFatStr by remember { mutableStateOf(initialFat.toString()) }
     var goalCarbsStr by remember { mutableStateOf(initialCarbs.toString()) }
     
-    val goal by derivedStateOf { goalStr.toIntOrNull()?.takeIf { it > 0 } }
+    val goalCalories by derivedStateOf { goalStr.toIntOrNull()?.takeIf { it >= 0 } }
     val goalProtein by derivedStateOf { goalProteinStr.toIntOrNull()?.takeIf { it >= 0 } }
     val goalFat by derivedStateOf { goalFatStr.toIntOrNull()?.takeIf { it >= 0 } }
     val goalCarbs by derivedStateOf { goalCarbsStr.toIntOrNull()?.takeIf { it >= 0 } }
@@ -268,9 +268,9 @@ fun EditGoalsDialog(
         dismissButton = { TextButton({ onClose() }) { Text("Dismiss") } },
         confirmButton = {
             TextButton(
-                enabled = goal != null && goalProtein != null && goalFat != null && goalCarbs != null,
+                enabled = goalCalories != null && goalProtein != null && goalFat != null && goalCarbs != null,
                 onClick = {
-                    onUpdateGoals(goal!!, goalProtein!!, goalFat!!, goalCarbs!!)
+                    onUpdateGoals(goalCalories!!, goalProtein!!, goalFat!!, goalCarbs!!)
                     onClose()
                 }
             ) { Text("Confirm") }
