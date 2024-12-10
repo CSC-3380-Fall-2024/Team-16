@@ -18,4 +18,5 @@ class AppResources(backendUrl: Url, appDir: String) {
     val newsRepo = NewsRepository(client, Path(appDir, "news"))
     val foodLogsRepo = FoodLogsRepository(client, Path(appDir, "foodLogs"))
     val workoutLogsRepo = WorkoutLogsRepository(client, Path(appDir, "workoutLogs"))
+    val postsRepo = WorkoutLogsRepository(client, Path(appDir, "posts"))
 }
