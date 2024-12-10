@@ -25,6 +25,7 @@ fun WorkoutLoggerRoute.compose(app: AppResources, token: String, onBack: () -> U
         WorkoutLoggerScreen(
             foodLogs = it,
             onBack = onBack,
+            error = viewModel.error,
         )
     }
 }

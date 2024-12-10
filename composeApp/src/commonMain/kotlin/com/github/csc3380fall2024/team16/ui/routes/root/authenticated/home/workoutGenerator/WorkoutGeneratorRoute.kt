@@ -9,11 +9,16 @@ import kotlinx.serialization.Serializable
 object WorkoutGeneratorRoute
 
 @Composable
-fun WorkoutGeneratorRoute.compose(app: AppResources, token: String, onBack: () -> Unit) {
+fun WorkoutGeneratorRoute.compose(
+    app: AppResources,
+    token: String,
+    onBack: () -> Unit,
+) {
     val viewModel = viewModel { WorkoutGeneratorViewModel(app.workoutLogsRepo, token) }
     
     WorkoutGeneratorScreen(
         onLogWorkout = viewModel::addWorkoutLog,
         onBack = onBack,
+        error = viewModel.error,
     )
 }
