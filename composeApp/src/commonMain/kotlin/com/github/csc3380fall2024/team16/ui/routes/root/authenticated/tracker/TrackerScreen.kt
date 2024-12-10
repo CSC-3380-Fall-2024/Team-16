@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -33,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.csc3380fall2024.team16.repository.FoodLogs
@@ -92,7 +92,7 @@ fun TrackerScreen(
             )
             
             Text(
-                text = "Set Calorie/Macro Goal",
+                text = "Set Goals",
                 style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.primary),
                 modifier = Modifier
                     .clickable { showEditGoalDialog = true }
@@ -131,23 +131,49 @@ fun TrackerScreen(
                     }
                 } else {
                     items(selectedFoodLogs) {
-                        Box(
+                        Column(
                             Modifier
                                 .fillMaxWidth()
                                 .background(MaterialTheme.colorScheme.surfaceBright)
                                 .padding(8.dp)
                         ) {
-                            Text(
-                                text = "${it.food}: ${it.calories} kcal",
-                                style = MaterialTheme.typography.titleMedium,
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                            Text(
-                                text = "X",
-                                modifier = Modifier
-                                    .align(Alignment.CenterEnd)
-                                    .clickable { onRemoveFoodLog(selectedDate, it.id) },
-                            )
+                            Row(Modifier.fillMaxWidth()) {
+                                Text(
+                                    text = it.food,
+                                    modifier = Modifier.weight(1f).align(Alignment.Top),
+                                    fontSize = 25.sp,
+                                    textAlign = TextAlign.Start,
+                                )
+                                Text(
+                                    text = "calories: ${it.calories}",
+                                    modifier = Modifier.weight(1f),
+                                    textAlign = TextAlign.Center,
+                                )
+                                Text(
+                                    text = "X",
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .clickable { onRemoveFoodLog(selectedDate, it.id) },
+                                    textAlign = TextAlign.End,
+                                )
+                            }
+                            Row(Modifier.fillMaxWidth()) {
+                                Text(
+                                    text = "protein: ${it.proteinGrams}g",
+                                    modifier = Modifier.weight(1f),
+                                    textAlign = TextAlign.Start,
+                                )
+                                Text(
+                                    text = "fats: ${it.fatsGrams}g",
+                                    modifier = Modifier.weight(1f),
+                                    textAlign = TextAlign.Center,
+                                )
+                                Text(
+                                    text = "carbs: ${it.carbsGrams}g",
+                                    modifier = Modifier.weight(1f),
+                                    textAlign = TextAlign.End,
+                                )
+                            }
                         }
                     }
                 }
@@ -334,9 +360,6 @@ fun CalorieProgress(currentCalories: Int, calorieGoal: Int, protein: Int, fat: I
         progressPercent <= 100 -> MaterialTheme.colorScheme.primary
         else -> MaterialTheme.colorScheme.errorContainer
     }
-    val proteinProgress = protein.toFloat() / proteinGoal * 100
-    val fatProgress = fat.toFloat() / fatGoal * 100
-    val carbsProgress = carbs.toFloat() / carbsGoal * 100
     Column(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -363,11 +386,11 @@ fun CalorieProgress(currentCalories: Int, calorieGoal: Int, protein: Int, fat: I
         )
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            MacroProgress(label = "Protein", progress = proteinProgress)
-            MacroProgress(label = "Fat", progress = fatProgress)
-            MacroProgress(label = "Carbs", progress = carbsProgress)
+            MacroProgress("Protein", protein, proteinGoal, "g")
+            MacroProgress("Fat", fat, fatGoal, "g")
+            MacroProgress("Carbs", carbs, carbsGoal, "g")
         }
     }
 }
@@ -414,23 +437,29 @@ fun DateNavAlert(
 }
 
 @Composable
-fun MacroProgress(label: String, progress: Float) {
+fun MacroProgress(label: String, current: Int, goal: Int, unit: String) {
     Column(
+        modifier = Modifier.width(100.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.width(100.dp).height(40.dp)
+        verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         Text(
             text = label,
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onBackground
         )
-        Spacer(modifier = Modifier.height(4.dp))
         LinearProgressIndicator(
-            progress = { progress / 100f },
+            progress = { current.toFloat() / goal },
             modifier = Modifier.fillMaxWidth().height(8.dp),
             color = MaterialTheme.colorScheme.primary,
+            gapSize = 0.dp,
             drawStopIndicator = {},
             strokeCap = StrokeCap.Square,
+        )
+        Text(
+            text = "$current / $goal $unit",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onBackground
         )
     }
 }
