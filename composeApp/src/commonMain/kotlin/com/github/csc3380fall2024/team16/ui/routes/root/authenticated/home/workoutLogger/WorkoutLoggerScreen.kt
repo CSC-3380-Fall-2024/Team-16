@@ -1,4 +1,4 @@
-package com.github.csc3380fall2024.team16.ui.routes.root.authenticated.home.workoutGenerator
+package com.github.csc3380fall2024.team16.ui.routes.root.authenticated.home.workoutLogger
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -13,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.github.csc3380fall2024.team16.ui.routes.root.authenticated.home.workoutGenerator.SavedWorkouts
 
 @Composable
 fun WorkoutLoggerScreen(onBack: () -> Unit) {
