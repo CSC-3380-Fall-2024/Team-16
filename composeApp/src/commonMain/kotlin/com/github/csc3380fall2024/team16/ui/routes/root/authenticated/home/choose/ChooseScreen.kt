@@ -17,7 +17,6 @@ import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.LocalDining
 import androidx.compose.material.icons.filled.SportsHandball
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -25,7 +24,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -65,16 +63,13 @@ fun ChooseScreen(
                 modifier = Modifier
                     .fillMaxWidth(0.8f)
                     .height(60.dp)
-                    .padding(bottom = 16.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.inversePrimary
-                )
+                    .padding(bottom = 16.dp)
             ) {
                 Text(
                     text = "Workout Generator",
                     textAlign = TextAlign.Center,
                     fontSize = 18.sp,
-                    color = Color.White,
+                    fontWeight = FontWeight.Bold,
                     modifier = Modifier.fillMaxSize(),
                 )
             }
@@ -188,16 +183,13 @@ fun ChooseScreen(
                 modifier = Modifier
                     .fillMaxWidth(0.8f)
                     .height(60.dp)
-                    .padding(top = 16.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.inversePrimary
-                )
+                    .padding(top = 16.dp)
             ) {
                 Text(
                     text = "Workout Logger",
                     textAlign = TextAlign.Center,
                     fontSize = 18.sp,
-                    color = Color.White,
+                    fontWeight = FontWeight.Bold,
                     modifier = Modifier.fillMaxSize(),
                 )
             }
