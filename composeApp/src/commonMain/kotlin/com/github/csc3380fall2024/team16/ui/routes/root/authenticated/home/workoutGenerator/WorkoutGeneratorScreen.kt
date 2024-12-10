@@ -108,6 +108,8 @@ fun WorkoutGeneratorScreen(
                 
                 Button(
                     onClick = {
+                        if (generatedWorkout.isNotEmpty()) return@Button
+                        
                         val exercises = when (selectedGoal) {
                             "Strength"           -> ExerciseRepository.getPowerliftingExercises()
                             "Aesthetics"         -> ExerciseRepository.getBodybuildingExercises()

@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
@@ -18,7 +20,9 @@ fun WorkoutLoggerScreen(
     foodLogs: List<WorkoutLog>,
     onBack: () -> Unit
 ) {
-    Column(modifier = Modifier.padding(16.dp)) {
+    val scroll = rememberScrollState()
+
+    Column(modifier = Modifier.padding(16.dp).verticalScroll(scroll)) {
         Button(
             onClick = { onBack() },
             modifier = Modifier.padding(top = 16.dp)
