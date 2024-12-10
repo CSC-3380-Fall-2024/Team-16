@@ -8,14 +8,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -28,7 +28,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -259,6 +258,7 @@ fun CalorieProgress(currentCalories: Int, calorieGoal: Int) {
         progressPercent <= 100 -> MaterialTheme.colorScheme.primary
         else -> MaterialTheme.colorScheme.errorContainer
     }
+    val remainingCalories = calorieGoal - currentCalories
     Column(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -270,14 +270,24 @@ fun CalorieProgress(currentCalories: Int, calorieGoal: Int) {
             fontSize = 18.sp,
             color = MaterialTheme.colorScheme.onBackground
         )
-        LinearProgressIndicator(
-            progress = { progress },
-            modifier = Modifier.height(20.dp).fillMaxWidth().padding(vertical = 4.dp),
-            color = progressColor,
-            strokeCap = StrokeCap.Square,
-            gapSize = 0.dp,
-            drawStopIndicator = {},
-        )
+        Box(
+            modifier = Modifier.size(100.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator(
+                progress = { progress },
+                color = progressColor,
+                strokeWidth = 8.dp,
+                trackColor = MaterialTheme.colorScheme.surfaceVariant,
+                modifier = Modifier.size(100.dp)
+            )
+            Text(
+                text = "$remainingCalories cals left",
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontSize = 12.sp
+            )
+        }
         Text(
             text = "$currentCalories / $calorieGoal kcal",
             fontSize = 14.sp,
