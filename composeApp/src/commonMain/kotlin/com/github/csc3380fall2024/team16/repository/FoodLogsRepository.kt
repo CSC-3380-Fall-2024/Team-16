@@ -52,18 +52,18 @@ class FoodLogsRepository(private val client: RpcClient, path: Path) {
         food: String,
         calories: Int,
         proteinGrams: Int,
-        carbsGrams: Int,
         fatsGrams: Int,
+        carbsGrams: Int,
     ) {
         val id = client.rpc {
             this.logFood(
-                token,
-                date,
-                food,
-                calories,
-                proteinGrams,
-                carbsGrams,
-                fatsGrams,
+                token = token,
+                date = date,
+                food = food,
+                calories = calories,
+                proteinGrams = proteinGrams,
+                fatsGrams = fatsGrams,
+                carbsGrams = carbsGrams,
             )
         }
         
