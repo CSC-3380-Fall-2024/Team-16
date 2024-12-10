@@ -14,6 +14,8 @@ import com.github.csc3380fall2024.team16.ui.routes.root.authenticated.home.weigh
 import com.github.csc3380fall2024.team16.ui.routes.root.authenticated.home.weightloss.compose
 import com.github.csc3380fall2024.team16.ui.routes.root.authenticated.home.workoutGenerator.WorkoutGeneratorRoute
 import com.github.csc3380fall2024.team16.ui.routes.root.authenticated.home.workoutGenerator.compose
+import com.github.csc3380fall2024.team16.ui.routes.root.authenticated.home.workoutLogger.WorkoutLoggerRoute
+import com.github.csc3380fall2024.team16.ui.routes.root.authenticated.home.workoutLogger.compose
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -29,6 +31,7 @@ fun HomeRoute.compose() {
                 onNavigatePowerlifting = { navController.navigate(PowerliftingRoute) },
                 onNavigateAthletics = { navController.navigate(AthleticsRoute) },
                 onNavigateWeightloss = { navController.navigate(WeightLossRoute) },
+                onNavigateWorkoutLogger = { navController.navigate(WorkoutLoggerRoute) }
             )
         }
         route<WorkoutGeneratorRoute> { this.compose(onBack = { navController.popBackStack() }) }
@@ -36,5 +39,6 @@ fun HomeRoute.compose() {
         route<PowerliftingRoute> { this.compose(onBack = { navController.popBackStack() }) }
         route<AthleticsRoute> { this.compose(onBack = { navController.popBackStack() }) }
         route<WeightLossRoute> { this.compose(onBack = { navController.popBackStack() }) }
+        route<WorkoutLoggerRoute> { this.compose(onBack = { navController.popBackStack() }) }
     }
 }

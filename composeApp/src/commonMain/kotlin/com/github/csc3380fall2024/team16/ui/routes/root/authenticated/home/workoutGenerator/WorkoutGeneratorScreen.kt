@@ -25,17 +25,17 @@ fun WorkoutGeneratorScreen(onBack: () -> Unit) {
     var selectedGoal by remember { mutableStateOf<String?>(null) }
     var selectedTarget by remember { mutableStateOf<String?>(null) }
     var selectedIntensity by remember { mutableStateOf<String?>(null) }
-    var generatedWorkout by remember { mutableStateOf(emptyList<Exercise>()) } // Moved here
-    
+    var generatedWorkout by remember { mutableStateOf(emptyList<Exercise>()) }
+
     val goalOptions = listOf("Strength", "Aesthetics", "Sports Performance", "Weight Loss")
     val targetOptions = mapOf(
         "Strength" to listOf("Squat", "Bench", "Deadlift"),
-        "Aesthetics" to listOf("Arms", "Abs", "Back", "Legs"),
+        "Aesthetics" to listOf("Arms", "Abs", "Back", "Legs", "Chest"),
         "Sports Performance" to listOf("Vertical", "Speed", "Endurance"),
         "Weight Loss" to listOf("Cardio", "HIIT", "Strength Training")
     )
     val intensityOptions = listOf("Low", "Moderate", "High")
-    
+
     Box(Modifier.fillMaxSize()) {
         Button(
             onClick = { onBack() },
@@ -51,7 +51,7 @@ fun WorkoutGeneratorScreen(onBack: () -> Unit) {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text("Workout Generator", fontSize = 24.sp, fontWeight = FontWeight.Bold)
-            
+
             // Step 1: Goal Selection
             if (selectedGoal == null) {
                 Text("Select a Goal:")
@@ -64,7 +64,7 @@ fun WorkoutGeneratorScreen(onBack: () -> Unit) {
                     }
                 }
             }
-            
+
             // Step 2: Target Selection
             selectedGoal?.let { goal ->
                 if (selectedTarget == null) {
@@ -79,7 +79,7 @@ fun WorkoutGeneratorScreen(onBack: () -> Unit) {
                     }
                 }
             }
-            
+
             // Step 3: Intensity Selection
             selectedTarget?.let { target ->
                 if (selectedIntensity == null) {
@@ -94,7 +94,7 @@ fun WorkoutGeneratorScreen(onBack: () -> Unit) {
                     }
                 }
             }
-            
+
             // Final Step: Show Summary or Generate Workout
             if (selectedGoal != null && selectedTarget != null && selectedIntensity != null) {
                 Text(
@@ -102,39 +102,44 @@ fun WorkoutGeneratorScreen(onBack: () -> Unit) {
                     fontSize = 16.sp,
                     modifier = Modifier.padding(top = 16.dp)
                 )
-                
+
                 Button(
                     onClick = {
                         val exercises = when (selectedGoal) {
-                            "Strength"           -> ExerciseRepository.getPowerliftingExercises()
-                            "Aesthetics"         -> ExerciseRepository.getBodybuildingExercises()
+                            "Strength" -> ExerciseRepository.getPowerliftingExercises()
+                            "Aesthetics" -> ExerciseRepository.getBodybuildingExercises()
                             "Sports Performance" -> ExerciseRepository.getAthleticExercises()
-                            "Weight Loss"        -> ExerciseRepository.getWeightLossExercises()
-                            else                 -> emptyList()
+                            "Weight Loss" -> ExerciseRepository.getWeightLossExercises()
+                            else -> emptyList()
                         }
-                        
+
                         val filteredExercises = exercises.filter {
                             it.target.contains(selectedTarget!!, ignoreCase = true)
                         }
-                        
+
                         val (sets, reps) = when (selectedIntensity) {
-                            "Low"      -> 3 to 6
+                            "Low" -> 3 to 6
                             "Moderate" -> 4 to 8
-                            "High"     -> 4 to 12
-                            else       -> 3 to 6
+                            "High" -> 4 to 12
+                            else -> 3 to 6
                         }
-                        
+
                         val randomExercises = filteredExercises.shuffled().take(6)
-                        
+
                         generatedWorkout = randomExercises.map { exercise ->
                             exercise.copy(description = "${exercise.description} - $sets sets of $reps reps")
                         }
+                        SavedWorkouts.saveWorkout(
+                            selectedGoal,
+                            selectedTarget,
+                            selectedIntensity
+                        )
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text("Generate Workout")
                 }
-                
+
                 if (generatedWorkout.isNotEmpty()) {
                     Column(modifier = Modifier.padding(top = 16.dp)) {
                         Text("Generated Workout:", fontSize = 18.sp, fontWeight = FontWeight.Bold)
@@ -147,3 +152,25 @@ fun WorkoutGeneratorScreen(onBack: () -> Unit) {
         }
     }
 }
+
+object SavedWorkouts {
+    private val workoutHistory = mutableListOf<String>() // List to store all workouts
+
+    // Function to save the workout data
+    fun saveWorkout(goal: String?, target: String?, intensity: String?) {
+        if (goal != null && target != null && intensity != null) {
+            val workout = """
+                Goal: $goal
+                Target: $target
+                Intensity: $intensity
+            """.trimIndent()
+            workoutHistory.add(workout) // Add new workout to the list
+        }
+    }
+
+    // Function to get all generated workouts
+    fun getGeneratedWorkouts(): List<String> {
+        return workoutHistory
+    }
+}
+

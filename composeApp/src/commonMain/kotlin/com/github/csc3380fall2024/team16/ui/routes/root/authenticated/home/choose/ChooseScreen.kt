@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.LocalDining
 import androidx.compose.material.icons.filled.SportsHandball
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -24,7 +25,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -35,6 +38,7 @@ fun ChooseScreen(
     onNavigatePowerlifting: () -> Unit,
     onNavigateAthletics: () -> Unit,
     onNavigateWeightloss: () -> Unit,
+    onNavigateWorkoutLogger: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -53,9 +57,9 @@ fun ChooseScreen(
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold
         )
-        
+
         Spacer(modifier = Modifier.height(100.dp))
-        
+
         Column(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -63,14 +67,18 @@ fun ChooseScreen(
             Button(
                 onClick = { onNavigateWorkoutGenerator() },
                 modifier = Modifier
-                    .fillMaxWidth(0.8f)  // Adjust width to 80% of parent container
-                    .height(50.dp)  // Slim height
+                    .fillMaxWidth(0.8f)
+                    .height(60.dp)
                     .padding(bottom = 16.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.inversePrimary
+                )
             ) {
                 Text(
                     text = "Workout Generator",
+                    textAlign = TextAlign.Center,
                     fontSize = 18.sp,
-                    color = MaterialTheme.colorScheme.onPrimary,  // Make text color contrast
+                    color = Color.White,
                     modifier = Modifier.fillMaxSize(),
                 )
             }
@@ -125,7 +133,7 @@ fun ChooseScreen(
                     Text("Powerlifting", fontSize = 18.sp, modifier = Modifier.padding(top = 8.dp))
                 }
             }
-            
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
@@ -176,6 +184,26 @@ fun ChooseScreen(
                     }
                     Text("Weight Loss", fontSize = 18.sp, modifier = Modifier.padding(top = 8.dp))
                 }
+            }
+
+
+            Button(
+                onClick = { onNavigateWorkoutLogger() },
+                modifier = Modifier
+                    .fillMaxWidth(0.8f)
+                    .height(60.dp)
+                    .padding(top = 16.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.inversePrimary
+                )
+            ) {
+                Text(
+                    text = "Workout Logger",
+                    textAlign = TextAlign.Center,
+                    fontSize = 18.sp,
+                    color = Color.White,
+                    modifier = Modifier.fillMaxSize(),
+                )
             }
         }
     }
