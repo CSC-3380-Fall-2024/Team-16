@@ -23,6 +23,16 @@ interface RpcService : RemoteService {
     
     /**
      * @throws UnauthorizedException
+     */
+    suspend fun logWorkout(token: String, log: String)
+    
+    /**
+     * @throws UnauthorizedException
+     */
+    suspend fun getWorkoutLogs(token: String): List<WorkoutLog>
+    
+    /**
+     * @throws UnauthorizedException
      * @return id of the food log
      */
     suspend fun logFood(
@@ -69,6 +79,9 @@ class DoesNotExistException(override val message: String) : Exception()
 
 @Serializable
 data class Session(val token: String, val username: String)
+
+@Serializable
+data class WorkoutLog(val log: String, val timestamp: Instant)
 
 @Serializable
 data class FoodLog(

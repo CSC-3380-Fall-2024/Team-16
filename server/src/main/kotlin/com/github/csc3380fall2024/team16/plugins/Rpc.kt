@@ -7,6 +7,7 @@ import com.github.csc3380fall2024.team16.Session
 import com.github.csc3380fall2024.team16.TokenManager
 import com.github.csc3380fall2024.team16.UnauthorizedException
 import com.github.csc3380fall2024.team16.ValidationException
+import com.github.csc3380fall2024.team16.WorkoutLog
 import com.github.csc3380fall2024.team16.emailRegex
 import com.github.csc3380fall2024.team16.model.NewsArticle
 import com.github.csc3380fall2024.team16.repository.NewsRepository
@@ -17,12 +18,14 @@ import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.routing.routing
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.toKotlinInstant
 import kotlinx.rpc.krpc.ktor.server.RPC
 import kotlinx.rpc.krpc.ktor.server.rpc
 import kotlinx.rpc.krpc.serialization.json.json
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.deleteWhere
+import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.transactions.transaction
 import kotlin.coroutines.CoroutineContext
@@ -69,6 +72,30 @@ class RpcServiceImpl(
             token = TokenManager.createToken(user.id, user.passwordHash),
             username = user.username,
         )
+    }
+    
+    override suspend fun logWorkout(token: String, log: String) {
+        transaction {
+            val user = UserRepository.userFromToken(token) ?: throw UnauthorizedException()
+            WorkoutLogs.insert {
+                it[WorkoutLogs.id] = user.id
+                it[WorkoutLogs.log] = log
+            }
+        }
+    }
+    
+    override suspend fun getWorkoutLogs(token: String): List<WorkoutLog> {
+        val rows = transaction {
+            val user = UserRepository.userFromToken(token) ?: throw UnauthorizedException()
+            WorkoutLogs.select(WorkoutLogs.log, WorkoutLogs.timestamp).where { WorkoutLogs.user eq user.id }.toList()
+        }
+        
+        return rows.map {
+            WorkoutLog(
+                log = it[WorkoutLogs.log],
+                timestamp = it[WorkoutLogs.timestamp].toInstant().toKotlinInstant(),
+            )
+        }
     }
     
     override suspend fun logFood(

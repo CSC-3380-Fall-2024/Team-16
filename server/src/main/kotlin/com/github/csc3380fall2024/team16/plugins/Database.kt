@@ -22,7 +22,7 @@ fun Application.configureDatabase() {
     Database.connect(url, user = user, password = password)
     
     transaction {
-        SchemaUtils.create(Users, Friends, Comments, PostLikes, CommentLikes, ExerciseLogs, PersonalRecords, FoodLogs)
+        SchemaUtils.create(Users, Friends, Comments, PostLikes, CommentLikes, WorkoutLogs, PersonalRecords, FoodLogs)
     }
 }
 
@@ -68,9 +68,9 @@ object CommentLikes : Table("comment_likes") {
     val user = reference("user", Users, onDelete = ReferenceOption.CASCADE)
 }
 
-object ExerciseLogs : UUIDTable("workout_logs") {
+object WorkoutLogs : UUIDTable("workout_logs") {
     val user = reference("user", Users, onDelete = ReferenceOption.CASCADE)
-    val exercise = varchar("exercise", 255)
+    val log = varchar("log", 255)
     val timestamp = timestampWithTimeZone("since").defaultExpression(CurrentTimestampWithTimeZone)
 }
 
