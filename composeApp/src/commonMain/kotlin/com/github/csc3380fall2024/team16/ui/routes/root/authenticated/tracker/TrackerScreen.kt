@@ -12,9 +12,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -24,7 +24,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -64,28 +63,16 @@ fun TrackerScreen(
     var showDateDialog by remember { mutableStateOf(false) }
     
     var selectedDate by remember { mutableStateOf(Clock.System.todayIn(TimeZone.currentSystemDefault())) }
-    val selectedFoodLogs by derivedStateOf { foodLogs.logs[selectedDate] ?: emptyList() }
+    val selectedFoodLogs = foodLogs.logs[selectedDate] ?: emptyList()
+    
+    val state = rememberScrollState()
     
     ErrWrap(if (error) "There was an error fetching data." else null) {
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().verticalScroll(state),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(20.dp)
+            verticalArrangement = Arrangement.spacedBy(20.dp),
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(color = MaterialTheme.colorScheme.surfaceBright)
-                    .padding(vertical = 20.dp)
-            ) {
-                Text(
-                    text = "Tracker",
-                    fontSize = 30.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.align(Alignment.Center)
-                )
-            }
-            
             CalorieProgress(
                 currentCalories = selectedFoodLogs.sumOf { it.calories },
                 calorieGoal = foodLogs.calorieGoal,
@@ -120,23 +107,21 @@ fun TrackerScreen(
                 ) { Text(text = "Add Food") }
             }
             
-            LazyColumn(
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 20.dp, vertical = 20.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 if (selectedFoodLogs.isEmpty()) {
-                    item {
-                        Text(
-                            text = "No foods added yet.",
-                            style = MaterialTheme.typography.titleLarge,
-                            color = MaterialTheme.colorScheme.onBackground,
-                            modifier = Modifier.align(Alignment.CenterHorizontally)
-                        )
-                    }
+                    Text(
+                        text = "No foods added yet.",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
                 } else {
-                    items(selectedFoodLogs) {
+                    selectedFoodLogs.forEach {
                         Column(
                             Modifier
                                 .fillMaxWidth()
@@ -231,10 +216,10 @@ fun EditGoalsDialog(
     var goalFatStr by remember { mutableStateOf(initialFat.toString()) }
     var goalCarbsStr by remember { mutableStateOf(initialCarbs.toString()) }
     
-    val goalCalories by derivedStateOf { goalStr.toIntOrNull()?.takeIf { it >= 0 } }
-    val goalProtein by derivedStateOf { goalProteinStr.toIntOrNull()?.takeIf { it >= 0 } }
-    val goalFat by derivedStateOf { goalFatStr.toIntOrNull()?.takeIf { it >= 0 } }
-    val goalCarbs by derivedStateOf { goalCarbsStr.toIntOrNull()?.takeIf { it >= 0 } }
+    val goalCalories = goalStr.toIntOrNull()?.takeIf { it >= 0 }
+    val goalProtein = goalProteinStr.toIntOrNull()?.takeIf { it >= 0 }
+    val goalFat = goalFatStr.toIntOrNull()?.takeIf { it >= 0 }
+    val goalCarbs = goalCarbsStr.toIntOrNull()?.takeIf { it >= 0 }
     
     AlertDialog(
         title = { Text(text = "Set Calorie Goal") },
@@ -292,10 +277,10 @@ fun AddFoodDialog(onClose: () -> Unit, onSave: (String, Int, Int, Int, Int) -> U
     var fatStr by remember { mutableStateOf("") }
     var carbsStr by remember { mutableStateOf("") }
     
-    val calories by derivedStateOf { caloriesStr.toIntOrNull()?.takeIf { it >= 0 } }
-    val protein by derivedStateOf { proteinStr.toIntOrNull()?.takeIf { it >= 0 } }
-    val fat by derivedStateOf { fatStr.toIntOrNull()?.takeIf { it >= 0 } }
-    val carbs by derivedStateOf { carbsStr.toIntOrNull()?.takeIf { it >= 0 } }
+    val calories = caloriesStr.toIntOrNull()?.takeIf { it >= 0 }
+    val protein = proteinStr.toIntOrNull()?.takeIf { it >= 0 }
+    val fat = fatStr.toIntOrNull()?.takeIf { it >= 0 }
+    val carbs = carbsStr.toIntOrNull()?.takeIf { it >= 0 }
     
     AlertDialog(
         onDismissRequest = onClose,
