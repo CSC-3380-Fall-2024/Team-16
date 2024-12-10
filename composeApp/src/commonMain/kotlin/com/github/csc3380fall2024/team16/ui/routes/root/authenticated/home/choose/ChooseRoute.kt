@@ -14,6 +14,7 @@ fun ChooseRoute.compose(
     onNavigatePowerlifting: () -> Unit,
     onNavigateAthletics: () -> Unit,
     onNavigateWeightloss: () -> Unit,
+    onNavigateWorkoutLogger: () -> Unit,
 ) {
     ChooseScreen(
         username,
@@ -22,5 +23,6 @@ fun ChooseRoute.compose(
         onNavigatePowerlifting,
         onNavigateAthletics,
         onNavigateWeightloss,
+        onNavigateWorkoutLogger,
     )
 }

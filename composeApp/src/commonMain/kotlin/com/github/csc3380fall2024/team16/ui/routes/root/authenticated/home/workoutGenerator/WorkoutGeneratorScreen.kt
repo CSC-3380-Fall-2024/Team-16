@@ -21,16 +21,19 @@ import com.github.csc3380fall2024.team16.Exercise
 import com.github.csc3380fall2024.team16.ExerciseRepository
 
 @Composable
-fun WorkoutGeneratorScreen(onBack: () -> Unit) {
+fun WorkoutGeneratorScreen(
+    onLogWorkout: (goal: String, target: String, intensity: String) -> Unit,
+    onBack: () -> Unit,
+) {
     var selectedGoal by remember { mutableStateOf<String?>(null) }
     var selectedTarget by remember { mutableStateOf<String?>(null) }
     var selectedIntensity by remember { mutableStateOf<String?>(null) }
-    var generatedWorkout by remember { mutableStateOf(emptyList<Exercise>()) } // Moved here
+    var generatedWorkout by remember { mutableStateOf(emptyList<Exercise>()) }
     
     val goalOptions = listOf("Strength", "Aesthetics", "Sports Performance", "Weight Loss")
     val targetOptions = mapOf(
         "Strength" to listOf("Squat", "Bench", "Deadlift"),
-        "Aesthetics" to listOf("Arms", "Abs", "Back", "Legs"),
+        "Aesthetics" to listOf("Arms", "Abs", "Back", "Legs", "Chest"),
         "Sports Performance" to listOf("Vertical", "Speed", "Endurance"),
         "Weight Loss" to listOf("Cardio", "HIIT", "Strength Training")
     )
@@ -128,6 +131,14 @@ fun WorkoutGeneratorScreen(onBack: () -> Unit) {
                         
                         generatedWorkout = randomExercises.map { exercise ->
                             exercise.copy(description = "${exercise.description} - $sets sets of $reps reps")
+                        }
+                        
+                        val goal = selectedGoal
+                        val target = selectedTarget
+                        val intensity = selectedIntensity
+                        
+                        if (goal != null && target != null && intensity != null) {
+                            onLogWorkout(goal, target, intensity)
                         }
                     },
                     modifier = Modifier.fillMaxWidth()

@@ -78,7 +78,7 @@ class RpcServiceImpl(
         transaction {
             val user = UserRepository.userFromToken(token) ?: throw UnauthorizedException()
             WorkoutLogs.insert {
-                it[WorkoutLogs.id] = user.id
+                it[WorkoutLogs.user] = user.id
                 it[WorkoutLogs.log] = log
             }
         }

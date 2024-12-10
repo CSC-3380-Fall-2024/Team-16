@@ -20,7 +20,13 @@ class WorkoutLogsRepository(private val client: RpcClient, path: Path) {
     val updates =
         store.updates.stateIn(CoroutineScope(Job()), SharingStarted.Eagerly, runBlocking { store.getOrEmpty() })
     
-    suspend fun logWorkout(token: String, log: String) {
+    suspend fun logWorkout(token: String, goal: String, target: String, intensity: String) {
+        val log = """
+            Goal: $goal
+            Target: $target
+            Intensity: $intensity
+        """.trimIndent()
+        
         store.plus(WorkoutLog(log, Clock.System.now()))
         client.rpc { this.logWorkout(token, log) }
     }

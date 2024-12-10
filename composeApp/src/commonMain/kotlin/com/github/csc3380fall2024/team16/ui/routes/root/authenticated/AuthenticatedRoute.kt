@@ -45,7 +45,7 @@ fun AuthenticatedRoute.compose(app: AppResources) {
             }
         }
     ) {
-        route<HomeRoute> { this.compose(username) }
+        route<HomeRoute> { this.compose(app, username, token) }
         route<TrackerRoute> { this.compose(app, token) }
         route<NewsRoute> { this.compose(app) }
         route<SocialRoute> { this.compose() }
