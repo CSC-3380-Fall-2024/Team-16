@@ -87,7 +87,10 @@ class RpcServiceImpl(
     override suspend fun getWorkoutLogs(token: String): List<WorkoutLog> {
         val rows = transaction {
             val user = UserRepository.userFromToken(token) ?: throw UnauthorizedException()
-            WorkoutLogs.select(WorkoutLogs.log, WorkoutLogs.timestamp).where { WorkoutLogs.user eq user.id }.toList()
+            WorkoutLogs.select(WorkoutLogs.log, WorkoutLogs.timestamp)
+                .where { WorkoutLogs.user eq user.id }
+                .orderBy(WorkoutLogs.timestamp)
+                .toList()
         }
         
         return rows.map {
