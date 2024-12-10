@@ -6,10 +6,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
@@ -46,12 +48,12 @@ import kotlinx.datetime.todayIn
 @Composable
 fun TrackerScreen(
     foodLogs: FoodLogs,
-    onAddFoodLog: (LocalDate, String, Int) -> Unit,
+    onAddFoodLog: (LocalDate, String, Int, Int, Int, Int) -> Unit,
     onRemoveFoodLog: (LocalDate, Int) -> Unit,
-    onSetCalorieGoal: (Int) -> Unit,
+    onSetGoals: (Int, Int, Int, Int) -> Unit,
     error: Boolean,
 ) {
-    var showEditCalorieDialog by remember { mutableStateOf(false) }
+    var showEditGoalDialog by remember { mutableStateOf(false) }
     var showAddFoodDialog by remember { mutableStateOf(false) }
     var showDateDialog by remember { mutableStateOf(false) }
     
@@ -80,14 +82,20 @@ fun TrackerScreen(
             
             CalorieProgress(
                 currentCalories = selectedFoodLogs.sumOf { it.calories },
-                calorieGoal = foodLogs.calorieGoal
+                calorieGoal = foodLogs.calorieGoal,
+                protein = selectedFoodLogs.sumOf { it.proteinGrams },
+                fat = selectedFoodLogs.sumOf { it.fatsGrams },
+                carbs = selectedFoodLogs.sumOf { it.carbsGrams },
+                proteinGoal = foodLogs.proteinGoal,
+                fatGoal = foodLogs.fatGoal,
+                carbsGoal = foodLogs.carbsGoal
             )
             
             Text(
-                text = "Set Calorie Goal",
+                text = "Set Calorie/Macro Goal",
                 style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.primary),
                 modifier = Modifier
-                    .clickable { showEditCalorieDialog = true }
+                    .clickable { showEditGoalDialog = true }
                     .padding(horizontal = 20.dp)
             )
             
@@ -150,17 +158,22 @@ fun TrackerScreen(
     if (showAddFoodDialog) {
         AddFoodDialog(
             onClose = { showAddFoodDialog = false },
-            onSave = { newFoodName, calories ->
-                onAddFoodLog(selectedDate, newFoodName, calories)
+            onSave = { newFoodName, calories, protein, fat, carbs ->
+                onAddFoodLog(selectedDate, newFoodName, calories, protein, fat, carbs)
             }
         )
     }
     
-    if (showEditCalorieDialog) {
-        EditCalorieDialog(
+    if (showEditGoalDialog) {
+        EditGoalsDialog(
             initialValue = foodLogs.calorieGoal,
-            onClose = { showEditCalorieDialog = false },
-            onUpdateCalories = { onSetCalorieGoal(it) },
+            initialProtein = foodLogs.proteinGoal,
+            initialFat = foodLogs.fatGoal,
+            initialCarbs = foodLogs.carbsGoal,
+            onClose = { showEditGoalDialog = false },
+            onUpdateGoals = { calorieGoal, proteinGoal, fatGoal, carbsGoal ->
+                onSetGoals(calorieGoal, proteinGoal, fatGoal, carbsGoal)
+            }
         )
     }
     if (showDateDialog) {
@@ -173,13 +186,23 @@ fun TrackerScreen(
 }
 
 @Composable
-fun EditCalorieDialog(
+fun EditGoalsDialog(
     initialValue: Int,
+    initialProtein: Int,
+    initialFat: Int,
+    initialCarbs: Int,
     onClose: () -> Unit,
-    onUpdateCalories: (Int) -> Unit
+    onUpdateGoals: (Int, Int, Int, Int) -> Unit
 ) {
     var goalStr by remember { mutableStateOf(initialValue.toString()) }
+    var goalProteinStr by remember { mutableStateOf(initialProtein.toString()) }
+    var goalFatStr by remember { mutableStateOf(initialFat.toString()) }
+    var goalCarbsStr by remember { mutableStateOf(initialCarbs.toString()) }
+    
     val goal by derivedStateOf { goalStr.toIntOrNull()?.takeIf { it > 0 } }
+    val goalProtein by derivedStateOf { goalProteinStr.toIntOrNull()?.takeIf { it >= 0 } }
+    val goalFat by derivedStateOf { goalFatStr.toIntOrNull()?.takeIf { it >= 0 } }
+    val goalCarbs by derivedStateOf { goalCarbsStr.toIntOrNull()?.takeIf { it >= 0 } }
     
     AlertDialog(
         title = { Text(text = "Set Calorie Goal") },
@@ -192,15 +215,36 @@ fun EditCalorieDialog(
                     singleLine = true,
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
                 )
+                TextField(
+                    value = goalProteinStr,
+                    onValueChange = { goalProteinStr = it },
+                    label = { Text("Protein Goal (g)") },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
+                )
+                TextField(
+                    value = goalFatStr,
+                    onValueChange = { goalFatStr = it },
+                    label = { Text("Fat Goal (g)") },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
+                )
+                TextField(
+                    value = goalCarbsStr,
+                    onValueChange = { goalCarbsStr = it },
+                    label = { Text("Carbs Goal (g)") },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
+                )
             }
         },
         onDismissRequest = { onClose() },
         dismissButton = { TextButton({ onClose() }) { Text("Dismiss") } },
         confirmButton = {
             TextButton(
-                enabled = goal != null,
+                enabled = goal != null && goalProtein != null && goalFat != null && goalCarbs != null,
                 onClick = {
-                    onUpdateCalories(goal!!)
+                    onUpdateGoals(goal!!, goalProtein!!, goalFat!!, goalCarbs!!)
                     onClose()
                 }
             ) { Text("Confirm") }
@@ -209,18 +253,25 @@ fun EditCalorieDialog(
 }
 
 @Composable
-fun AddFoodDialog(onClose: () -> Unit, onSave: (String, Int) -> Unit) {
+fun AddFoodDialog(onClose: () -> Unit, onSave: (String, Int, Int, Int, Int) -> Unit) {
     var foodName by remember { mutableStateOf("") }
     var caloriesStr by remember { mutableStateOf("") }
+    var proteinStr by remember { mutableStateOf("") }
+    var fatStr by remember { mutableStateOf("") }
+    var carbsStr by remember { mutableStateOf("") }
+    
     val calories by derivedStateOf { caloriesStr.toIntOrNull()?.takeIf { it >= 0 } }
+    val protein by derivedStateOf { proteinStr.toIntOrNull()?.takeIf { it >= 0 } }
+    val fat by derivedStateOf { fatStr.toIntOrNull()?.takeIf { it >= 0 } }
+    val carbs by derivedStateOf { carbsStr.toIntOrNull()?.takeIf { it >= 0 } }
     
     AlertDialog(
         onDismissRequest = onClose,
         confirmButton = {
             Button(
-                enabled = foodName.isNotBlank() && calories != null,
+                enabled = foodName.isNotBlank() && calories != null && protein != null && fat != null && carbs != null,
                 onClick = {
-                    onSave(foodName.trim(), calories!!)
+                    onSave(foodName.trim(), calories!!, protein!!, fat!!, carbs!!)
                     onClose()
                 }
             ) { Text("Save") }
@@ -244,13 +295,37 @@ fun AddFoodDialog(onClose: () -> Unit, onSave: (String, Int) -> Unit) {
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                     modifier = Modifier.fillMaxWidth()
                 )
+                TextField(
+                    value = proteinStr,
+                    onValueChange = { proteinStr = it },
+                    label = { Text("Protein (g)") },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                    modifier = Modifier.fillMaxWidth()
+                )
+                TextField(
+                    value = fatStr,
+                    onValueChange = { fatStr = it },
+                    label = { Text("Fat (g)") },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                    modifier = Modifier.fillMaxWidth()
+                )
+                TextField(
+                    value = carbsStr,
+                    onValueChange = { carbsStr = it },
+                    label = { Text("Carbs (g)") },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
         }
     )
 }
 
 @Composable
-fun CalorieProgress(currentCalories: Int, calorieGoal: Int) {
+fun CalorieProgress(currentCalories: Int, calorieGoal: Int, protein: Int, fat: Int, carbs: Int, proteinGoal: Int, fatGoal: Int, carbsGoal: Int) {
     val progress = currentCalories.toFloat() / calorieGoal
     val progressPercent = progress * 100
     val progressColor = when {
@@ -259,6 +334,9 @@ fun CalorieProgress(currentCalories: Int, calorieGoal: Int) {
         progressPercent <= 100 -> MaterialTheme.colorScheme.primary
         else -> MaterialTheme.colorScheme.errorContainer
     }
+    val proteinProgress = protein.toFloat() / proteinGoal * 100
+    val fatProgress = fat.toFloat() / fatGoal * 100
+    val carbsProgress = carbs.toFloat() / carbsGoal * 100
     Column(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -283,6 +361,14 @@ fun CalorieProgress(currentCalories: Int, calorieGoal: Int) {
             fontSize = 14.sp,
             color = MaterialTheme.colorScheme.onBackground
         )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            MacroProgress(label = "Protein", progress = proteinProgress)
+            MacroProgress(label = "Fat", progress = fatProgress)
+            MacroProgress(label = "Carbs", progress = carbsProgress)
+        }
     }
 }
 
@@ -327,3 +413,24 @@ fun DateNavAlert(
     )
 }
 
+@Composable
+fun MacroProgress(label: String, progress: Float) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.width(100.dp).height(40.dp)
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        LinearProgressIndicator(
+            progress = { progress / 100f },
+            modifier = Modifier.fillMaxWidth().height(8.dp),
+            color = MaterialTheme.colorScheme.primary,
+            drawStopIndicator = {},
+            strokeCap = StrokeCap.Square,
+        )
+    }
+}

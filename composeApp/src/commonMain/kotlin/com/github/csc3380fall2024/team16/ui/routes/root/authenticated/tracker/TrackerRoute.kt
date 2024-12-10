@@ -34,8 +34,9 @@ fun TrackerRoute.compose(app: AppResources, token: String) {
             foodLogs = it,
             onAddFoodLog = viewModel::addFoodLog,
             onRemoveFoodLog = viewModel::removeFoodLog,
-            onSetCalorieGoal = viewModel::setCalorieGoal,
+            onSetGoals = viewModel::setGoals,
             error = viewModel.error,
         )
     }
 }
+
