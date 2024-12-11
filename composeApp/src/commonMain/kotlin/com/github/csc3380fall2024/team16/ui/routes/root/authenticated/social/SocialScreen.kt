@@ -1,6 +1,7 @@
 package com.github.csc3380fall2024.team16.ui.routes.root.authenticated.social
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,12 +26,12 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,155 +43,23 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 
 @Composable
-fun SocialScreen(viewModel: SocialViewModel) {
-    var showProfileCreation by rememberSaveable { mutableStateOf(viewModel.name.isNullOrEmpty() && viewModel.bio.isNullOrEmpty()) }
-    var name by rememberSaveable { mutableStateOf(viewModel.name ?: "") }
-    var bio by rememberSaveable { mutableStateOf(viewModel.bio ?: "") }
-    var profilePicture by rememberSaveable { mutableStateOf(viewModel.profilePicture) }
+fun SocialScreen(name: String?, profilePicture: Painter?) {
+    val username = name ?: "username" // update to use real username
+    val userProfilePicture = profilePicture
     
-    if (showProfileCreation) {
-        ProfileCreationScreen(
-            onProfileCreated = { createdName, createdBio, createdPicture ->
-                name = createdName.lowercase()
-                bio = createdBio
-                profilePicture = createdPicture as? Painter
-                viewModel.name = name
-                viewModel.bio = createdBio
-                viewModel.profilePicture = createdPicture as Painter?
-                showProfileCreation = false
-            },
-            onSkip = {
-                name = "guest"
-                bio = "empty bio"
-                viewModel.name = "guest"
-                viewModel.bio = "empty bio"
-                showProfileCreation = false
-            }
-        )
-    } else {
-        SocialFeedPage(name, bio, profilePicture)
-    }
+    SocialFeedPage(name = username, profilePicture = userProfilePicture)
 }
 
-@Composable
-fun ProfileCreationScreen(
-    onProfileCreated: (String, String, Any?) -> Unit,
-    onSkip: () -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = "Create Your Profile",
-            style = MaterialTheme.typography.titleLarge,
-            fontSize = 24.sp
-        )
-        
-        Spacer(modifier = Modifier.height(16.dp))
-        
-        var name by remember { mutableStateOf("") }
-        var bio by remember { mutableStateOf("") }
-        var errorMessage by remember { mutableStateOf("") }
-        var usernameErrorMessage by remember { mutableStateOf("") }
-        val profilePicture by remember { mutableStateOf<Painter?>(null) }
-        
-        val usernamePattern = Regex("^[a-zA-Z0-9_]*$")
-        
-        // **Upload Profile Picture Button**
-        Button(
-            onClick = { /* Logic to upload picture */ },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Upload Profile Picture")
-        }
-        
-        Spacer(modifier = Modifier.height(16.dp))
-        
-        TextField(
-            value = name,
-            onValueChange = { input ->
-                name = input
-                if (usernamePattern.matches(input)) {
-                    usernameErrorMessage = ""
-                }
-            },
-            placeholder = { Text("Enter your username") },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true
-        )
-        
-        if (usernameErrorMessage.isNotEmpty()) {
-            Text(
-                text = usernameErrorMessage,
-                color = MaterialTheme.colorScheme.error,
-                modifier = Modifier.padding(top = 4.dp)
-            )
-        }
-        
-        Spacer(modifier = Modifier.height(16.dp))
-        
-        TextField(
-            value = bio,
-            onValueChange = { bio = it },
-            placeholder = { Text("Enter your bio") },
-            modifier = Modifier.fillMaxWidth(),
-            maxLines = 3
-        )
-        
-        Spacer(modifier = Modifier.height(8.dp))
-        
-        if (errorMessage.isNotEmpty()) {
-            Text(
-                text = errorMessage,
-                color = MaterialTheme.colorScheme.error,
-                modifier = Modifier.padding(top = 4.dp)
-            )
-        }
-        
-        Spacer(modifier = Modifier.height(16.dp))
-        
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Button(onClick = onSkip) {
-                Text("Skip")
-            }
-            Button(
-                onClick = {
-                    when {
-                        name.isEmpty() || bio.isEmpty() -> {
-                            errorMessage = "Please fill out both the name and bio fields."
-                        }
-                        !usernamePattern.matches(name)  -> {
-                            usernameErrorMessage = "Username can only contain letters, numbers, and underscores."
-                        }
-                        else                            -> {
-                            errorMessage = ""
-                            usernameErrorMessage = ""
-                            onProfileCreated(name.lowercase(), bio, profilePicture)
-                        }
-                    }
-                }
-            ) {
-                Text("Save")
-            }
-        }
-    }
-}
 
 @Composable
 fun SocialFeedPage(
     name: String?,
-    bio: String?,
     profilePicture: Any?
 ) {
     val scrollState = rememberScrollState()
     var showCreatePostDialog by remember { mutableStateOf(false) }
+    var showDialog by remember { mutableStateOf(false) }
+    
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -205,6 +74,7 @@ fun SocialFeedPage(
                     .clip(RoundedCornerShape(16.dp))
                     .background(MaterialTheme.colorScheme.primaryContainer)
                     .padding(24.dp)
+                    .clickable { showDialog = true }
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -226,20 +96,7 @@ fun SocialFeedPage(
                             Text(
                                 text = "Welcome, $it!",
                                 fontSize = 20.sp,
-                                color = Color.White
-                            )
-                        }
-                        
-                        bio?.let {
-                            val bioColor = if (it == "empty bio") {
-                                Color.LightGray
-                            } else {
-                                Color.White
-                            }
-                            Text(
-                                text = it,
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = bioColor
+                                color = Color.White,
                             )
                         }
                     }
@@ -285,6 +142,12 @@ fun SocialFeedPage(
                     // You can store or display the new post here
                     println("Post created with caption: $caption and image: $image")
                 }
+            )
+        }
+        if (showDialog) {
+            ProfileDialog(
+                showDialog = showDialog,
+                onDismiss = { showDialog = false },
             )
         }
     }
@@ -357,3 +220,57 @@ fun CreatePostDialog(
     }
 }
 
+@Composable
+fun ProfileDialog(
+    showDialog: Boolean,
+    onDismiss: () -> Unit,
+) {
+    if (showDialog) {
+        Dialog(onDismissRequest = onDismiss) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .padding(16.dp)
+            ) {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = "Profile Options",
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+                    
+                    Button(
+                        onClick = {
+                            //implement logic
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = "Upload Profile Picture")
+                    }
+                    
+                    Button(
+                        onClick = {
+                            //implement logic
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = "Logout")
+                    }
+                    
+                    TextButton(
+                        onClick = onDismiss,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    ) {
+                        Text(text = "Close")
+                    }
+                }
+            }
+        }
+    }
+}

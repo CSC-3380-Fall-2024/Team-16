@@ -10,5 +10,8 @@ object SocialRoute
 @Composable
 fun SocialRoute.compose() {
     val viewModel: SocialViewModel = viewModel()
-    SocialScreen(viewModel = viewModel)
+    SocialScreen(
+        name = viewModel::name.toString(),
+        profilePicture = viewModel.profilePicture
+    )
 }

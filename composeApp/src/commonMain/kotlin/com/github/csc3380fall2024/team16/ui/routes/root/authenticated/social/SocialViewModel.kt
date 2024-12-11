@@ -8,6 +8,5 @@ import androidx.lifecycle.ViewModel
 
 class SocialViewModel : ViewModel() {
     var name: String? by mutableStateOf(null)
-    var bio: String? by mutableStateOf(null)
     var profilePicture: Painter? by mutableStateOf(null)
 }
