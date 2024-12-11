@@ -46,6 +46,7 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
+import kotlinx.datetime.toLocalDateTime
 import kotlinx.datetime.todayIn
 import kotlin.math.absoluteValue
 import kotlin.math.pow
@@ -60,7 +61,6 @@ fun TrackerScreen(
 ) {
     var showEditGoalDialog by remember { mutableStateOf(false) }
     var showAddFoodDialog by remember { mutableStateOf(false) }
-    var showDateDialog by remember { mutableStateOf(false) }
     
     var selectedDate by remember { mutableStateOf(Clock.System.todayIn(TimeZone.currentSystemDefault())) }
     val selectedFoodLogs = foodLogs.logs[selectedDate] ?: emptyList()
@@ -81,7 +81,9 @@ fun TrackerScreen(
                 carbs = selectedFoodLogs.sumOf { it.carbsGrams },
                 proteinGoal = foodLogs.proteinGoal,
                 fatGoal = foodLogs.fatGoal,
-                carbsGoal = foodLogs.carbsGoal
+                carbsGoal = foodLogs.carbsGoal,
+                selectedDate = selectedDate,
+                onDateChanged = { newDate -> selectedDate = newDate },
             )
             
             Text(
@@ -96,10 +98,6 @@ fun TrackerScreen(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Button(
-                    onClick = { showDateDialog = true },
-                    modifier = Modifier.weight(1f)
-                ) { Text(text = "View Previous") }
                 
                 Button(
                     onClick = { showAddFoodDialog = true },
@@ -191,13 +189,6 @@ fun TrackerScreen(
             onUpdateGoals = { calorieGoal, proteinGoal, fatGoal, carbsGoal ->
                 onSetGoals(calorieGoal, proteinGoal, fatGoal, carbsGoal)
             }
-        )
-    }
-    if (showDateDialog) {
-        DateNavAlert(
-            selectedDate = selectedDate,
-            onDateChanged = { newDate -> selectedDate = newDate },
-            onDismiss = { showDateDialog = false }
         )
     }
 }
@@ -342,9 +333,12 @@ fun AddFoodDialog(onClose: () -> Unit, onSave: (String, Int, Int, Int, Int) -> U
 }
 
 @Composable
-fun CalorieProgress(currentCalories: Int, calorieGoal: Int, protein: Int, fat: Int, carbs: Int, proteinGoal: Int, fatGoal: Int, carbsGoal: Int) {
+fun CalorieProgress(currentCalories: Int, calorieGoal: Int, protein: Int, fat: Int, carbs: Int, proteinGoal: Int, fatGoal: Int, carbsGoal: Int, selectedDate: LocalDate, onDateChanged: (LocalDate) -> Unit) {
     val progress = currentCalories.toFloat() / calorieGoal
     val remaining = calorieGoal - currentCalories
+    var currentDate by remember { mutableStateOf(selectedDate) }
+    val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
+    
     Column(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -386,6 +380,31 @@ fun CalorieProgress(currentCalories: Int, calorieGoal: Int, protein: Int, fat: I
             }
             
         }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Button(
+                onClick = {
+                    currentDate -= DatePeriod(days = 1)
+                    onDateChanged(currentDate)
+                }
+            ) { Text(text = "<") }
+            
+            Text(
+                text = if (currentDate == today) "Today" else currentDate.toString(),
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.padding(horizontal = 8.dp).padding(bottom = 1.dp)
+            )
+            
+            Button(
+                onClick = {
+                    currentDate += DatePeriod(days = 1)
+                    onDateChanged(currentDate)
+                }
+            ) { Text(text = ">") }
+        }
+        
         Text(
             text = "$currentCalories / $calorieGoal calories",
             fontSize = 14.sp,
@@ -400,47 +419,6 @@ fun CalorieProgress(currentCalories: Int, calorieGoal: Int, protein: Int, fat: I
             MacroProgress("Carbs", carbs, carbsGoal, "g")
         }
     }
-}
-
-@Composable
-fun DateNavAlert(
-    selectedDate: LocalDate,
-    onDateChanged: (LocalDate) -> Unit,
-    onDismiss: () -> Unit
-) {
-    var currentDate by remember { mutableStateOf(selectedDate) }
-    
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(text = "Select Date") },
-        text = {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Button(
-                    onClick = {
-                        currentDate -= DatePeriod(days = 1)
-                        onDateChanged(currentDate)
-                    }
-                ) { Text(text = "<") }
-                
-                Text(
-                    text = currentDate.toString(),
-                    style = MaterialTheme.typography.bodyLarge
-                )
-                
-                Button(
-                    onClick = {
-                        currentDate += DatePeriod(days = 1)
-                        onDateChanged(currentDate)
-                    }
-                ) { Text(text = ">") }
-            }
-        },
-        confirmButton = { TextButton(onDismiss) { Text("Done") } },
-        dismissButton = { TextButton(onDismiss) { Text("Cancel") } }
-    )
 }
 
 @Composable
