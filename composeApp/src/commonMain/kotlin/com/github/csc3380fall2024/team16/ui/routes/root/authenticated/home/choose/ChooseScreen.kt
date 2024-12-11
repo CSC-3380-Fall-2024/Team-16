@@ -51,9 +51,9 @@ fun ChooseScreen(
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold
         )
-
+        
         Spacer(modifier = Modifier.height(100.dp))
-
+        
         Column(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -62,15 +62,12 @@ fun ChooseScreen(
                 onClick = { onNavigateWorkoutGenerator() },
                 modifier = Modifier
                     .fillMaxWidth(0.8f)
-                    .height(60.dp)
                     .padding(bottom = 16.dp)
             ) {
                 Text(
                     text = "Workout Generator",
                     textAlign = TextAlign.Center,
                     fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.fillMaxSize(),
                 )
             }
             Row(
@@ -124,7 +121,7 @@ fun ChooseScreen(
                     Text("Powerlifting", fontSize = 18.sp, modifier = Modifier.padding(top = 8.dp))
                 }
             }
-
+            
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
@@ -176,21 +173,18 @@ fun ChooseScreen(
                     Text("Weight Loss", fontSize = 18.sp, modifier = Modifier.padding(top = 8.dp))
                 }
             }
-
-
+            
+            
             Button(
                 onClick = { onNavigateWorkoutLogger() },
                 modifier = Modifier
                     .fillMaxWidth(0.8f)
-                    .height(60.dp)
                     .padding(top = 16.dp)
             ) {
                 Text(
                     text = "Workout Logger",
                     textAlign = TextAlign.Center,
                     fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.fillMaxSize(),
                 )
             }
         }
