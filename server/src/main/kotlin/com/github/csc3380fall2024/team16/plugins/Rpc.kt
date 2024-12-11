@@ -28,6 +28,7 @@ import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.update
 import kotlin.coroutines.CoroutineContext
 
 fun Application.configureRpc(newsRepo: NewsRepository) {
@@ -159,6 +160,15 @@ class RpcServiceImpl(
     override suspend fun getNewsArticles(token: String, query: String): List<NewsArticle> {
         UserRepository.userFromToken(token) ?: throw UnauthorizedException()
         return newsRepo.getNewsArticles(query)
+    }
+    
+    override suspend fun uploadPfp(token: String, image: ByteArray) {
+        transaction {
+            val user = UserRepository.userFromToken(token) ?: throw UnauthorizedException()
+            Users.update({ Users.id eq user.id }) {
+                it[pfp] = image
+            }
+        }
     }
     
     override suspend fun getPosts(token: String): List<Post> {

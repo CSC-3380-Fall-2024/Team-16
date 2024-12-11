@@ -56,6 +56,7 @@ kotlin {
             implementation(libs.kotlinx.datetime)
             implementation(libs.kstore)
             implementation(libs.kstore.file)
+            implementation(libs.peekaboo.image.picker)
             implementation(projects.shared)
         }
     }

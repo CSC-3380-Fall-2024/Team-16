@@ -20,4 +20,8 @@ class SessionRepository(private val client: RpcClient, path: Path) {
         val session = client.rpc { login(usernameOrEmail, password) }
         store.set(session)
     }
+    
+    suspend fun logout() {
+        store.set(null)
+    }
 }

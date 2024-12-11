@@ -64,6 +64,11 @@ interface RpcService : RemoteService {
     /**
      * @throws UnauthorizedException
      */
+    suspend fun uploadPfp(token: String, image: ByteArray)
+    
+    /**
+     * @throws UnauthorizedException
+     */
     suspend fun getPosts(token: String): List<Post>
     
     /**

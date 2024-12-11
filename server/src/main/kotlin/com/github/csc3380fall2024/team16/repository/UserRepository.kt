@@ -108,6 +108,14 @@ object UserRepository {
         val factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1")
         return factory.generateSecret(spec).encoded
     }
+    
+    fun getPfp(username: String): ByteArray? {
+        val row = Users.select(Users.pfp)
+            .where(Users.username.lowerCase() eq username.lowercase())
+            .singleOrNull() ?: return null
+        
+        return row[Users.pfp]
+    }
 }
 
 class User(
