@@ -20,4 +20,13 @@ class SocialViewModel(private val token: String, private val postsRepo: PostsRep
             error = "There was an error creating a post."
         }
     }
+    
+    fun fetchPosts() = viewModelScope.launch {
+        try {
+            postsRepo.fetch(token)
+            error = null
+        } catch (e: Exception) {
+            error = "There was an error fetching posts."
+        }
+    }
 }

@@ -13,14 +13,19 @@ object SocialRoute
 @Composable
 fun SocialRoute.compose(app: AppResources, token: String) {
     val session by app.sessionRepo.updates.collectAsState()
+    val posts by app.postsRepo.updates.collectAsState()
     
     val viewModel = viewModel { SocialViewModel(token, app.postsRepo) }
+    
+    LaunchedEffect(Unit) { viewModel.fetchPosts() }
     
     session?.let {
         SocialScreen(
             name = it.username,
             profilePicture = null,
+            posts = posts ?: emptyList(),
             onCreatePost = viewModel::createPost,
+            backendUrl = app.backendUrl,
         )
     }
 }

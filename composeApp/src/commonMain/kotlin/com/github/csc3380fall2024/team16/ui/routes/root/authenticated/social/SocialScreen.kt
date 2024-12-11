@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -36,16 +35,33 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import coil3.compose.AsyncImage
+import com.github.csc3380fall2024.team16.Post
 import com.preat.peekaboo.image.picker.SelectionMode
 import com.preat.peekaboo.image.picker.rememberImagePickerLauncher
+import io.ktor.http.URLBuilder
+import io.ktor.http.URLProtocol
+import io.ktor.http.Url
 
 @Composable
-fun SocialScreen(name: String, profilePicture: Painter?, onCreatePost: (String, ByteArray) -> Unit) {
-    SocialFeedPage(name, profilePicture = profilePicture, onCreatePost)
+fun SocialScreen(
+    name: String,
+    profilePicture: Painter?,
+    posts: List<Post>,
+    onCreatePost: (String, ByteArray) -> Unit,
+    backendUrl: Url,
+) {
+    SocialFeedPage(
+        name = name,
+        profilePicture = profilePicture,
+        posts = posts,
+        onCreatePost = onCreatePost,
+        backendUrl = backendUrl,
+    )
 }
 
 
@@ -53,22 +69,22 @@ fun SocialScreen(name: String, profilePicture: Painter?, onCreatePost: (String, 
 fun SocialFeedPage(
     name: String,
     profilePicture: Any?,
-    onCreatePost: (String, ByteArray) -> Unit
+    posts: List<Post>,
+    onCreatePost: (String, ByteArray) -> Unit,
+    backendUrl: Url,
 ) {
     val scrollState = rememberScrollState()
     var showCreatePostDialog by remember { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf(false) }
     
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
+    Box(Modifier.fillMaxSize().padding(16.dp)) {
         Column(
             modifier = Modifier
                 .verticalScroll(scrollState)
         ) {
             Column(
                 modifier = Modifier
-                    .fillMaxWidth(0.9f)
+                    .fillMaxWidth()
                     .align(Alignment.CenterHorizontally)
                     .clip(RoundedCornerShape(16.dp))
                     .background(MaterialTheme.colorScheme.primaryContainer)
@@ -89,29 +105,31 @@ fun SocialFeedPage(
                             .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
                     )
                     
-                    Text(
-                        text = name,
-                        fontSize = 20.sp,
-                    )
+                    Text(name, fontSize = 20.sp)
                 }
             }
             
-            repeat(10) { index ->
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
-                        .padding(8.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(text = "Video Reel $index", fontSize = 18.sp)
+            if (posts.isEmpty()) {
+                Text("No posts yet.", modifier = Modifier.padding(20.dp), style = MaterialTheme.typography.titleLarge)
+            }
+
+            posts.forEach {
+                Column(Modifier.padding(10.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    HorizontalDivider()
+                    
+                    Text(text = it.user, style = MaterialTheme.typography.labelSmall)
+                    Text(it.description)
+                    
+                    AsyncImage(
+                        model = URLBuilder(backendUrl).apply {
+                            protocol = URLProtocol.HTTP
+                            pathSegments = listOf("post_image", it.id.toString())
+                        }.buildString(),
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.FillWidth,
+                    )
                 }
-                
-                HorizontalDivider(
-                    modifier = Modifier.padding(horizontal = 8.dp),
-                    thickness = 1.dp,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
-                )
             }
         }
         

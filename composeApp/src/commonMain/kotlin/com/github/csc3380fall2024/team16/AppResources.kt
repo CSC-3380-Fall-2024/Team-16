@@ -10,7 +10,7 @@ import io.ktor.http.URLProtocol
 import io.ktor.http.Url
 import kotlinx.io.files.Path
 
-class AppResources(backendUrl: Url, appDir: String) {
+class AppResources(val backendUrl: Url, appDir: String) {
     val client = RpcClient(URLBuilder(backendUrl).apply {
         protocol = URLProtocol.WS
         pathSegments = listOf("rpc")
