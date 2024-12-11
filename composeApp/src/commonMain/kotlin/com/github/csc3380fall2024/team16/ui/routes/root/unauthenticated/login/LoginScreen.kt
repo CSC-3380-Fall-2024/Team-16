@@ -3,12 +3,13 @@ package com.github.csc3380fall2024.team16.ui.routes.root.unauthenticated.login
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -34,7 +35,7 @@ fun LoginScreen(
 ) {
     var usernameOrEmail by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var passwordMask by remember { mutableStateOf(false) }
+    var isPasswordVisible by remember { mutableStateOf(false) }
     
     Column(
         Modifier.fillMaxSize().padding(horizontal = 20.dp),
@@ -64,14 +65,23 @@ fun LoginScreen(
                 placeholder = { Text("Password") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 singleLine = true,
-                visualTransformation = if (passwordMask) VisualTransformation.None else PasswordVisualTransformation()
+                visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation()
             )
             
-            Text(
-                text = "Reveal Password",
-                modifier = Modifier.padding(start = 8.dp).wrapContentWidth().clickable { passwordMask = !passwordMask },
-                color = MaterialTheme.colorScheme.primary
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(top = 10.dp)
+            ) {
+                Checkbox(
+                    checked = isPasswordVisible,
+                    onCheckedChange = { isPasswordVisible = it }
+                )
+                Text(
+                    text = "Show Password",
+                    modifier = Modifier.clickable { isPasswordVisible = !isPasswordVisible },
+                    color = MaterialTheme.colorScheme.primary,
+                )
+            }
         }
         
         if (state is LoginState.Ready && state.lastError != null) {
