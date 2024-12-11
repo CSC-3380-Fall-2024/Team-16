@@ -79,13 +79,10 @@ fun SocialFeedPage(
 ) {
     val scrollState = rememberScrollState()
     var showCreatePostDialog by remember { mutableStateOf(false) }
-    var showDialog by remember { mutableStateOf(false) }
+    var showProfileDialog by remember { mutableStateOf(false) }
     
     Box(Modifier.fillMaxSize().padding(16.dp)) {
-        Column(
-            modifier = Modifier
-                .verticalScroll(scrollState)
-        ) {
+        Column(Modifier.verticalScroll(scrollState).fillMaxSize().padding(16.dp)) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -93,7 +90,7 @@ fun SocialFeedPage(
                     .clip(RoundedCornerShape(16.dp))
                     .background(MaterialTheme.colorScheme.primaryContainer)
                     .padding(24.dp)
-                    .clickable { showDialog = true }
+                    .clickable { showProfileDialog = true }
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -114,7 +111,11 @@ fun SocialFeedPage(
             }
             
             if (posts.isEmpty()) {
-                Text("No posts yet.", modifier = Modifier.padding(20.dp), style = MaterialTheme.typography.titleLarge)
+                Text(
+                    text = "No posts yet.",
+                    modifier = Modifier.padding(20.dp),
+                    style = MaterialTheme.typography.titleLarge,
+                )
             }
             
             posts.forEach {
@@ -154,10 +155,9 @@ fun SocialFeedPage(
                 onCreatePost = onCreatePost,
             )
         }
-        if (showDialog) {
+        if (showProfileDialog) {
             ProfileDialog(
-                showDialog = showDialog,
-                onDismiss = { showDialog = false },
+                onClose = { showProfileDialog = false },
             )
         }
     }
@@ -231,55 +231,42 @@ fun CreatePostDialog(
 
 @Composable
 fun ProfileDialog(
-    showDialog: Boolean,
-    onDismiss: () -> Unit,
+    onClose: () -> Unit,
 ) {
-    if (showDialog) {
-        Dialog(onDismissRequest = onDismiss) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .padding(16.dp)
-            ) {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(
-                        text = "Profile Options",
-                        style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                    )
-                    
-                    Button(
-                        onClick = {
-                            //implement logic
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(text = "Upload Profile Picture")
-                    }
-                    
-                    Button(
-                        onClick = {
-                            //implement logic
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(text = "Logout")
-                    }
-                    
-                    TextButton(
-                        onClick = onDismiss,
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                    ) {
-                        Text(text = "Close")
-                    }
-                }
-            }
+    Dialog(onDismissRequest = onClose) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(12.dp))
+                .background(MaterialTheme.colorScheme.primaryContainer)
+                .padding(16.dp),
+        ) {
+            Text(
+                text = "Profile Options",
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
+            
+            Button(
+                onClick = {
+                    //implement logic
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) { Text(text = "Upload Profile Picture") }
+            
+            Button(
+                onClick = {
+                    //implement logic
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) { Text(text = "Logout") }
+            
+            TextButton(
+                onClick = onClose,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            ) { Text(text = "Close") }
         }
     }
 }
