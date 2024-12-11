@@ -55,6 +55,7 @@ fun SocialScreen(
     posts: List<Post>,
     onCreatePost: (String, ByteArray) -> Unit,
     backendUrl: Url,
+    onLogout: () -> Unit,
     error: String?,
 ) {
     ErrWrap(error) {
@@ -64,6 +65,7 @@ fun SocialScreen(
             posts = posts,
             onCreatePost = onCreatePost,
             backendUrl = backendUrl,
+            onLogout = onLogout,
         )
     }
 }
@@ -76,6 +78,7 @@ fun SocialFeedPage(
     posts: List<Post>,
     onCreatePost: (String, ByteArray) -> Unit,
     backendUrl: Url,
+    onLogout: () -> Unit,
 ) {
     val scrollState = rememberScrollState()
     var showCreatePostDialog by remember { mutableStateOf(false) }
@@ -157,6 +160,7 @@ fun SocialFeedPage(
         }
         if (showProfileDialog) {
             ProfileDialog(
+                onLogout = onLogout,
                 onClose = { showProfileDialog = false },
             )
         }
@@ -231,6 +235,7 @@ fun CreatePostDialog(
 
 @Composable
 fun ProfileDialog(
+    onLogout: () -> Unit,
     onClose: () -> Unit,
 ) {
     Dialog(onDismissRequest = onClose) {
@@ -257,9 +262,7 @@ fun ProfileDialog(
             ) { Text(text = "Upload Profile Picture") }
             
             Button(
-                onClick = {
-                    //implement logic
-                },
+                onClick = onLogout,
                 modifier = Modifier.fillMaxWidth()
             ) { Text(text = "Logout") }
             

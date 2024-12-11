@@ -4,8 +4,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.github.csc3380fall2024.team16.AppResources
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -27,6 +29,7 @@ fun SocialRoute.compose(app: AppResources, token: String) {
             posts = posts ?: emptyList(),
             onCreatePost = viewModel::createPost,
             backendUrl = app.backendUrl,
+            onLogout = { viewModel.viewModelScope.launch { app.sessionRepo.logout() } },
             error = viewModel.error,
         )
     }
