@@ -1,6 +1,7 @@
 package com.github.csc3380fall2024.team16.ui.routes.root.authenticated.social
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -26,6 +27,7 @@ fun SocialRoute.compose(app: AppResources, token: String) {
             posts = posts ?: emptyList(),
             onCreatePost = viewModel::createPost,
             backendUrl = app.backendUrl,
+            error = viewModel.error,
         )
     }
 }

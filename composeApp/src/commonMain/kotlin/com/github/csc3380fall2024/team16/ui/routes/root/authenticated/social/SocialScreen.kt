@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import coil3.compose.AsyncImage
 import com.github.csc3380fall2024.team16.Post
+import com.github.csc3380fall2024.team16.ui.components.ErrWrap
 import com.preat.peekaboo.image.picker.SelectionMode
 import com.preat.peekaboo.image.picker.rememberImagePickerLauncher
 import io.ktor.http.URLBuilder
@@ -54,14 +55,17 @@ fun SocialScreen(
     posts: List<Post>,
     onCreatePost: (String, ByteArray) -> Unit,
     backendUrl: Url,
+    error: String?,
 ) {
-    SocialFeedPage(
-        name = name,
-        profilePicture = profilePicture,
-        posts = posts,
-        onCreatePost = onCreatePost,
-        backendUrl = backendUrl,
-    )
+    ErrWrap(error) {
+        SocialFeedPage(
+            name = name,
+            profilePicture = profilePicture,
+            posts = posts,
+            onCreatePost = onCreatePost,
+            backendUrl = backendUrl,
+        )
+    }
 }
 
 
@@ -112,7 +116,7 @@ fun SocialFeedPage(
             if (posts.isEmpty()) {
                 Text("No posts yet.", modifier = Modifier.padding(20.dp), style = MaterialTheme.typography.titleLarge)
             }
-
+            
             posts.forEach {
                 Column(Modifier.padding(10.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     HorizontalDivider()
