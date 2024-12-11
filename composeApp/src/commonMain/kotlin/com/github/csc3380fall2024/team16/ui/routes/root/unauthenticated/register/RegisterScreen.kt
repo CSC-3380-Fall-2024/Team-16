@@ -187,7 +187,8 @@ fun RegisterScreen(
                 )
                 Text(
                     text = "Show Password",
-                    modifier = Modifier.clickable { isPasswordVisible = !isPasswordVisible }
+                    modifier = Modifier.clickable { isPasswordVisible = !isPasswordVisible },
+                    color = MaterialTheme.colorScheme.primary,
                 )
             }
         }
