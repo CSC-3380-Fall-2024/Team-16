@@ -22,6 +22,8 @@ This is an Android app for your fitness needs. Features include workout generato
 7. Wait for Android Studio to fully sync and index all the files. This may take a long time for the first time because it has to download all the dependencies.
 7. Copy [`.env.template`](/.env.template) to a new file named `.env`.
 
+> Note: After the project is synced and indxed, you may get the warning `Duplicate content roots detected`. This is a bug with Android Studio, and you can ignore it.
+
 ### Configuring `.env`.
 
 There are two variables in `.env` that you need to configure for the app to work:
