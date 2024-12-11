@@ -18,7 +18,7 @@ fun SocialRoute.compose(app: AppResources, token: String) {
     val session by app.sessionRepo.updates.collectAsState()
     val posts by app.postsRepo.updates.collectAsState()
     
-    val viewModel = viewModel { SocialViewModel(token, app.postsRepo) }
+    val viewModel = viewModel { SocialViewModel(token, app.client, app.postsRepo) }
     
     LaunchedEffect(Unit) { viewModel.fetchPosts() }
     
@@ -30,6 +30,7 @@ fun SocialRoute.compose(app: AppResources, token: String) {
             onCreatePost = viewModel::createPost,
             backendUrl = app.backendUrl,
             onLogout = { viewModel.viewModelScope.launch { app.sessionRepo.logout() } },
+            onUploadPfp = viewModel::uploadPfp,
             error = viewModel.error,
         )
     }

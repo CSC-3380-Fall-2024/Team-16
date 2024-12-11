@@ -22,7 +22,16 @@ fun Application.configureDatabase() {
     Database.connect(url, user = user, password = password)
     
     transaction {
-        SchemaUtils.create(Users, Friends, Comments, PostLikes, CommentLikes, WorkoutLogs, PersonalRecords, FoodLogs)
+        SchemaUtils.createMissingTablesAndColumns(
+            Users,
+            Friends,
+            Comments,
+            PostLikes,
+            CommentLikes,
+            WorkoutLogs,
+            PersonalRecords,
+            FoodLogs,
+        )
     }
 }
 
@@ -31,6 +40,7 @@ object Users : UUIDTable("users") {
     val email = varchar("email", 255)
     val passwordSalt = binary("password_salt", 16)
     val passwordHash = binary("password_hash", 128)
+    val pfp = binary("pfp").nullable()
     
     init {
         uniqueIndex("username_lower", functions = listOf(username.lowerCase()))

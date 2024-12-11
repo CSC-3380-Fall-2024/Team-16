@@ -35,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -55,6 +56,7 @@ fun SocialScreen(
     posts: List<Post>,
     onCreatePost: (String, ByteArray) -> Unit,
     backendUrl: Url,
+    onUploadPfp: (ByteArray) -> Unit,
     onLogout: () -> Unit,
     error: String?,
 ) {
@@ -65,6 +67,7 @@ fun SocialScreen(
             posts = posts,
             onCreatePost = onCreatePost,
             backendUrl = backendUrl,
+            onUploadPfp = onUploadPfp,
             onLogout = onLogout,
         )
     }
@@ -78,11 +81,14 @@ fun SocialFeedPage(
     posts: List<Post>,
     onCreatePost: (String, ByteArray) -> Unit,
     backendUrl: Url,
+    onUploadPfp: (ByteArray) -> Unit,
     onLogout: () -> Unit,
 ) {
     val scrollState = rememberScrollState()
     var showCreatePostDialog by remember { mutableStateOf(false) }
     var showProfileDialog by remember { mutableStateOf(false) }
+    
+    val fallback = rememberVectorPainter(Icons.Filled.AccountCircle)
     
     Box(Modifier.fillMaxSize().padding(16.dp)) {
         Column(Modifier.verticalScroll(scrollState).fillMaxSize().padding(16.dp)) {
@@ -100,13 +106,17 @@ fun SocialFeedPage(
                     modifier = Modifier.padding(bottom = 8.dp),
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
-                    Icon(
-                        imageVector = Icons.Filled.AccountCircle,
+                    AsyncImage(
+                        model = URLBuilder(backendUrl).apply {
+                            protocol = URLProtocol.HTTP
+                            pathSegments = listOf("user_pfp", name)
+                        }.buildString(),
+                        error = fallback,
                         contentDescription = null,
                         modifier = Modifier
                             .size(60.dp)
                             .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
+                            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)),
                     )
                     
                     Text(name, fontSize = 20.sp)
@@ -121,11 +131,32 @@ fun SocialFeedPage(
                 )
             }
             
+            val fallback2 = rememberVectorPainter(Icons.Filled.AccountCircle)
+            
             posts.forEach {
                 Column(Modifier.padding(10.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     HorizontalDivider()
                     
-                    Text(text = it.user, style = MaterialTheme.typography.labelSmall)
+                    Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                        AsyncImage(
+                            model = URLBuilder(backendUrl).apply {
+                                protocol = URLProtocol.HTTP
+                                pathSegments = listOf("user_pfp", it.user)
+                            }.buildString(),
+                            error = fallback2,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(30.dp)
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)),
+                        )
+                        Text(
+                            text = it.user,
+                            style = MaterialTheme.typography.labelSmall,
+                            modifier = Modifier.align(Alignment.CenterVertically),
+                        )
+                    }
+                    
                     Text(it.description)
                     
                     AsyncImage(
@@ -160,6 +191,7 @@ fun SocialFeedPage(
         }
         if (showProfileDialog) {
             ProfileDialog(
+                onUploadPfp = onUploadPfp,
                 onLogout = onLogout,
                 onClose = { showProfileDialog = false },
             )
@@ -235,9 +267,17 @@ fun CreatePostDialog(
 
 @Composable
 fun ProfileDialog(
+    onUploadPfp: (ByteArray) -> Unit,
     onLogout: () -> Unit,
     onClose: () -> Unit,
 ) {
+    var image: ByteArray? by remember { mutableStateOf(null) }
+    val singleImagePicker = rememberImagePickerLauncher(
+        selectionMode = SelectionMode.Single,
+        scope = rememberCoroutineScope(),
+        onResult = { image = it.firstOrNull() }
+    )
+    
     Dialog(onDismissRequest = onClose) {
         Column(
             verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -254,17 +294,33 @@ fun ProfileDialog(
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
             
-            Button(
-                onClick = {
-                    //implement logic
-                },
-                modifier = Modifier.fillMaxWidth()
-            ) { Text(text = "Upload Profile Picture") }
-            
-            Button(
-                onClick = onLogout,
-                modifier = Modifier.fillMaxWidth()
-            ) { Text(text = "Logout") }
+            if (image != null) {
+                AsyncImage(
+                    model = image,
+                    contentDescription = null,
+                )
+                
+                Button(
+                    onClick = singleImagePicker::launch,
+                    modifier = Modifier.fillMaxWidth()
+                ) { Text(text = "Choose Another Image") }
+                
+                Button(
+                    enabled = image != null,
+                    onClick = { onUploadPfp(image!!) },
+                    modifier = Modifier.fillMaxWidth()
+                ) { Text(text = "Upload") }
+            } else {
+                Button(
+                    onClick = singleImagePicker::launch,
+                    modifier = Modifier.fillMaxWidth()
+                ) { Text(text = "Upload Profile Picture") }
+                
+                Button(
+                    onClick = onLogout,
+                    modifier = Modifier.fillMaxWidth()
+                ) { Text(text = "Logout") }
+            }
             
             TextButton(
                 onClick = onClose,
